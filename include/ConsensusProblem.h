@@ -1,0 +1,38 @@
+#ifndef CONSENSUSPROBLEM_H
+#define CONSENSUSPROBLEM_H
+
+#include <vector>
+#include <string>
+#include <limits> // for infinity
+#include <map>
+#include "Tree.h"
+
+struct Range
+{
+    int low;
+    int high;
+}; // to keep the range
+
+template <class T>
+class ConsensusProblem
+{
+public:
+    // constructor and destructor
+    ConsensusProblem(std::vector< std::vector<T> > data,
+                     int (*distance_function)(T a, T b));
+    ~ConsensusProblem();
+
+    // getters and setters
+    std::vector<T> & get_objects();
+    std::vector<Range> & get_ranges();
+    std::vector< std::vector<double> > & get_distance_matrix();
+
+
+private:
+    std::vector<T> objects;
+    std::vector<Range> ranges;
+    std::vector< std::vector<double> > distance_matrix;
+};
+
+
+#endif // CONSENSUSPROBLEM_H
