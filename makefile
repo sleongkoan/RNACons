@@ -25,11 +25,11 @@ rm       = rm -f
 all: $(BINDIR)/mccons_mc $(BINDIR)/mccons_ga
 
 $(BINDIR)/mccons_mc: $(OBJECTS) $(MCOBJECTS)
-	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(MCOBJECTS) -s
+	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(MCOBJECTS)
 # 	@echo "Monte Carlo version complete!"
 
 $(BINDIR)/mccons_ga: $(OBJECTS) $(GAOBJECTS)
-	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(GAOBJECTS) -s
+	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(GAOBJECTS)
 # 	@echo "Genetic Algorithm version complete!"
 
 
