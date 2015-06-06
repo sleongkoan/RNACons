@@ -4,6 +4,52 @@
 using std::vector;
 
 
+struct int_double
+{
+    int best_gene;
+    double cost_difference;
+};
+
+
+// constructors and destructors
+SolverGA::SolverGA( // data
+                    std::vector< std::vector<double> > distance_matrix,
+                    std::vector<Range> ranges,
+
+                    // GA settings
+                    int population_size,
+                    int num_generations,
+                    int improvement_depth,
+                    int elite_size,
+
+                    double crossover_prob,
+                    double mutation_prob,
+                    double improvement_prob,
+
+                    // misc parameters
+                    std::string problem_name,
+                    bool silent)
+{
+    
+    _distance_matrix = distance_matrix;
+    _ranges = ranges;
+    
+    _population_size = population_size;
+    _elite_size = elite_size;
+    _num_generations = num_generations;
+    _improvement_depth = improvement_depth;
+    
+    _crossover_prob = crossover_prob;
+    _mutation_prob = mutation_prob,
+    _improvement_prob = improvement_prob;
+    
+    _problem_name = problem_name;
+    _silent = silent;
+}
+
+SolverGA::~SolverGA() { }
+
+
 void assign_pairwise_distance_score(Solution& sol, vector< vector<double> > distance_matrix)
 {
     // assign score to solution, sum of all pairwise distances
@@ -26,17 +72,10 @@ void assign_pairwise_distance_score(Solution& sol, vector< vector<double> > dist
 }
 
 
-struct int_double_tup
-{
-    int best_gene;
-    double cost_difference;
-};
-
-
-int_double_tup find_best_substitution(std::vector<int> genes,
-                                      int replacement_position,
-                                      vector< vector<double> > distance_matrix,
-                                      vector<Range> ranges)
+int_double find_best_substitution(std::vector<int> genes,
+                                  int replacement_position,
+                                  vector< vector<double> > distance_matrix,
+                                  vector<Range> ranges)
 {
     // find the best replacement for the allele at position
     double original_cost, current_cost, best_cost;
@@ -76,7 +115,7 @@ int_double_tup find_best_substitution(std::vector<int> genes,
             best_cost = current_cost;
         }
     }
-    int_double_tup ret = {best_gene, best_cost - original_cost};
+    int_double ret = {best_gene, best_cost - original_cost};
     return ret;
 }
 
@@ -93,7 +132,7 @@ void steepest_improvement(Solution& sol,
     int best_position, best_substitution;
     int length = sol.get_genes().size();
     double best_score;
-    int_double_tup substitution;
+    int_double substitution;
     int iteration = 0;
 
     while (iteration < max_iter)
@@ -254,28 +293,20 @@ vector<Solution> initialize_population(vector<Range> ranges, int pop_size, RngSt
 }
 
 
-vector<Solution> solve(vector< vector<double> > distance_matrix,
-                        vector<Range> ranges,
-                        size_t population_size,
-                        size_t num_generations,
-                        unsigned long seeds[6], // takes 6 seeds, unsigned long
-                        size_t elite_size,
-                        double crossover_prob,
-                        double mutation_prob,
-                        double improvement_prob,
-                        size_t improvement_depth,
-                        std::string problem_name,
-                        bool silent)
+std::vector<Solution> SolverGA::solve(unsigned long seeds[6]) const
 {
-    // solve the cvrp problem using a simple genetic algorithm
-    assert(population_size > 0);
-    assert(num_generations > 0);
-    assert(elite_size > 0);
-    assert(elite_size <= population_size);
-    assert(0 <= crossover_prob);
-    assert(crossover_prob <= 1);
-    assert(0 <= mutation_prob);
-    assert(mutation_prob <= 1);
+    // solve the consensus problem using a genetic algorithm
+
+    // adding an assert message by using the trick from
+    //  http://stackoverflow.com/questions/3692954/add-custom-messages-in-assert
+    assert(_population_size > 0 && "Illegal population size");
+    assert(_num_generations > 0 && "Illegal number of generations");
+    assert(_elite_size >= 0 && "Illegal elite size (below zero)");
+    assert(_elite_size <= _population_size && "Illegal elite size (bigger than population");
+    assert(0 <= _crossover_prob && "Illegal crossover probability (lower than zero)");
+    assert(_crossover_prob <= 1 && "Illegal crossover probability (higher than one)");
+    assert(0 <= _mutation_prob && "Illegal mutation probability (lower than zero)");
+    assert(_mutation_prob <= 1 && "Illegal mutation probability (higher than one)");
 
     // seed the pseudorandom generator (MRG32k3a from L'Ecuyer)
     RngStream * prng = new RngStream();
@@ -291,32 +322,26 @@ vector<Solution> solve(vector< vector<double> > distance_matrix,
     vector<Solution>::iterator sol_it;
 
     // start the progress meter
-    ProgressBar bar = ProgressBar(problem_name);
+    ProgressBar bar = ProgressBar(_problem_name);
 
     // initialize the population
-    vector<Solution> population = initialize_population(ranges, population_size, prng);
+    vector<Solution> population = initialize_population(_ranges, _population_size, prng);
 
     // main loop
-    for (size_t generation_index = 0; generation_index != num_generations; ++generation_index)
+    for (size_t generation_index = 0; generation_index != _num_generations; ++generation_index)
     {
 
         // output the progress bar if not silent
-        if (!silent)
-            bar.update( ((float) generation_index) / num_generations);
+        if (! _silent)
+            bar.update( ((float) generation_index) / _num_generations);
 
         // score the solutions and sort the population by score
         for (sol_it = population.begin(); sol_it != population.end(); ++sol_it)
         {
-            assign_pairwise_distance_score(*sol_it, distance_matrix);
+            assign_pairwise_distance_score(*sol_it, _distance_matrix);
         }
         std::sort(population.begin(), population.end());
 
-        // check that it worked
-//        for(size_t i = 0; i < population.size() - 1; ++i) {
-//            assert(population[i].get_score() <= population[i+1].get_score());
-//        }
-
-        //=====================================================================
         // remember the best solutions of the current generation
         current_best_solutions = vector<Solution>();
         current_best_score = population[0].get_score(); // because it is sorted
@@ -346,14 +371,13 @@ vector<Solution> solve(vector< vector<double> > distance_matrix,
         }
 
         best_solutions.push_back(current_best_solutions);
-        //=====================================================================
 
         // elitist selection with only unique individuals, no repetition
         elite = vector<Solution>();
 
         for (size_t i = 0; i < population.size(); ++i)
         {
-            if (elite.size() == elite_size)
+            if (elite.size() == _elite_size)
             {
                 break;
             }
@@ -376,16 +400,16 @@ vector<Solution> solve(vector< vector<double> > distance_matrix,
         }
 
         // selection process
-        parents = binary_tournament_selection(population, ((population_size - elite.size())*2), prng);
+        parents = binary_tournament_selection(population, ((_population_size - elite.size())*2), prng);
         children = vector<Solution>();
-        for (size_t i = 0; i != population_size - elite_size; ++i)
+        for (size_t i = 0; i != _population_size - _elite_size; ++i)
         {
             parent1 = parents[i*2];
             parent2 = parents[(i*2)+1];
             Solution child;
 
             // crossover
-            if (prng->RandU01() < crossover_prob)
+            if (prng->RandU01() < _crossover_prob)
             {
                 child = uniform_crossover(parent1, parent2, 0.5, prng);
             }
@@ -395,12 +419,12 @@ vector<Solution> solve(vector< vector<double> > distance_matrix,
             }
 
             // mutation
-            if (prng->RandU01() < mutation_prob)
-                uniform_mutate(child, ranges, prng);
+            if (prng->RandU01() < _mutation_prob)
+                uniform_mutate(child, _ranges, prng);
 
             // improvement
-            if (prng->RandU01() < improvement_prob)
-                steepest_improvement(child, distance_matrix, ranges, improvement_depth);
+            if (prng->RandU01() < _improvement_prob)
+                steepest_improvement(child, _distance_matrix, _ranges, _improvement_depth);
 
             // children is done
             children.push_back(child);
@@ -412,19 +436,16 @@ vector<Solution> solve(vector< vector<double> > distance_matrix,
             children.push_back(Solution(*sol_it));
         }
 
-
+        // swap the two populations
         population = children;
     }
 
     // clean the progress bar
-    if (!silent)
+    if (! _silent)
         bar.clean();
 
     // cleanup
     delete prng;
 
-    return best_solutions[best_solutions.size()-1];
+    return best_solutions.back();
 }
-
-
-
