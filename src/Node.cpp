@@ -1,14 +1,8 @@
 #include "../include/Node.h"
 #include <iostream>
 
-Node::Node()
-{
-    this->label = -1;
-    this->children = std::vector<Node*>();
-    this->parent = NULL;
-}
 
-Node::Node(Node* parent=NULL, int label=-1)
+Node::Node(Node* parent, int label)
 {
     // constructor
     if (parent)
