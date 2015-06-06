@@ -10,7 +10,7 @@ class ProgressBar
 {
 public:
     // constructors and destructor
-    ProgressBar(std::string processName="", size_t barLength=50);
+    ProgressBar(std::string process_name="", size_t bar_length=40);
     ~ProgressBar();
 
     // updates the progress displayed
@@ -18,8 +18,8 @@ public:
     // displays 100% status
     void clean();
 private:
-    size_t bar_length;
-    std::string process_name;
+    size_t _bar_length;
+    std::string _process_name;
 };
 
 #endif // PROGRESSBAR_H

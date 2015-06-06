@@ -1,10 +1,10 @@
 #include "../include/ProgressBar.h"
 
 
-ProgressBar::ProgressBar(std::string processName, size_t barLength)
+ProgressBar::ProgressBar(std::string process_name, size_t bar_length)
 {
-    process_name = processName;
-    bar_length = barLength;
+    _process_name = process_name;
+    _bar_length = bar_length;
 }
 
 
@@ -17,16 +17,16 @@ void ProgressBar::update(float percentage)
     assert (percentage >= 0.);
     assert (percentage <= 1.);
 
-    size_t progress_length = this->bar_length * percentage;
+    size_t progress_length = _bar_length * percentage;
     std::cerr << "[";
-    for (size_t i = 0; i < this->bar_length; ++i)
+    for (size_t i = 0; i < _bar_length; ++i)
     {
         if (i <= progress_length)
             std::cerr << "#";
         else
             std::cerr << " ";
     }
-    std::cerr << "] " << int(percentage * 100) << " %\r";
+    std::cerr << "] " << int(percentage * 100) << "% " << _process_name << "\r";// ;
     std::cerr.flush();
 }
 

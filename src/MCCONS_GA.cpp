@@ -23,7 +23,7 @@ void MCCONS_GA(string path,
     double CROSSOVER_PROBABILITY = 0.5;
     double MUTATION_PROBABILITY = 0.05;
     double IMPROVEMENT_PROBABILITY = 0.05;
-    string PROBLEM_NAME = "";
+    //string PROBLEM_NAME = "";
     unsigned long SEEDS[6] = {42, 42, 42, 42, 42, 42};
 
     // TREE CONSENSUS
@@ -45,7 +45,7 @@ void MCCONS_GA(string path,
                                 MUTATION_PROBABILITY,
                                 IMPROVEMENT_PROBABILITY,
 
-                                PROBLEM_NAME,
+                                "Tree Indel Distance Consensus",
                                 silent);
     vector<Solution> tree_consensus = solver1.solve(SEEDS);
 
@@ -86,7 +86,7 @@ void MCCONS_GA(string path,
                                     MUTATION_PROBABILITY,
                                     IMPROVEMENT_PROBABILITY,
 
-                                    PROBLEM_NAME,
+                                    "String Edit Distance Consensus",
                                     silent);
         dot_bracket_consensus.push_back(solver2.solve(SEEDS));
     }
@@ -135,7 +135,6 @@ int main(int argc, char *argv[]) {
 
     // create the command line parser
     OptionParser parser = OptionParser().description("MC-Cons Consensus Optimizer Using a Genetic Algorithm");
-
     parser.add_option("-f", "--data").dest("dataFile").help("path to MARNA-like input file");
     parser.add_option("-p", "--popsize").dest("popSize").help("genetic algorithm population size").type("size_t");
     parser.add_option("-n", "--numgen").dest("numGenerations").type("size_t");
@@ -143,15 +142,17 @@ int main(int argc, char *argv[]) {
     optparse::Values options = parser.parse_args(argc, argv);
     vector<string> args = parser.args();
 
-    // extract
+    // extract parameters and lauch the genetic algorithm (either silent or not)
     if (options.is_set("dataFile") && options.is_set("popSize") && options.is_set("numGenerations")) {
       string path = options["dataFile"];
       size_t popsize = atoi(options["popSize"].c_str());
       size_t num_generations = atoi(options["numGenerations"].c_str());
 
       if (options["silent"] == "1") {
+          // silent
           MCCONS_GA(path, popsize, num_generations, true);
       } else {
+          // verbose
           MCCONS_GA(path, popsize, num_generations, false);
       }
 
