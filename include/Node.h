@@ -7,8 +7,7 @@ class Node
 {
 public:
     // constructors
-    Node();
-    Node(Node* parent, int label);
+    Node(Node* parent=NULL, int label=-1);
 
     // destructor
     ~Node();
