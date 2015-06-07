@@ -14,10 +14,10 @@ public:
 
     // getters and setters
     void add_child(Node* other);
-    std::vector<Node*>& get_children();
+    const std::vector<Node*> & get_children();
     Node* get_parent();
-    void set_parent(Node* parent);
     int get_label();
+    void set_parent(Node* parent);
     void set_label(int label);
 
     // helper

@@ -1,10 +1,8 @@
 #include "../include/RNAConsensus.h"
 
-using std::string;
-using std::vector;
 
 
-int get_subopt_length(string line)
+int get_subopt_length(std::string line)
 {
     for (unsigned int i = 1; i < line.size(); ++i)
     {
@@ -20,8 +18,8 @@ int get_subopt_length(string line)
 bool is_nucleotide(char c)
 {
     char lower_case = tolower(c);
-    string nucleotides = "actgu";
-    if (nucleotides.find(lower_case) == string::npos)
+    std::string nucleotides = "actgu";
+    if (nucleotides.find(lower_case) == std::string::npos)
     {
         return false;
     }
@@ -32,16 +30,16 @@ bool is_nucleotide(char c)
 }
 
 
-vector<vector<string> > read_data(std::string file_name)
+std::vector<std::vector<std::string> > read_data(std::string file_name)
 {
     // read marna file format with suboptimal structures
     // we only take suboptimal structures as data, rest is ignored
-    vector< vector<string> > data = vector< vector<string> >();
+    std::vector< std::vector<std::string> > data = std::vector< std::vector<std::string> >();
 
     // temporary structures
-    string line;
+    std::string line;
     int subopt_length;
-    vector<string> subopts = vector<string>();
+    std::vector<std::string> subopts = std::vector<std::string>();
 
     // work on the file
     std::ifstream dataFile(file_name.c_str());
@@ -64,14 +62,14 @@ vector<vector<string> > read_data(std::string file_name)
             {
                 // new subopts are coming, add old ones to the data
                 data.push_back(subopts);
-                subopts = vector<string>();
+                subopts = std::vector<std::string>();
             }
             else if (line[0] == '(' || line[0] == ')' || line[0] == '.')
             {
                 // read the new suboptimal
                 // must keep only the structure (first part)
                 subopt_length = get_subopt_length(line);
-                string subopt = line.substr(0, subopt_length);
+                std::string subopt = line.substr(0, subopt_length);
                 subopts.push_back(subopt);
             }
             else
@@ -91,18 +89,18 @@ vector<vector<string> > read_data(std::string file_name)
 std::vector< std::vector<Tree> > get_tree_lists(std::vector< std::vector<std::string> > dot_brackets_vectors)
 {
     // for efficiency reasons, might want to use a Set, but a vector will do for now
-    vector< vector<Tree> > result = vector< vector<Tree> >();
+    std::vector< std::vector<Tree> > result = std::vector< std::vector<Tree> >();
 
     for (size_t i = 0; i < dot_brackets_vectors.size(); ++i)
     {
         // initialize a vector of trees to add later
-        vector<string> current_unique_brackets = vector<string>();
-        vector<Tree> current_unique_trees = vector<Tree>();
+        std::vector<std::string> current_unique_brackets = std::vector<std::string>();
+        std::vector<Tree> current_unique_trees = std::vector<Tree>();
 
         for(size_t j = 0; j < dot_brackets_vectors[i].size(); ++j)
         {
             // calculate the bracket
-            string bracket = only_paired(dot_brackets_vectors[i][j]);
+            std::string bracket = only_paired(dot_brackets_vectors[i][j]);
 
             // check if it has already been added to the current inner vector
             bool found = false;
@@ -133,11 +131,11 @@ std::vector< std::vector<Tree> > get_tree_lists(std::vector< std::vector<std::st
 std::vector< std::vector<std::string> > filter_dot_brackets(std::vector< std::vector<std::string> > dot_brackets_vectors, std::vector<std::string> brackets)
 {
     // remove dot_brackets with the wrong base tree topology
-    vector< vector<string> > result = vector< vector<string> >();
+    std::vector< std::vector<std::string> > result = std::vector< std::vector<std::string> >();
     for(unsigned int i = 0; i < dot_brackets_vectors.size(); ++i)
     {
-        string bracket = brackets[i];
-        vector<string> compliant_dot_brackets = vector<string>();
+        std::string bracket = brackets[i];
+        std::vector<std::string> compliant_dot_brackets = std::vector<std::string>();
 
         for(unsigned int j = 0; j < dot_brackets_vectors[i].size(); ++j)
         {

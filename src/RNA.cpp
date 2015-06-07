@@ -4,12 +4,6 @@
 #define MAX_STRING_LENGTH 500
 
 
-using std::endl;
-using std::cout;
-using std::vector;
-using std::string;
-
-
 bool is_valid_dot_bracket(std::string dot_bracket)
 {
     // tests Vienna dot-bracket for illegal structure (or symbol)
@@ -46,11 +40,11 @@ bool is_valid_dot_bracket(std::string dot_bracket)
 }
 
 
-string only_paired(string dot_bracket)
+std::string only_paired(std::string dot_bracket)
 {
     // removes the "." characters from the dot_bracket
     assert(is_valid_dot_bracket(dot_bracket));  // only apply on legal dot_bracket
-    string ret = string(dot_bracket);
+    std::string ret = std::string(dot_bracket);
     ret.erase(std::remove(ret.begin(), ret.end(), '.'), ret.end());
     return ret;
 }

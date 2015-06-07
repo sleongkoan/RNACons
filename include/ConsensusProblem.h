@@ -23,9 +23,9 @@ public:
     ~ConsensusProblem();
 
     // getters and setters
-    std::vector<T> & get_objects();
-    std::vector<Range> & get_ranges();
-    std::vector< std::vector<double> > & get_distance_matrix();
+    const std::vector<T> & get_objects();
+    const std::vector<Range> & get_ranges();
+    const std::vector< std::vector<double> > & get_distance_matrix();
 
 
 private:
@@ -33,6 +33,8 @@ private:
     std::vector<Range> ranges;
     std::vector< std::vector<double> > distance_matrix;
 };
+
+bool distance_is_symmetric(const std::vector< std::vector<double> > & distance_matrix);
 
 
 #endif // CONSENSUSPROBLEM_H

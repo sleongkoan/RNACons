@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) {
     OptionParser parser = OptionParser().description("MC-Cons Consensus Optimizer Using a Genetic Algorithm");
     parser.add_option("-f", "--data").dest("dataFile").help("path to MARNA-like input file");
     parser.add_option("-p", "--popsize").dest("popSize").help("genetic algorithm population size").type("size_t");
-    parser.add_option("-n", "--numgen").dest("numGenerations").type("size_t").help("genetic algorithm number of generations").;
+    parser.add_option("-n", "--numgen").dest("numGenerations").type("size_t").help("genetic algorithm number of generations");
     parser.add_option("-s", "--silent").action("store_true").dest("silent").help("don't display status to stderr");
     optparse::Values options = parser.parse_args(argc, argv);
     vector<string> args = parser.args();

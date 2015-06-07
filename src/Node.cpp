@@ -7,7 +7,7 @@ Node::Node(Node* parent, int label)
     // constructor
     if (parent)
     {
-        parent->get_children().push_back(this);
+        parent->add_child(this);
     }
     this->label = label;
     this->children = std::vector<Node*>();
@@ -16,19 +16,17 @@ Node::Node(Node* parent, int label)
 
 Node::~Node() { }
 
-std::vector<Node*> & Node::get_children()
+const std::vector<Node*> & Node::get_children()
 {
-    return (this->children);
+    return this->children;
 }
 
 void Node::add_child(Node* child)
 {
     // add the child to this children's list
-    this->get_children().push_back(child);
+    this->children.push_back(child);
     return;
 }
-
-
 
 Node* Node::get_parent()
 {
@@ -65,18 +63,16 @@ int Node::get_leftmost_descendent_label()
 }
 
 
-// ----------------------------------------------------------------------------
-
-
 void node_to_bracket(Node* node, std::vector<char>& brackets)
 {
     // tree structure -> (()()) representation
     brackets.push_back('(');
-    std::vector<Node*>::iterator it;
     if (node)
     {
-        for (it = node->get_children().begin(); it != node->get_children().end(); ++it)
-            node_to_bracket(*it, brackets);
+        for (size_t i = 0; i != node->get_children().size(); ++i)
+        {
+            node_to_bracket(node->get_children()[i], brackets);
+        }
     }
     brackets.push_back(')');
     return;
@@ -85,22 +81,20 @@ void node_to_bracket(Node* node, std::vector<char>& brackets)
 void postorder_list_helper(Node* node, std::vector<Node*>& res)
 {
     // helper for the postorder_list function
-    std::vector<Node*>::iterator children;
     if (node)
     {
-        for(children = node->get_children().begin(); children != node->get_children().end(); ++children)
+        for(size_t i = 0; i != node->get_children().size(); ++i)
         {
-            postorder_list_helper(*children, res);
+            postorder_list_helper(node->get_children()[i], res);
         }
         res.push_back(node);
     }
     return;
 }
+
 std::vector<Node*> get_postorder_enumeration(Node* root)
 {
     std::vector<Node*> result = std::vector<Node*>();
     postorder_list_helper(root, result);
     return result;
 }
-
-

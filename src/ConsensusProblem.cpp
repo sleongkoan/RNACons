@@ -87,22 +87,48 @@ ConsensusProblem<T>::ConsensusProblem(std::vector< std::vector<T> > data,
         distance_matrix[i][i] = 0.;
     }
 
+    // check that the distance used is symmetric
+    assert(distance_is_symmetric(distance_matrix) && "Distance Matrix is not symmetric");
     return;
 }
+
+bool distance_is_symmetric(const std::vector< std::vector<double> > & distance_matrix)
+{
+    // used to assert that a distance matrix does not violate
+    // the first two metric requirements
+    // d(x, x) = 0, d(x, y) >= 0
+    // d(x, y) >= 0
+
+    // but not d(x, y) + d(y, z) >= d(x, z): this one would be costly to check
+    for(size_t i = 0; i < distance_matrix.size(); ++i)
+    {
+      for(size_t j = 0; j < distance_matrix[i].size(); ++j)
+      {
+          if ( (distance_matrix[i][j] < 0)  ||
+               (distance_matrix[i][i] != 0) ||
+               (distance_matrix[i][j] != distance_matrix[j][i]) )
+          {
+              return false;
+          }
+      }
+    }
+    return true;
+}
+
 
 template <class T> ConsensusProblem<T>::~ConsensusProblem() { }
 
 
 
 template <class T>
-std::vector<T>& ConsensusProblem<T>::get_objects()
+const std::vector<T> & ConsensusProblem<T>::get_objects()
 {
     return this->objects;
 }
 
 
 template<class T>
-std::vector< Range >& ConsensusProblem<T>::get_ranges()
+const std::vector< Range > & ConsensusProblem<T>::get_ranges()
 {
     return this->ranges;
 
@@ -110,7 +136,7 @@ std::vector< Range >& ConsensusProblem<T>::get_ranges()
 
 
 template<class T>
-std::vector< std::vector<double> >& ConsensusProblem<T>::get_distance_matrix()
+const std::vector< std::vector<double> > & ConsensusProblem<T>::get_distance_matrix()
 {
     return this->distance_matrix;
 
