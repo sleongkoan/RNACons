@@ -30,7 +30,7 @@ coupled with steepest descent.
 
 Using the provided makefile, just (seems to work fine on Linux and OSX)
 
-```
+```bash
 make all
 ```
 
