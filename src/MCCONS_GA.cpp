@@ -43,7 +43,7 @@ void MCCONS_GA(std::string path,
                                 "Tree Indel Distance Consensus",
                                 silent);
     std::vector<Solution> tree_consensus = solver1.solve(SEEDS);
-
+    double tree_score = tree_consensus[0].get_score();
 
     // filter the dot brackets by the tree consensus
     std::vector<std::vector< std::vector<std::string> > > prob2_data = std::vector< std::vector< std::vector<std::string> > >();
@@ -103,7 +103,7 @@ void MCCONS_GA(std::string path,
         for(size_t j = 0; j != dot_bracket_consensus[i].size(); ++j) {
             if (dot_bracket_consensus[i][j].get_score() == best_score) {
                 // output the consensus
-                std::cout << "> " << sol_index << " " << best_score << std::endl;
+                std::cout << "> " << sol_index << " " << tree_score << " " << best_score << std::endl;
                 sol_index += 1;
                 for (size_t gene_index = 0; gene_index != dot_bracket_consensus[i][j].get_genes().size(); ++gene_index) {
                     gene = dot_bracket_consensus[i][j].get_genes()[gene_index];
