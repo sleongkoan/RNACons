@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 {
     OptionParser parser = OptionParser().description("MC-Cons Consensus Optimizer Using a Monte Carlo and Steepest Descent");
     parser.add_option("-f", "--data").dest("data_file").help("path to MARNA-like input file");
-    parser.add_option("-p", "--popsize").dest("num_trials").help("number of trials").type("size_t");
+    parser.add_option("-n", "--popsize").dest("num_trials").help("number of trials").type("size_t");
     parser.add_option("-s", "--silent").action("store_true").dest("silent").help("don't display status to stderr");
     optparse::Values options = parser.parse_args(argc, argv);
     std::vector<std::string> args = parser.args();
