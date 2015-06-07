@@ -18,7 +18,7 @@ consensus based on strings is used.
 The simple string edit distance is used because it does work quite well.
 
 
-![](doc/figs/mccons_flowchart.eps)
+![](doc/figs/mccons_flowchart.svg)
 
 
 There are currently two versions of the consensus optimizer available,
