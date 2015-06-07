@@ -36,7 +36,7 @@ make all
 ```
 
 
-### Input files
+## Input files
 
 Input files must be of the following fasta-like format.
 That is it should look like this (here suboptimal\_i\_j
@@ -59,7 +59,7 @@ All suboptimal structures must be represented in Vienna dot bracket notation.
     ...
 
 
-### Output format
+## Output format
 
 Consensus are outputted in the following fasta-like format to standard
 output (suboptimal\_n\_l would be the chosen suboptimal at index l of
