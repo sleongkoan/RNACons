@@ -42,16 +42,6 @@ private:
     std::vector<int> keyroots;
 };
 
-/*
-this distance is exactly the same as Zhang-Shasha
-tree edit distance, but based on the special case of
-unit cost for deletion and insertion and zero cost for
-substitution
-
-for RNA, this is equivalent to the number of base pairs
-to create or break to convert tree1 into tree2
-*/
-
 int unit_distance(const Tree A, const Tree B);
 
 #endif // SRC_CPP_TREE_H_

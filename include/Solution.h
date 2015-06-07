@@ -14,10 +14,11 @@ public:
     Solution(std::vector<int> chosen_genes);
     Solution(std::vector<int> chosen_genes, double score);
     Solution(const Solution& other); // copy constructor
+
     ~Solution();
 
     // getters and setters
-    std::vector<int> get_genes() const;
+    const std::vector<int> & get_genes() const;
     void set_gene(int position, int new_gene);
     void add_gene(int new_gene);
 

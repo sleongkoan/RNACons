@@ -1,10 +1,11 @@
 #ifndef CONSENSUSPROBLEM_H
 #define CONSENSUSPROBLEM_H
 
-#include <vector>
-#include <string>
-#include <limits> // for infinity
+#include <limits>
 #include <map>
+#include <string>
+#include <vector>
+
 #include "Tree.h"
 
 struct Range

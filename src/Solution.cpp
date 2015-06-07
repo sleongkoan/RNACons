@@ -33,7 +33,7 @@ Solution::Solution(const Solution& other)
 Solution::~Solution() { }
 
 
-std::vector<int> Solution::get_genes() const
+const std::vector<int> & Solution::get_genes() const
 {
     return this->genes;
 }

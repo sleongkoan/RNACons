@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <vector>
 
-
 #include <assert.h>
 #include <math.h>
 
@@ -19,7 +18,8 @@
 class SolverMC {
 public:
     // constructors and destructors
-    SolverMC(// data
+    SolverMC(
+             // data
              std::vector< std::vector<double> > distance_matrix,
              std::vector<Range> ranges,
 

@@ -1,9 +1,6 @@
 #include "../include/RNA.h"
 
 
-#define MAX_STRING_LENGTH 500
-
-
 bool is_valid_dot_bracket(std::string dot_bracket)
 {
     // tests Vienna dot-bracket for illegal structure (or symbol)
@@ -52,27 +49,29 @@ std::string only_paired(std::string dot_bracket)
 
 int levenshtein(std::string a, std::string b)
 {
-    int levDistances[MAX_STRING_LENGTH][MAX_STRING_LENGTH];
-    int aLength = 0;
-    int bLength = 0;
+    // string edit distance
+    int aLength = a.size();
+    int bLength = b.size();
+
+    std::vector< std::vector<int> > levDistances = std::vector< std::vector<int> >();
+    for(int i = 0; i < aLength+1; ++i)
+    {
+        levDistances.push_back(std::vector<int>(bLength+1, 0));
+    }
+
+
     // fill first column
-    for (int i = 0; i < MAX_STRING_LENGTH; ++i)
+    for (int i = 0; i < aLength+1; ++i)
     {
         levDistances[i][0] = i;
-        if (a[i])
-            ++aLength;
-        else
-            break;
     }
+
     // fill second column
-    for (int j = 0; j < MAX_STRING_LENGTH; ++j)
+    for (int j = 0; j < bLength+1; ++j)
     {
         levDistances[0][j] = j;
-        if (b[j])
-            ++bLength;
-        else
-            break;
     }
+
     // fill the table now
     for (int i = 0; i < aLength; ++i)
     {
@@ -127,4 +126,3 @@ Node* dot_bracket_to_node(std::string dot_bracket)
     }
     return root;
 }
-

@@ -1,9 +1,8 @@
-#ifndef SOLVERGA_H
-#define SOLVERGA_H
+#ifndef SOLVERGA_H_
+#define SOLVERGA_H_
 
 #include <algorithm>
 #include <vector>
-
 
 #include <assert.h>
 #include <math.h>
@@ -18,7 +17,8 @@
 class SolverGA {
 public:
     // constructors and destructors
-    SolverGA(// data
+    SolverGA(
+             // data
              std::vector< std::vector<double> > distance_matrix,
              std::vector<Range> ranges,
 
@@ -71,5 +71,4 @@ void steepest_improvement(Solution& sol,
                           std::vector<Range> ranges,
                           int max_iter=pow(2, 20));
 
-
-#endif // SOLVERGA_H
+#endif // SOLVERGA_H_

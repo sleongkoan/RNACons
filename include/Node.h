@@ -6,19 +6,20 @@
 class Node
 {
 public:
-    // constructors
+    // constructor
     Node(Node* parent=NULL, int label=-1);
 
     // destructor
     ~Node();
 
     // getters and setters
-    void add_child(Node* other);
-    const std::vector<Node*> & get_children();
     Node* get_parent();
     int get_label();
+    const std::vector<Node*> & get_children();
+
     void set_parent(Node* parent);
     void set_label(int label);
+    void add_child(Node* other);
 
     // helper
     int get_leftmost_descendent_label();
@@ -29,8 +30,6 @@ private:
     std::vector<Node*> children;
 };
 
-
-// some useful functions
 
 // node <-> bracket interconversion
 void node_to_bracket(Node* node, std::vector<char>& brackets);

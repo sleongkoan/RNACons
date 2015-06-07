@@ -15,8 +15,10 @@ public:
 
     // updates the progress displayed
     void update(float percentage);
+
     // displays 100% status
     void clean();
+
 private:
     size_t _bar_length;
     std::string _process_name;
