@@ -8,7 +8,6 @@
 #include <assert.h>
 #include <math.h>
 
-
 #include "ConsensusProblem.h"
 #include "Solution.h"
 #include "ProgressBar.h"

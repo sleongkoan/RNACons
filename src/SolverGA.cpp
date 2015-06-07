@@ -198,7 +198,6 @@ Solution uniform_mutate(Solution& sol,
                          double mutation_probability=0.1)
 {
     // mutate the solution by simply swapping with a probability
-
     double prob;
     vector<int> mutated_genes = vector<int>(sol.get_genes().size(), 0);
 

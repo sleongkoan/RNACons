@@ -4,14 +4,10 @@
 #include "../include/OptionParser.h"
 
 
-using std::vector;
-using std::string;
-using std::cout;
-using std::endl;
 using optparse::OptionParser;
 
 
-void MCCONS_GA(string path,
+void MCCONS_GA(std::string path,
                size_t popsize,
                size_t num_generations,
                bool silent)
@@ -23,18 +19,17 @@ void MCCONS_GA(string path,
     double CROSSOVER_PROBABILITY = 0.5;
     double MUTATION_PROBABILITY = 0.05;
     double IMPROVEMENT_PROBABILITY = 0.05;
-    //string PROBLEM_NAME = "";
     unsigned long SEEDS[6] = {42, 42, 42, 42, 42, 42};
 
     // TREE CONSENSUS
     // fetch the data and instantiate the tree consensus problem
-    vector<vector<string> > dot_brackets = read_data(path);
-    vector<vector<Tree> > trees = get_tree_lists(dot_brackets);
-    ConsensusProblem<Tree>* tree_problem = new ConsensusProblem<Tree>(trees, *unit_distance);
+    std::vector<std::vector<std::string> > dot_brackets = read_data(path);
+    std::vector<std::vector<Tree> > trees = get_tree_lists(dot_brackets);
+    ConsensusProblem<Tree> tree_problem = ConsensusProblem<Tree>(trees, *unit_distance);
 
     // instantiate the solver
-    SolverGA solver1 = SolverGA(tree_problem->get_distance_matrix(),
-                                tree_problem->get_ranges(),
+    SolverGA solver1 = SolverGA(tree_problem.get_distance_matrix(),
+                                tree_problem.get_ranges(),
 
                                 popsize,
                                 num_generations,
@@ -47,35 +42,35 @@ void MCCONS_GA(string path,
 
                                 "Tree Indel Distance Consensus",
                                 silent);
-    vector<Solution> tree_consensus = solver1.solve(SEEDS);
+    std::vector<Solution> tree_consensus = solver1.solve(SEEDS);
 
 
     // filter the dot brackets by the tree consensus
-    vector<vector< vector<string> > > prob2_data = vector< vector< vector<string> > >();
+    std::vector<std::vector< std::vector<std::string> > > prob2_data = std::vector< std::vector< std::vector<std::string> > >();
 
     // get the brackets
-    for(vector<Solution>::iterator it = tree_consensus.begin(); it != tree_consensus.end(); ++it) {
-        vector<string> brackets = vector<string>();
+    for(std::vector<Solution>::iterator it = tree_consensus.begin(); it != tree_consensus.end(); ++it) {
+        std::vector<std::string> brackets = std::vector<std::string>();
         for(size_t j = 0; j != it->get_genes().size(); ++j) {
             int gene = it->get_genes()[j];
-            brackets.push_back(tree_problem->get_objects()[gene].get_brackets());
+            brackets.push_back(tree_problem.get_objects()[gene].get_brackets());
         }
         // filter and add to the problem 2 data
-        vector< vector<string> > filtered_brackets = filter_dot_brackets(dot_brackets, brackets);
+        std::vector< std::vector<std::string> > filtered_brackets = filter_dot_brackets(dot_brackets, brackets);
         prob2_data.push_back(filtered_brackets);
     }
-    vector< ConsensusProblem<string>* > dot_bracket_problems = vector< ConsensusProblem<string>* >();
+    std::vector< ConsensusProblem<std::string> > dot_bracket_problems = std::vector< ConsensusProblem<std::string> >();
     // instantiate the problems
     for (size_t i = 0; i != prob2_data.size(); ++i) {
-        dot_bracket_problems.push_back(new ConsensusProblem<string>(prob2_data[i], *levenshtein));
+        dot_bracket_problems.push_back(ConsensusProblem<std::string>(prob2_data[i], *levenshtein));
     }
 
 
     // TREE-STRING CONSENSUS
-    vector< vector<Solution> > dot_bracket_consensus = vector< vector<Solution> >();
+    std::vector< std::vector<Solution> > dot_bracket_consensus = std::vector< std::vector<Solution> >();
     for (size_t i = 0; i != prob2_data.size(); ++i) {
-        SolverGA solver2 = SolverGA(dot_bracket_problems[i]->get_distance_matrix(),
-                                    dot_bracket_problems[i]->get_ranges(),
+        SolverGA solver2 = SolverGA(dot_bracket_problems[i].get_distance_matrix(),
+                                    dot_bracket_problems[i].get_ranges(),
 
                                     popsize,
                                     num_generations,
@@ -112,26 +107,19 @@ void MCCONS_GA(string path,
                 sol_index += 1;
                 for (size_t gene_index = 0; gene_index != dot_bracket_consensus[i][j].get_genes().size(); ++gene_index) {
                     gene = dot_bracket_consensus[i][j].get_genes()[gene_index];
-                    std::cout << dot_bracket_problems[i]->get_objects()[gene] << std::endl;
+                    std::cout << dot_bracket_problems[i].get_objects()[gene] << std::endl;
                 }
                 std::cout << std::endl;
             }
         }
     }
 
-    // cleanup
-    trees.clear();
-    delete tree_problem;
-    for(size_t i = 0; i < dot_bracket_problems.size(); ++i) {
-        delete dot_bracket_problems[i];
-    }
-    dot_bracket_problems.clear();
-
     return;
 }
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
     // create the command line parser
     OptionParser parser = OptionParser().description("MC-Cons Consensus Optimizer Using a Genetic Algorithm");
@@ -140,23 +128,27 @@ int main(int argc, char *argv[]) {
     parser.add_option("-n", "--numgen").dest("numGenerations").type("size_t").help("genetic algorithm number of generations");
     parser.add_option("-s", "--silent").action("store_true").dest("silent").help("don't display status to stderr");
     optparse::Values options = parser.parse_args(argc, argv);
-    vector<string> args = parser.args();
+    std::vector<std::string> args = parser.args();
 
     // extract parameters and lauch the genetic algorithm (either silent or not)
-    if (options.is_set("dataFile") && options.is_set("popSize") && options.is_set("numGenerations")) {
-      string path = options["dataFile"];
+    if (options.is_set("dataFile") && options.is_set("popSize") && options.is_set("numGenerations"))
+    {
+      std::string path = options["dataFile"];
       size_t popsize = atoi(options["popSize"].c_str());
       size_t num_generations = atoi(options["numGenerations"].c_str());
 
-      if (options["silent"] == "1") {
+      if (options["silent"] == "1")
+      {
           // silent
           MCCONS_GA(path, popsize, num_generations, true);
-      } else {
+      } else
+      {
           // verbose
           MCCONS_GA(path, popsize, num_generations, false);
       }
 
-    } else {
+    } else
+    {
 
       std::cerr << parser.format_help() << std::endl;
       std::exit(0);

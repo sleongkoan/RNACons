@@ -16,7 +16,7 @@ BINDIR   = bin
 SOURCES  := $(wildcard $(SRCDIR)/*.c)
 INCLUDES := $(wildcard $(INCLUDEDIR)/*.h)
 OBJECTS  := obj/ConsensusProblem.o obj/Node.o obj/ProgressBar.o obj/RNA.o\
-obj/RNAConsensus.o obj/RngStream.o obj/Solution.o obj/SolverGA.o obj/Tree.o\
+obj/RNAConsensus.o obj/RngStream.o obj/Solution.o obj/SolverGA.o obj/SolverMC.o obj/Tree.o\
 obj/OptionParser.o
 MCOBJECTS := obj/MCCONS_MC.o
 GAOBJECTS := obj/MCCONS_GA.o
