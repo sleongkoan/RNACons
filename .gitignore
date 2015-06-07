@@ -27,3 +27,15 @@
 *.out
 *.app
 bin/
+
+# damn texmaker files
+*.aux
+*.loa
+*.lof
+*.toc
+*.lot
+*.out
+*.dvi
+*.gz
+*.zip
+*.snm
