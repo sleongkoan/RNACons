@@ -76,4 +76,4 @@ the nth molecule).
 
 
 ## To Do
-[ ] RNAse P alignment http://www.mbio.ncsu.edu/rnasep/seqs&structures.html
+- [ ] RNAse P alignment http://www.mbio.ncsu.edu/rnasep/seqs&structures.html
