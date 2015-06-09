@@ -29,7 +29,6 @@ int main(int argc, char *argv[])
       }
       std::string path = options["data_file"];
       size_t num_trials = atoi(options["num_trials"].c_str());
-      std::cout << "trying with "<<num_trials << " samples" << std::endl;
 
       // instantiate the genetic algorithm solver
       Solver* solver = new SolverMC(num_trials, silent);
