@@ -1,76 +1,65 @@
 #include "../include/SolverMC.h"
 
 
-using std::vector;
-using std::string;
-
-
-SolverMC::SolverMC(vector< vector<double> > distance_matrix,
-                   vector<Range> ranges,
-                   int sample_size,
-                   string problem_name,
-                   bool silent)
+SolverMC::SolverMC(int sample_size,
+                   bool silent) : Solver(silent)
 {
-    _distance_matrix = distance_matrix;
-    _ranges = ranges;
-
-    _sample_size = sample_size;
-
-    _problem_name = problem_name;
-    _silent = silent;
+    sample_size_ = sample_size;
 }
+
 
 SolverMC::~SolverMC() { }
 
 
-vector<Solution> SolverMC::solve(unsigned long seeds[6])
+std::vector<Solution> SolverMC::solve(std::vector< std::vector<double> > distance_matrix,
+                                      std::vector<Range> ranges,
+                                      unsigned long seeds[6]) const
 {
     // solve the consensus problem using
     // Monte Carlo + steepest descent
-    assert(_sample_size > 0 && "Nonsensical sample size");
+    assert(sample_size_ > 0 && "Nonsensical sample size");
 
-    size_t improvement_depth = pow(10, 5);
+    int improvement_depth = std::numeric_limits<int>::max();
 
     // seed the pseudorandom generator (MRG32k3a from L'Ecuyer)
     RngStream* prng = new RngStream();
     prng->SetSeed(seeds);
 
-    // create solutions and score them first
-    // O(n) memory, not clever I know...
-    vector<Solution> solutions = initialize_population(_ranges, _sample_size, prng);
-    for (size_t index = 0; index != solutions.size(); ++index)
-    {
-        assign_pairwise_distance_score(solutions[index], _distance_matrix);
-    }
+    // create solutions and add them to the solutions
+    // if they score better or equal to current best known
+    std::vector<Solution> solutions = std::vector<Solution>();
+    double current_best_score = std::numeric_limits<double>::max();
 
     // start the progress meter
-    ProgressBar bar = ProgressBar(_problem_name);
-    double best_score = std::numeric_limits<double>::infinity();
-
-
-    // main loop
-    for (size_t index = 0; index != _sample_size; ++index)
+    ProgressBar bar = ProgressBar();
+    for (size_t index = 0; index != sample_size_; ++index)
     {
         // display progress
-        if (! _silent)
+        if (! silent_)
         {
-            bar.update((float) index / _sample_size);
+            bar.update((float) index / sample_size_);
         }
-
-        // apply optimization
-        steepest_improvement(solutions[index], _distance_matrix, _ranges, improvement_depth);
-        assign_pairwise_distance_score(solutions[index], _distance_matrix);
-        if (solutions[index].get_score() < best_score)
+        // create a new solution
+        Solution current_solution = initialize_population(ranges, 1, prng)[0];
+        // improve it
+        steepest_improvement(current_solution, distance_matrix, ranges, improvement_depth);
+        // score it
+        assign_pairwise_distance_score(current_solution, distance_matrix);
+        // if better, update the best known score
+        if (current_solution.get_score() <= current_best_score)
         {
-            best_score = solutions[index].get_score();
+            // update the best and add current to solutions
+            current_best_score = current_solution.get_score();
+            solutions.push_back(current_solution);
         }
     }
 
+
     // find the best unique solutions
-    vector<Solution> best_solutions = vector<Solution>();
-    for (size_t index = 0; index != _sample_size; ++index)
+    std::vector<Solution> best_solutions = std::vector<Solution>();
+    for (size_t index = 0; index != solutions.size(); ++index)
     {
-        if (solutions[index].get_score() == best_score)
+        if (solutions[index].get_score() == current_best_score)
         {
             // check if it already in the best solutions
             bool found = false;
@@ -89,7 +78,7 @@ vector<Solution> SolverMC::solve(unsigned long seeds[6])
             }
         }
     }
-    if (! _silent)
+    if (! silent_)
     {
         bar.clean();
     }

@@ -11,7 +11,7 @@ using std::vector;
 
 Tree::Tree(std::string brackets)
 {
-    // all trees can be represented by a bracket (Vienna dotbracket minus the dots)
+    // all trees can be represented by a bracket (Vienna dot bracket minus the dots)
     // convert the bracket its corresponding tree structure
     assert(is_valid_dot_bracket(brackets));
     Node* root = dot_bracket_to_node(brackets);
@@ -168,7 +168,7 @@ void calculate_tree_distance(Tree A, Tree B, int i, int j, vector< vector<int> >
             {
                 forest_distance[x][y] = MIN3( (forest_distance[x-1][y] + 1),  // deletion
                                               (forest_distance[x][y-1] + 1),  // insertion
-                                              (forest_distance[x-1][y-1]) );    // substitution
+                                              (forest_distance[x-1][y-1]) );  // substitution
 
                 treedists[x+ioff][y+joff] = forest_distance[x][y];
             }
@@ -212,7 +212,7 @@ int unit_distance(const Tree A, const Tree B)
             calculate_tree_distance(A, B, *index1, *index2, tree_distances);
         }
     }
-    // TODO check that this arithmetic works properly
+
     return tree_distances[tree_distances.size()-1][tree_distances[0].size()-1];
 }
 

@@ -1,26 +1,18 @@
 #ifndef SOLVERGA_H_
 #define SOLVERGA_H_
 
+#include "Solver.h"  // abstract class and useful functions
+
 #include <algorithm>
-#include <vector>
 
 #include <assert.h>
-#include <math.h>
-
-#include "ConsensusProblem.h"
-#include "Solution.h"
-#include "ProgressBar.h"
-#include "RngStream.h"
-#include "Tree.h"
 
 
-class SolverGA {
+class SolverGA : public Solver{
 public:
     // constructors and destructors
-    SolverGA(
-             // data
-             std::vector< std::vector<double> > distance_matrix,
-             std::vector<Range> ranges,
+    SolverGA(// generic information
+             bool silent,
 
              // GA settings
              int population_size,
@@ -30,45 +22,26 @@ public:
 
              double crossover_prob,
              double mutation_prob,
-             double improvement_prob,
-
-             // misc parameters
-             std::string problem_name,
-             bool silent);
+             double improvement_prob);
     ~SolverGA();
 
     // solver call
-    std::vector<Solution> solve(unsigned long seeds[6]) const;
+    std::vector<Solution> solve(std::vector< std::vector<double> > distance_matrix,
+                                std::vector<Range> ranges,
+                                unsigned long seeds[6]) const;
 
 private:
-    std::vector< std::vector<double> > _distance_matrix;
-    std::vector<Range> _ranges;
+    int population_size_;
+    int elite_size_;
+    int num_generations_;
+    int improvement_depth_;
 
-    int _population_size;
-    int _elite_size;
-    int _num_generations;
-    int _improvement_depth;
-
-    double _crossover_prob;
-    double _mutation_prob;
-    double _improvement_prob;
-
-    std::string _problem_name;
-    bool _silent;
+    double crossover_prob_;
+    double mutation_prob_;
+    double improvement_prob_;
 };
 
 
-void assign_pairwise_distance_score(Solution& sol,
-                                    std::vector< std::vector<double> > distance_matrix);
 
-
-std::vector<Solution> initialize_population(std::vector<Range> ranges,
-                                            int pop_size, RngStream *prng);
-
-
-void steepest_improvement(Solution& sol,
-                          std::vector< std::vector<double> > distance_matrix,
-                          std::vector<Range> ranges,
-                          int max_iter=pow(2, 20));
 
 #endif // SOLVERGA_H_

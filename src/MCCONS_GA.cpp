@@ -1,121 +1,11 @@
-#include "../include/RNA.h"
-#include "../include/RNAConsensus.h"
+// MCCONS using a genetic algorithm solver
+
+#include "../include/MCCONS.h"
 #include "../include/SolverGA.h"
 #include "../include/OptionParser.h"
 
 
 using optparse::OptionParser;
-
-
-void MCCONS_GA(std::string path,
-               size_t popsize,
-               size_t num_generations,
-               bool silent)
-{
-
-    // GLOBAL SETTINGS (MODIFY AT YOUR OWN RISKS (WHICH ARE MINIMAL))
-    int IMPROVEMENT_DEPTH= 2;
-    int ELITE_SIZE = 30;
-    double CROSSOVER_PROBABILITY = 0.5;
-    double MUTATION_PROBABILITY = 0.05;
-    double IMPROVEMENT_PROBABILITY = 0.05;
-    unsigned long SEEDS[6] = {42, 42, 42, 42, 42, 42};
-
-    // TREE CONSENSUS
-    // fetch the data and instantiate the tree consensus problem
-    std::vector<std::vector<std::string> > dot_brackets = read_data(path);
-    std::vector<std::vector<Tree> > trees = get_tree_lists(dot_brackets);
-    ConsensusProblem<Tree> tree_problem = ConsensusProblem<Tree>(trees, *unit_distance);
-
-    // instantiate the solver
-    SolverGA solver1 = SolverGA(tree_problem.get_distance_matrix(),
-                                tree_problem.get_ranges(),
-
-                                popsize,
-                                num_generations,
-                                IMPROVEMENT_DEPTH,
-                                ELITE_SIZE,
-
-                                CROSSOVER_PROBABILITY,
-                                MUTATION_PROBABILITY,
-                                IMPROVEMENT_PROBABILITY,
-
-                                "Tree Indel Distance Consensus",
-                                silent);
-    std::vector<Solution> tree_consensus = solver1.solve(SEEDS);
-    double tree_score = tree_consensus[0].get_score();
-
-    // filter the dot brackets by the tree consensus
-    std::vector<std::vector< std::vector<std::string> > > prob2_data = std::vector< std::vector< std::vector<std::string> > >();
-
-    // get the brackets
-    for(std::vector<Solution>::iterator it = tree_consensus.begin(); it != tree_consensus.end(); ++it) {
-        std::vector<std::string> brackets = std::vector<std::string>();
-        for(size_t j = 0; j != it->get_genes().size(); ++j) {
-            int gene = it->get_genes()[j];
-            brackets.push_back(tree_problem.get_objects()[gene].get_brackets());
-        }
-        // filter and add to the problem 2 data
-        std::vector< std::vector<std::string> > filtered_brackets = filter_dot_brackets(dot_brackets, brackets);
-        prob2_data.push_back(filtered_brackets);
-    }
-    std::vector< ConsensusProblem<std::string> > dot_bracket_problems = std::vector< ConsensusProblem<std::string> >();
-    // instantiate the problems
-    for (size_t i = 0; i != prob2_data.size(); ++i) {
-        dot_bracket_problems.push_back(ConsensusProblem<std::string>(prob2_data[i], *levenshtein));
-    }
-
-
-    // TREE-STRING CONSENSUS
-    std::vector< std::vector<Solution> > dot_bracket_consensus = std::vector< std::vector<Solution> >();
-    for (size_t i = 0; i != prob2_data.size(); ++i) {
-        SolverGA solver2 = SolverGA(dot_bracket_problems[i].get_distance_matrix(),
-                                    dot_bracket_problems[i].get_ranges(),
-
-                                    popsize,
-                                    num_generations,
-                                    IMPROVEMENT_DEPTH,
-                                    ELITE_SIZE,
-
-                                    CROSSOVER_PROBABILITY,
-                                    MUTATION_PROBABILITY,
-                                    IMPROVEMENT_PROBABILITY,
-
-                                    "String Edit Distance Consensus",
-                                    silent);
-        dot_bracket_consensus.push_back(solver2.solve(SEEDS));
-    }
-
-
-    // filter out suboptimal solutions
-    double best_score = std::numeric_limits<double>::infinity();
-    for(size_t i = 0; i != dot_bracket_consensus.size(); ++i) {
-        for(size_t j = 0; j != dot_bracket_consensus[i].size(); ++j) {
-            if (dot_bracket_consensus[i][j].get_score() < best_score) {
-                best_score = dot_bracket_consensus[i][j].get_score();
-            }
-        }
-    }
-
-    int sol_index = 0;
-    int gene;
-    for(size_t i = 0; i != dot_bracket_consensus.size(); ++i) {
-        for(size_t j = 0; j != dot_bracket_consensus[i].size(); ++j) {
-            if (dot_bracket_consensus[i][j].get_score() == best_score) {
-                // output the consensus
-                std::cout << "> " << sol_index << " " << tree_score << " " << best_score << std::endl;
-                sol_index += 1;
-                for (size_t gene_index = 0; gene_index != dot_bracket_consensus[i][j].get_genes().size(); ++gene_index) {
-                    gene = dot_bracket_consensus[i][j].get_genes()[gene_index];
-                    std::cout << dot_bracket_problems[i].get_objects()[gene] << std::endl;
-                }
-                std::cout << std::endl;
-            }
-        }
-    }
-
-    return;
-}
 
 
 int main(int argc, char *argv[])
@@ -130,27 +20,50 @@ int main(int argc, char *argv[])
     optparse::Values options = parser.parse_args(argc, argv);
     std::vector<std::string> args = parser.args();
 
-    // extract parameters and lauch the genetic algorithm (either silent or not)
+
+    // GLOBAL SETTINGS (MODIFY AT YOUR OWN RISKS (WHICH ARE MINIMAL))
+    unsigned long SEEDS[6] = {42, 42, 42, 42, 42, 42};
+//     assert((SEEDS != {0, 0, 0, 0, 0, 0}) &&
+//            "Invalid values for the seeds of the Pseudo-Random Number Generator");
+
+    int IMPROVEMENT_DEPTH= 2;
+    int ELITE_SIZE = 30;
+    double CROSSOVER_PROBABILITY = 0.5;
+    double MUTATION_PROBABILITY = 0.05;
+    double IMPROVEMENT_PROBABILITY = 0.05;
+
+
     if (options.is_set("dataFile") && options.is_set("popSize") && options.is_set("numGenerations"))
     {
-      std::string path = options["dataFile"];
-      size_t popsize = atoi(options["popSize"].c_str());
-      size_t num_generations = atoi(options["numGenerations"].c_str());
-
+      // extract command line parameters
+      bool silent = false;
       if (options["silent"] == "1")
       {
-          // silent
-          MCCONS_GA(path, popsize, num_generations, true);
-      } else
-      {
-          // verbose
-          MCCONS_GA(path, popsize, num_generations, false);
+          silent = true;
       }
 
+      std::string path = options["dataFile"];
+      size_t population_size = atoi(options["popSize"].c_str());
+      size_t num_generations = atoi(options["numGenerations"].c_str());
+
+      // instantiate the genetic algorithm solver
+      Solver* solver = new SolverGA(silent,
+                                    population_size,
+                                    num_generations,
+                                    IMPROVEMENT_DEPTH,
+                                    ELITE_SIZE,
+
+                                    CROSSOVER_PROBABILITY,
+                                    MUTATION_PROBABILITY,
+                                    IMPROVEMENT_PROBABILITY);
+
+      // execute and cleanup
+      MCCONS(path, solver, SEEDS);
+      delete solver;
     } else
     {
-
-      std::cerr << parser.format_help() << std::endl;
+      // something went wrong with the arguemnts, print error message and exit
+      std::cerr << "Error: something went wrong, please check usage -h or --help" << std::endl;
       std::exit(0);
     }
 }

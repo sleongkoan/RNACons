@@ -5,44 +5,28 @@
 #include <vector>
 
 #include <assert.h>
-#include <math.h>
 
-#include "ConsensusProblem.h"
-#include "Solution.h"
-#include "ProgressBar.h"
-#include "RngStream.h"
-#include "SolverGA.h"
-#include "Tree.h"
+#include "Solver.h"
 
 
-class SolverMC {
+class SolverMC : public Solver{
 public:
     // constructors and destructors
-    SolverMC(
-             // data
-             std::vector< std::vector<double> > distance_matrix,
-             std::vector<Range> ranges,
-
-             // MC settings
+    SolverMC(// MC specific settings
              int sample_size,
 
-             // misc parameters
-             std::string problem_name,
+             // generic information
              bool silent);
 
     ~SolverMC();
 
     // solver call
-    std::vector<Solution> solve(unsigned long seeds[6]);
+    std::vector<Solution> solve(std::vector< std::vector<double> > distance_matrix,
+                                std::vector<Range> ranges,
+                                unsigned long seeds[6]) const;
 
 private:
-    std::vector< std::vector<double> > _distance_matrix;
-    std::vector<Range> _ranges;
-
-    int _sample_size;
-
-    std::string _problem_name;
-    bool _silent;
+    int sample_size_;
 };
 
 
