@@ -39,3 +39,6 @@ bin/
 *.gz
 *.zip
 *.snm
+
+#kate swap file
+*.swp
