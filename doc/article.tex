@@ -159,7 +159,7 @@
 % Please capitalize all terms in the title except conjunctions, prepositions, and articles.
 \begin{flushleft}
 {\Large
-\textbf\newline{Multiple RNA structure consensus assignments}
+\textbf\newline{MC-Cons: RNA secondary structure assignments}
 }
 \newline
 % Insert author names, affiliations and corresponding author email (do not include titles, positions, or degrees).
@@ -207,16 +207,8 @@ Institute for Research in Immunology and Cancer, and Department of Computer Scie
 % Please keep the abstract below 300 words
 
 
-% example of author summary vs abstract forom Week's latest paper
-%Abstract
-%
-%Discovery and characterization of functional RNA structures remains challenging due to deficiencies in de novo secondary structure modeling. Here we describe a dynamic programming approach for model-free sequence comparison that incorporates high-throughput chemical probing data. Based on SHAPE probing data alone, ribosomal RNAs (rRNAs) from three diverse organisms – the eubacteria E. coli and C. difficile and the archeon H. volcanii – could be aligned with accuracies comparable to alignments based on actual sequence identity. When both base sequence identity and chemical probing reactivities were considered together, accuracies improved further. Derived sequence alignments and chemical probing data from protein-free RNAs were then used as pseudo-free energy constraints to model consensus secondary structures for the 16S and 23S rRNAs. There are critical differences between these experimentally-informed models and currently accepted models, including in the functionally important neck and decoding regions of the 16S rRNA. We infer that the 16S rRNA has evolved to undergo large-scale changes in base pairing as part of ribosome function. As high-quality RNA probing data become widely available, structurally-informed sequence alignment will become broadly useful for de novo motif and function discovery.
-%
-%Author Summary
-%
-%Despite the clear functional importance of structure in RNA molecules, it remains very difficult to correctly identify and annotate similar RNA structures because their sequences are often poorly conserved even for RNAs that form very similar higher-order structures. A solution is to use a metric that identifies structural motifs but this, too, is difficult because RNA structure modeling based on sequence alone is generally not very accurate. In this work, we use SHAPE chemical probing to obtain model-free information about RNA structure and then exploit this information to align RNAs by sequence. We show for ribosomal RNAs that sequence alignments based on SHAPE experimental information alone are as accurate as those that actually use sequence information. In addition, we identify regions in the 16S ribosomal RNA that form conserved secondary structures that are different from currently accepted models. These differences, rather than being errors, reveal sites of conformational flexibility that may underlie mechanistic functions in ribosome assembly and translation regulation. We anticipate that structure-informed sequence alignment and structure modeling will become broadly useful tools in RNA function analysis.
-
 \section*{Abstract}
+%Discovery and characterization of functional RNA structures remains challenging due to deficiencies in de novo secondary structure modeling. Here we describe a dynamic programming approach for model-free sequence comparison that incorporates high-throughput chemical probing data. Based on SHAPE probing data alone, ribosomal RNAs (rRNAs) from three diverse organisms – the eubacteria E. coli and C. difficile and the archeon H. volcanii – could be aligned with accuracies comparable to alignments based on actual sequence identity. When both base sequence identity and chemical probing reactivities were considered together, accuracies improved further. Derived sequence alignments and chemical probing data from protein-free RNAs were then used as pseudo-free energy constraints to model consensus secondary structures for the 16S and 23S rRNAs. There are critical differences between these experimentally-informed models and currently accepted models, including in the functionally important neck and decoding regions of the 16S rRNA. We infer that the 16S rRNA has evolved to undergo large-scale changes in base pairing as part of ribosome function. As high-quality RNA probing data become widely available, structurally-informed sequence alignment will become broadly useful for de novo motif and function discovery.
 RNA secondary structural assignment is an interesting problem. Bla bla bla.
 
 
@@ -225,7 +217,7 @@ RNA secondary structural assignment is an interesting problem. Bla bla bla.
 % Author Summary not valid for PLOS ONE submissions.
 
 \section*{Author Summary}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget porta erat. Morbi consectetur est vel gravida pretium. Suspendisse ut dui eu ante cursus gravida non sed sem. Nullam sapien tellus, commodo id velit id, eleifend volutpat quam. Phasellus mauris velit, dapibus finibus elementum vel, pulvinar non tellus. Nunc pellentesque pretium diam, quis maximus dolor faucibus id. Nunc convallis sodales ante, ut ullamcorper est egestas vitae. Nam sit amet enim ultrices, ultrices elit pulvinar, volutpat risus.
+%Despite the clear functional importance of structure in RNA molecules, it remains very difficult to correctly identify and annotate similar RNA structures because their sequences are often poorly conserved even for RNAs that form very similar higher-order structures. A solution is to use a metric that identifies structural motifs but this, too, is difficult because RNA structure modeling based on sequence alone is generally not very accurate. In this work, we use SHAPE chemical probing to obtain model-free information about RNA structure and then exploit this information to align RNAs by sequence. We show for ribosomal RNAs that sequence alignments based on SHAPE experimental information alone are as accurate as those that actually use sequence information. In addition, we identify regions in the 16S ribosomal RNA that form conserved secondary structures that are different from currently accepted models. These differences, rather than being errors, reveal sites of conformational flexibility that may underlie mechanistic functions in ribosome assembly and translation regulation. We anticipate that structure-informed sequence alignment and structure modeling will become broadly useful tools in RNA function analysis.
 
 \linenumbers
 
@@ -243,15 +235,18 @@ D_{sm} = \frac{D_f+ \frac{[S]}{K_D} D_S}{1+\frac{[S]}{K_D}},
 % authors may use "Analysis"
 \newpage
 \section*{Materials and Methods}
-\subsection*{Theoretical foundation}
+\subsection*{Theoretical foundation: location theory}
+The idea of minimizing the sum of pairwise distance between objects is not new.
+This has been investigated in location theory, with the goal of assigning position
+to factories for example. 
 
 \subsection*{Metaheuristics}
 
 
-\subsection*{MCCONS}
+\subsection*{MC-Cons}
 
 
-\paragraph{Metrics}
+\paragraph{Distance functions}
 
 \subparagraph{Tree Indel distance on base pair tree}
 

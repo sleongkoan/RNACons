@@ -31,7 +31,9 @@ bin/
 # damn texmaker files
 *.aux
 *.loa
+*.loc
 *.lof
+*.log
 *.toc
 *.lot
 *.out
@@ -40,5 +42,9 @@ bin/
 *.zip
 *.snm
 
-#kate swap file
-*.swp
+# kate swap file
+*.kate-swp
+
+
+# article pdf (for now)
+doc/article.pdf

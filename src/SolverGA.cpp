@@ -4,24 +4,19 @@
 using std::vector;
 
 
-
-
 // constructors and destructors
-SolverGA::SolverGA( // data
-                    // misc parameters
-                    bool silent,
+SolverGA::SolverGA(// misc parameters
+                   bool silent,
 
-                    // GA settings
-                    int population_size,
-                    int num_generations,
-                    int improvement_depth,
-                    int elite_size,
+                   // GA settings
+                   int population_size,
+                   int num_generations,
+                   int improvement_depth,
+                   int elite_size,
 
-                    double crossover_prob,
-                    double mutation_prob,
-                    double improvement_prob
-
-                    ) : Solver(silent)
+                   double crossover_prob,
+                   double mutation_prob,
+                   double improvement_prob) : Solver(silent)
 {
 
     population_size_ = population_size;

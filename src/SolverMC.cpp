@@ -83,5 +83,6 @@ std::vector<Solution> SolverMC::solve(std::vector< std::vector<double> > distanc
         bar.clean();
     }
 
+    delete prng;
     return best_solutions;
 }
