@@ -2,6 +2,7 @@
 #define SOLVEREXACT_H_
 
 #include "Solver.h"  // abstract class and useful functions
+#include "SolutionNode.h"
 
 #include <assert.h>
 

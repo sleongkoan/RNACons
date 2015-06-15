@@ -14,6 +14,7 @@ struct Range
     int high;
 }; // to keep the range
 
+
 template <class T>
 class ConsensusProblem
 {
