@@ -101,5 +101,6 @@ bin/mccons_exact -f data/example.marna
 
 
 ## To Do
+- [ ] output clustering (make it pretty)
 - [ ] tRNA y-shaped consensus
 - [ ] RNAse P alignment http://www.mbio.ncsu.edu/rnasep/seqs&structures.html
