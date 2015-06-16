@@ -41,6 +41,7 @@ make all
 Input files must be of the following fasta-like format.
 That is it should look like this (here suboptimal\_i\_j
 refers to the jth suboptimal structure of the ith molecule).
+
 All suboptimal structures must be represented in Vienna dot bracket notation.
 
     >name_0
@@ -65,6 +66,9 @@ Consensus are outputted in the following fasta-like format to standard
 output (suboptimal\_n\_l would be the chosen suboptimal at index l of
 the nth molecule).
 
+The tree score and string edit score are the average
+distance between all selected structures.
+
     > solution_index tree_score string_edit_score
     suboptimal_0_i
     suboptimal_1_j
@@ -77,21 +81,25 @@ the nth molecule).
 ## Example
 
 ```bash
+
+# first, compile the C++ code
+# (you better have g++ and make installed, or mess with the makefile)
 make all
 
-# let's try all the versions of the algorithm
+# let's try all the 3 versions of the algorithm
 
-# Genetic algorithm, with a population of 200 individuals and 100 generations
+# genetic algorithm, with a population of 200 individuals and 100 generations
 bin/mccons_ga -f data/example.marna -p 200 -n 100 --silent
 
-# Monte Carlo + steepest descent, with sample size of 10000
-bin/mccons_mc -f data/example.marna -n 10000
+# monte Carlo + steepest descent, with sample size of 10000
+bin/mccons_mc -f data/example.marna -n 10000 --silent
 
-# Exact version (by branch and bound)
+# exact version (by branch and bound)
 bin/mccons_exact -f data/example.marna
 
 ```
 
 
 ## To Do
+- [ ] tRNA y-shaped consensus
 - [ ] RNAse P alignment http://www.mbio.ncsu.edu/rnasep/seqs&structures.html

@@ -16,24 +16,16 @@ int main(int argc, char *argv[])
     // create the command line parser
     OptionParser parser = OptionParser().description("MC-Cons Consensus Optimizer Using an Exact Branch and Bound Solver");
     parser.add_option("-f", "--data").dest("data_file").help("path to MARNA-like input file");
-    parser.add_option("-s", "--silent").action("store_true").dest("silent").help("don't display status to stderr");
     optparse::Values options = parser.parse_args(argc, argv);
-    std::vector<std::string> args = parser.args();
 
 
     if (options.is_set("data_file"))
     {
       // extract command line parameters
-      bool silent = false;
-      if (options["silent"] == "1")
-      {
-          silent = true;
-      }
-
       std::string path = options["data_file"];
 
       // instantiate the genetic algorithm solver
-      Solver* solver = new SolverExact(silent);
+      Solver* solver = new SolverExact(false);
 
       // execute and cleanup
       MCCONS(path, solver, SEEDS);

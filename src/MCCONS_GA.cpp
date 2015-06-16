@@ -18,7 +18,6 @@ int main(int argc, char *argv[])
     parser.add_option("-n", "--numgen").dest("numGenerations").type("size_t").help("genetic algorithm number of generations");
     parser.add_option("-s", "--silent").action("store_true").dest("silent").help("don't display status to stderr");
     optparse::Values options = parser.parse_args(argc, argv);
-    std::vector<std::string> args = parser.args();
 
 
     // GLOBAL SETTINGS (MODIFY AT YOUR OWN RISKS (WHICH ARE MINIMAL))
