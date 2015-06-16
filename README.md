@@ -74,6 +74,24 @@ the nth molecule).
     > solution_index tree_score string_edit_score
     ...
 
+## Example
+
+```bash
+make all
+
+# let's try all the versions of the algorithm
+
+# Genetic algorithm, with a population of 200 individuals and 100 generations
+bin/mccons_ga -f data/example.marna -p 200 -n 100 --silent
+
+# Monte Carlo + steepest descent, with sample size of 10000
+bin/mccons_mc -f data/example.marna -n 10000
+
+# Exact version (by branch and bound)
+bin/mccons_exact -f data/example.marna
+
+```
+
 
 ## To Do
 - [ ] RNAse P alignment http://www.mbio.ncsu.edu/rnasep/seqs&structures.html
