@@ -13,7 +13,12 @@ Tree::Tree(std::string brackets)
 {
     // all trees can be represented by a bracket (Vienna dot bracket minus the dots)
     // convert the bracket its corresponding tree structure
-    assert(is_valid_dot_bracket(brackets));
+    if (! is_valid_dot_bracket(brackets))
+    {
+        std::cerr << "Badly formed dot bracket fed to tree constructor"
+        << std::endl << brackets << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
     Node* root = dot_bracket_to_node(brackets);
 
     // string representation
@@ -183,7 +188,7 @@ void calculate_tree_distance(Tree A, Tree B, int i, int j, vector< vector<int> >
             }
         }
     }
-
+    return;
 }
 
 

@@ -1,25 +1,14 @@
 
 
-#include <algorithm>
-#include <limits>
-
-#include "../include/SolutionNode.h"
+#include "../include/SolverExact.h"
 
 
 // constructors and destructors
-SolverExact::SolverExact(bool silent) : Solver(silent)
-{
-    threshold_ = std::numeric_limits<double>::infinity();
-}
+SolverExact::SolverExact(bool silent) : Solver(silent) { }
 
 
 SolverExact::~SolverExact() { }
 
-
-SolverExact::set_threshold(double new_threshold)
-{
-    threshold_ = new_threshold;
-}
 
 
 double find_smallest_distance_range(int self_index,
@@ -27,7 +16,9 @@ double find_smallest_distance_range(int self_index,
                                     std::vector< std::vector<double> > distance_matrix)
 {
     // find closest elements in other range and the distance
-    best_distance = std::numeric_limits<double>::infinity();
+    double best_distance = std::numeric_limits<double>::infinity();
+    double distance;
+
     for (int i = range.low; i != range.high; ++i)
     {
         distance = distance_matrix[self_index][i];
@@ -46,8 +37,7 @@ std::vector< std::vector<double> > elem_range_distance_matrix(std::vector<RangeI
     // using the distance matrix, find closest neighbors for
     // each object, in each other groups (range)
 
-    // matrix is (distance_matrix.size() x ranges.size())
-    // initialize it
+    // matrix is (distance_matrix.size() x ranges.size()), initialize it
     std::vector< std::vector<double> > elem_range_dm = std::vector< std::vector<double> >();
     for(size_t i = 0; i != distance_matrix.size(); ++i)
     {
@@ -60,7 +50,7 @@ std::vector< std::vector<double> > elem_range_distance_matrix(std::vector<RangeI
         for (size_t range_index = 0; range_index != ranges.size(); ++ range_index)
         {
             elem_range_dm[elem_index][range_index] = find_smallest_distance_range(elem_index,
-                                                                                  ranges_[range_index],
+                                                                                  ranges[range_index],
                                                                                   distance_matrix);
         }
     }
@@ -68,10 +58,16 @@ std::vector< std::vector<double> > elem_range_distance_matrix(std::vector<RangeI
 }
 
 
+bool is_leaf(SolutionNode sol)
+{
+    return (sol.get_ranges().size() == 0);
+}
+
+
 void expand_solution(SolutionNode solution,
                      std::vector< std::vector<double> > elem_range_dm,
                      std::vector< std::vector<double> > distance_matrix,
-                     std::vector< SolutionNode > & search_space,
+                     std::priority_queue< SolutionNode > & search_space,
                      double cutoff)
 {
     // used to create all children of a node
@@ -105,7 +101,7 @@ void expand_solution(SolutionNode solution,
 
         if (new_solution.get_score() <= cutoff)
         {
-            std::push_heap(search_space, new_solution);
+            search_space.push(new_solution);
         }
     }
     return;
@@ -119,42 +115,57 @@ std::vector<Solution> SolverExact::solve(std::vector< std::vector<double> > dist
                                          std::vector<Range> ranges,
                                          unsigned long seeds[6]) const
 {
-
     // could explore solutions by order of lowest
     // possible cost (most promising) or otherwise
     // only difference is the size the search space will get to
-    std::vector<SolutionNode> search_space = std::vector<SolutionNode>();
+    std::priority_queue<SolutionNode> search_space = std::priority_queue<SolutionNode>();
     std::vector<SolutionNode> satisfying_solutions = std::vector<SolutionNode>();
+    double best_score = std::numeric_limits<double>::max();
 
-    // some basic stuff
-    std::vector< std::vector<double> > e_r_dm = elem_range_distance_matrix(ranges, distance_matrix)
+    // sort the ranges by their size
+    std::vector<RangeIndex> sorted_ranges = std::vector<RangeIndex>();
+    for (int i = 0; i != ranges.size(); ++i)
+    {
+        RangeIndex converted = {i, ranges[i].low, ranges[i].high};
+        sorted_ranges.push_back(converted);
+    }
+    std::sort(sorted_ranges.begin(), sorted_ranges.end(), compare_range);
 
 
-    // sort the ranges by their sizes
-    std::sort(ranges, compare_range);
+    // 
+    search_space.push(SolutionNode(std::vector<int>(), sorted_ranges));
+    std::vector< std::vector<double> > e_r_dm = elem_range_distance_matrix(sorted_ranges, distance_matrix);
 
-    // initialize a stack to keep track of search space
-    expand(SolutionNode(std::vector<int>(), ranges),
-           e_r_dm,
-           distance_matrix,
-           search_space,
-           threshold_);
 
-    SolutionNode current_sol;
+    int iteration = 0;
     while (search_space.size() > 0)
     {
+
         // fetch current solution
-        current_sol = std::pop_heap(search_space);
+        SolutionNode current_sol = search_space.top();
+        search_space.pop();
 
         // if optimal, add to the best
-        if (is_leaf(current_sol))
+        if ((is_leaf(current_sol)) && (current_sol.get_score() <= best_score))
         {
+            best_score = current_sol.get_score();
             satisfying_solutions.push_back(current_sol);
         } else {
-            expand(current_sol, e_r_dm, distance_matrix, search_space, threshold_);
+            expand_solution(current_sol, e_r_dm, distance_matrix, search_space, best_score);
         }
+
+        iteration += 1;
     }
 
-    std::sort(satisfying_solutions);
-    return satisfying_solutions;
+    // filter out the solutions
+    std::vector<Solution> final_solutions = std::vector<Solution>();
+    for (size_t i = 0; i != satisfying_solutions.size(); ++i)
+    {
+        // add only those with optimal score
+        if (satisfying_solutions[i].get_score() == best_score)
+        {
+            final_solutions.push_back(satisfying_solutions[i].return_solution());
+        }
+    }
+    return final_solutions;
 }

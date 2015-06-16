@@ -13,6 +13,15 @@ SolutionNode::SolutionNode(std::vector<int> genes,
     return;
 }
 
+SolutionNode::SolutionNode(const SolutionNode& other)
+{
+    // copy constructor
+    genes_ = other.get_genes();
+    ranges_ = other.get_ranges();
+    score_ = other.get_score();
+}
+
+
 SolutionNode::~SolutionNode(){}
 
 
@@ -35,7 +44,7 @@ void SolutionNode::add_gene(int new_gene)
     return;
 }
 
-const std::vector<RangeIndex> & SolutionNode::get_ranges()
+std::vector<RangeIndex> SolutionNode::get_ranges() const
 {
     return ranges_;
 }
@@ -53,31 +62,38 @@ void SolutionNode::set_score(std::vector< std::vector<double> > elem_range_dm,
     double part2 = 0.;
 
     // calculate the chosen gene contribution
+    int gene1, gene2, range_index;
     for (size_t i = 0; i != genes_.size(); ++i)
     {
-        for(size_t j =0; j != genes_.size(); ++j)
+        gene1 = genes_[i];
+        for(size_t j = 0; j != genes_.size(); ++j)
         {
-            part1 += distance_matrix[i][j];
+            gene2= genes_[j];
+            part1 += distance_matrix[gene1][gene2];
         }
     }
 
     // part 2: sum of distance from genes to nearest in remaining sets
-    std::vector<int> range_indices = std::vector<int>();
-    for (size_t i = 0; i != ranges_.size(); ++i)
-    {
-        range_indices.push_back(ranges_[i].index);
-    }
-
     for (size_t i = 0; i != genes_.size(); ++i)
     {
-        for (size_t j = 0; j != range_indices.size(); ++j)
+        gene1 = genes_[i];
+        for (size_t j = 0; j != ranges_.size(); ++j)
         {
-            part2 += elem_range_dm[i][j];
+            range_index = ranges_[j].index;
+            part2 += elem_range_dm[gene1][range_index];
         }
     }
 
     score_ = part1 + part2;
     return;
+}
+
+
+Solution SolutionNode::return_solution()
+{
+    // convert to a solution and return it
+    std::sort(genes_.begin(), genes_.end());
+    return Solution(genes_, score_);
 }
 
 
@@ -93,28 +109,24 @@ bool SolutionNode::operator==(const SolutionNode &other)
 }
 
 
-std::ostream& operator<< (std::ostream &out, SolutionNode &sol)
+std::ostream& operator<< (std::ostream &out, const SolutionNode &sol)
 {
     // genes
     out << "genes ";
-    for (size_t i = 0; i != sol.genes_.size()-1; ++i)
+    for (size_t i = 0; i < sol.genes_.size(); ++i)
     {
-        out << sol.genes_[i] << " - ";
+        out << sol.genes_[i] << " ";
     }
-    // output the last one
-    if (sol.genes_.size() > 1)
-    {
-        out << sol.genes_[sol.genes_.size()-1] << std::endl;
-    }
+    out << std::endl;
 
     // score
     out << "score " << sol.score_ << std::endl;
 
     // remaining ranges
     out << "ranges" << std::endl;
-    for(size_t range_index = 0; range_index != sol.ranges_.size(); ++range_index)
+    for(size_t range_index = 0; range_index < sol.ranges_.size(); ++range_index)
     {
-        out << "[ " << sol.ranges_[range_index].low <<
+        out << "[ " << sol.ranges_[range_index].index << " " << sol.ranges_[range_index].low <<
         " .. " << sol.ranges_[range_index].high << " ]" << std::endl;
     }
     return out;
