@@ -40,11 +40,14 @@ bin/
 *.dvi
 *.gz
 *.zip
+*.bbl
 *.snm
+*.blg
 
 # kate swap file
 *.kate-swp
 
 
-# article pdf (for now)
+# article pdf and other generated files (for now)
 doc/article.pdf
+*.eps

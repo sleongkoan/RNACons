@@ -1,0 +1,6 @@
+References
+[1] Dennis Shasha and Kaizhong Zhang. Fast algorithms for the unit cost
+    editing distance between trees. Journal of Algorithms, 11(4):581–621,
+    December 1990.
+
+

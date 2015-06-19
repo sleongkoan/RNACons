@@ -230,31 +230,48 @@ D_{coll} = \frac{D_f+\frac{[S]^2}{K_D S_T} D_S} {1+\frac{[S]^2}{K_D S_T}},
 D_{sm} = \frac{D_f+ \frac{[S]}{K_D} D_S}{1+\frac{[S]}{K_D}},
 \end{equation}
 
+
+
+
+
 % You may title this section "Methods" or "Models". 
 % "Models" is not a valid title for PLoS ONE authors. However, PLoS ONE
 % authors may use "Analysis"
 \newpage
-\section*{Materials and Methods}
-\subsection*{Theoretical foundation: location theory}
-The idea of minimizing the sum of pairwise distance between objects is not new.
-This has been investigated in location theory, with the goal of assigning position
-to factories for example. 
+\section*{Methods}
 
-\subsection*{Metaheuristics}
+\subsection*{Simple Tree Distance for Secondary Structure}
+
+\paragraph{Base Pair Tree Representation}
+% base pair tree representation vs abstract shapes
+% upsides and downsides of the
+% representation compared to abstract shape
+RNA secondary structure can represented by base pair trees, where only base pairs are considered. This representation is very similar to level 3 RNA abstract shape \cite{abstract_shapes}, albeit the stem length information is conserved.
+Although this representation greatly increases the size of the auxiliary space (codomain) compared to level 3 abstract shapes, it doesn't suffer from major changes in representation if small stem-loops are added or removed. It also doesn't map structures of widely varying stem length to the same element in the codomain.
+
+%example of the conversion process 
+\noindent The mapping from a Vienna dot bracket representation can be made simply by removing the dots (unpaired nucleotides) and then creating a tree from it. Since all nodes represent base pairs, the resulting tree can be considered unlabelled. Note that an artificial root is added to all trees. 
+
+\paragraph{Unit Tree Indel Distance}
+% relation to the tree edit distance (special scoring scheme)
+The unit tree indel distance is a simple and intuitive distance function based on the well known tree edit distance \cite{tai, zhang_shasha}, where insertions and deletions have a unit cost. Since it is applied to base pair trees which are unlabelled, node relabelling comes at no cost.
+
+% interpretation of a score
+\noindent Using this scoring scheme, a distance of $n$ means that the smallest number of base pair breakage or formation to transition from a base pair tree to another is $n$. The distance function retains the metric properties.
+
+
+
+\subsection*{Optimization goal}
+
+The idea of minimizing the sum of pairwise distance between sets of objects if far from new and a significant body of work has been done in the field of location theory \cite{compact_location}.
+
 
 
 \subsection*{MC-Cons}
 
+MC-Cons is a two-step optimization process relying on the minimization of the sum of pairwise distance of two distance functions. First, the 
 
-\paragraph{Distance functions}
-
-\subparagraph{Tree Indel distance on base pair tree}
-
-RNA secondary structure is represented as a tree, where nodes are base pairs and unpaired positions are ignored.
-
-\subparagraph{String Edit Distance}
-%\subsection*{}
-
+\subsection*{Metaheuristics}
 
 \newpage
 
@@ -350,15 +367,7 @@ Cras egestas velit mauris, eu mollis turpis pellentesque sit amet. Interdum et m
 
 \nolinenumbers
 
-%\section*{References}
-% Either type in your references using
-% \begin{thebibliography}{}
-% \bibitem{}
-% Text
-% \end{thebibliography}
-%
-% OR
-%
+\section*{References}
 % Compile your BiBTeX database using our plos2015.bst
 % style file and paste the contents of your .bbl file
 % here.
@@ -372,6 +381,25 @@ Cras egestas velit mauris, eu mollis turpis pellentesque sit amet. Interdum et m
 %
 %\end{thebibliography}
 
+\begin{thebibliography}{10}
+\bibitem{abstract_shapes}
+Giegerich, Robert and Vo{\ss}, Bj\"{o}rn and Rehmsmeier, Marc. Abstract shapes
+    of RNA. Nucleic Acids Research, 32(16):4843–4851, January 2004.
+
+\bibitem{tai}
+Kuo-Chung Tai. 1979. The Tree-to-Tree Correction Problem. J. ACM 26, 3 (1979), 422-433.
+
+
+
+\bibitem{zhang_shasha}
+Dennis Shasha and Kaizhong Zhang. Fast algorithms for the unit cost
+    editing distance between trees. Journal of Algorithms, 11(4):581–621,
+    December 1990.
+
+
+\bibitem{compact_location}
+ S. O. Krumke, M. V. Marathe, H. Noltemeier, et al. Compact location problems Theoretical Computer Science, Vol. 181, No. 2. (1997), pp. 379-404
+\end{thebibliography}
 
 
 \end{document}
