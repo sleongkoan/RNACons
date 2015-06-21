@@ -30,25 +30,36 @@ int main(int argc, char *argv[])
     double CROSSOVER_PROBABILITY = 0.5;
     double MUTATION_PROBABILITY = 0.05;
     double IMPROVEMENT_PROBABILITY = 0.05;
+    size_t POPULATION_SIZE = 250;
+    size_t NUM_GENERATIONS = 250;
+    bool silent = false;
 
 
-    if (options.is_set("dataFile") && options.is_set("popSize") && options.is_set("numGenerations"))
+    if (options.is_set("dataFile"))
     {
       // extract command line parameters
-      bool silent = false;
       if (options["silent"] == "1")
       {
           silent = true;
       }
 
+      if (options.is_set("popSize"))
+      {
+          POPULATION_SIZE = atoi(options["popSize"].c_str());
+      }
+
+      if (options.is_set("numGenerations"))
+      {
+          NUM_GENERATIONS = atoi(options["numGenerations"].c_str());
+      }
+
+
       std::string path = options["dataFile"];
-      size_t population_size = atoi(options["popSize"].c_str());
-      size_t num_generations = atoi(options["numGenerations"].c_str());
 
       // instantiate the genetic algorithm solver
       Solver* solver = new SolverGA(silent,
-                                    population_size,
-                                    num_generations,
+                                    POPULATION_SIZE,
+                                    NUM_GENERATIONS,
                                     IMPROVEMENT_DEPTH,
                                     ELITE_SIZE,
 

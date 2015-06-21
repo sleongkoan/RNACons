@@ -16,9 +16,10 @@ int main(int argc, char *argv[])
 
     // GLOBAL SETTINGS (MODIFY AT YOUR OWN RISKS (WHICH ARE MINIMAL))
     unsigned long SEEDS[6] = {42, 42, 42, 42, 42, 42};
+    size_t NUM_TRIALS = 500;
 
     // extract parameters and lauch the genetic algorithm (either silent or not)
-    if (options.is_set("data_file") && options.is_set("num_trials"))
+    if (options.is_set("data_file"))
     {
       // extract command line parameters
       bool silent = false;
@@ -27,10 +28,13 @@ int main(int argc, char *argv[])
           silent = true;
       }
       std::string path = options["data_file"];
-      size_t num_trials = atoi(options["num_trials"].c_str());
+      if (options.is_set("num_trials"))
+      {
+          NUM_TRIALS = atoi(options["num_trials"].c_str());
+      }
 
       // instantiate the genetic algorithm solver
-      Solver* solver = new SolverMC(num_trials, silent);
+      Solver* solver = new SolverMC(NUM_TRIALS, silent);
 
       // execute and cleanup
       MCCONS(path, solver, SEEDS);
