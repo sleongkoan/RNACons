@@ -207,6 +207,8 @@ Institute for Research in Immunology and Cancer, and Department of Computer Scie
 % Please keep the abstract below 300 words
 
 
+% WHAT KIND OF ARTICLE? : software paper right? although it's more algorithm with implementation given
+
 \section*{Abstract}
 %Discovery and characterization of functional RNA structures remains challenging due to deficiencies in de novo secondary structure modeling. Here we describe a dynamic programming approach for model-free sequence comparison that incorporates high-throughput chemical probing data. Based on SHAPE probing data alone, ribosomal RNAs (rRNAs) from three diverse organisms – the eubacteria E. coli and C. difficile and the archeon H. volcanii – could be aligned with accuracies comparable to alignments based on actual sequence identity. When both base sequence identity and chemical probing reactivities were considered together, accuracies improved further. Derived sequence alignments and chemical probing data from protein-free RNAs were then used as pseudo-free energy constraints to model consensus secondary structures for the 16S and 23S rRNAs. There are critical differences between these experimentally-informed models and currently accepted models, including in the functionally important neck and decoding regions of the 16S rRNA. We infer that the 16S rRNA has evolved to undergo large-scale changes in base pairing as part of ribosome function. As high-quality RNA probing data become widely available, structurally-informed sequence alignment will become broadly useful for de novo motif and function discovery.
 RNA secondary structural assignment is an interesting problem. Bla bla bla.
@@ -240,38 +242,88 @@ D_{sm} = \frac{D_f+ \frac{[S]}{K_D} D_S}{1+\frac{[S]}{K_D}},
 \newpage
 \section*{Methods}
 
-\subsection*{Simple Tree Distance for Secondary Structure}
-
-\paragraph{Base Pair Tree Representation}
+\subsection*{Base Pair Tree Representation of Secondary Structure}
 % base pair tree representation vs abstract shapes
 % upsides and downsides of the
 % representation compared to abstract shape
-RNA secondary structure can represented by base pair trees, where only base pairs are considered. This representation is very similar to level 3 RNA abstract shape \cite{abstract_shapes}, albeit the stem length information is conserved.
-Although this representation greatly increases the size of the auxiliary space (codomain) compared to level 3 abstract shapes, it doesn't suffer from major changes in representation if small stem-loops are added or removed. It also doesn't map structures of widely varying stem length to the same element in the codomain.
+RNA secondary structure can represented by base pair trees, where only base pairs are considered. This representation is very similar to level 5 RNA abstract shape \cite{abstract_shapes}, albeit the stem length information is conserved.
+Although this representation greatly increases the size of the auxiliary space (codomain) compared to level 5 abstract shapes, it does not suffer from major changes in representation if small stem-loops are added or removed. It also does not map structures of widely varying stem length to the same element in the codomain.
 
 %example of the conversion process 
-\noindent The mapping from a Vienna dot bracket representation can be made simply by removing the dots (unpaired nucleotides) and then creating a tree from it. Since all nodes represent base pairs, the resulting tree can be considered unlabelled. Note that an artificial root is added to all trees. 
+\noindent The mapping from a Vienna dot bracket representation can be made simply by removing the dots (unpaired nucleotides) and then creating a tree from it. Since all nodes represent base pairs, the resulting tree can be considered unlabelled. Note that an artificial root is added to all structures. 
 
-\paragraph{Unit Tree Indel Distance}
+\subsection*{Unit Tree Indel Distance}
+
 % relation to the tree edit distance (special scoring scheme)
-The unit tree indel distance is a simple and intuitive distance function based on the well known tree edit distance \cite{tai, zhang_shasha}, where insertions and deletions have a unit cost. Since it is applied to base pair trees which are unlabelled, node relabelling comes at no cost.
+The unit tree indel distance is a simple and intuitive distance function based on the well known tree edit distance \cite{tai, zhang_shasha}, where insertions and deletions have a unit cost.
+Since it is applied to base pair trees which are unlabelled, node relabelling comes at no cost.
 
 % interpretation of a score
-\noindent Using this scoring scheme, a distance of $n$ means that the smallest number of base pair breakage or formation to transition from a base pair tree to another is $n$. The distance function retains the metric properties.
+\noindent Under this scoring scheme, a distance of $n$ means that the smallest number of base pair breakage or formation to transition from a base pair tree to another is $n$. The distance function retains the metric properties.
+
+\noindent Overall, the unit tree indel distance is an interesting distance function with both intuitive interpretation and very useful mathematical properties.
 
 
 
-\subsection*{Optimization goal}
+\subsection*{Minimizing Sum of Pairwise Distances}
 
-The idea of minimizing the sum of pairwise distance between sets of objects if far from new and a significant body of work has been done in the field of location theory \cite{compact_location}.
+% introduce the problem
+
+% sp-alignment
+
+% introduce compact location problem
+
+% basic properties
+%\noindent Naively, given $n$ molecules each with $m$ secondary structures, the going through the full search space would involve the evaluation of $m^n$ solutions. This is obviously not a good ideaHowever, the idea of 
+
+Minimizing the sum of pairwise distance between sets of objects is far from new and a significant body of work has been done in the field of location theory \cite{compact_location}. \newline
+
+
+% mapping of the consensuss problem to the compact location problem by
+% tweaking the distance function using infinity as intra group distance
+% may need more details to proove it, let's see what Francois thinks
+\noindent The consensus problem described here can be reduced to an instance of the minimum average distance placement (MIN-SUM) by modifying the distance function in use such that elements belonging to the same group have infinite distance, thereby guaranteeing that a consensus will never contain more than one element of each group. This convenient reduction allows us to benefit from previously derived hardness results and justify the use of meta-heuristics.
+
+\noindent Using a metric distance function, one might think that it would be possible to reduce efficiently the search space, but even finding a near-optimal placement within a certain factor of the optimal has been proved to be NP-Hard \cite{compact_location}.
+
+
+
+\subsection*{Heuristic Consensus Solvers}
+% complexity justifies meta-heuristic
+Given the complexity of the consensus problem, the use of heuristics is well justified.
+
+% check which details should be given, keep it as simple as possible
+% article using metaheuristics? stuff from class maybe?
+
+% mention the interface, the solvers are given a precomputed distance matrix!
+\noindent Many simple heuristics were found to perform well within reasonable time. These algorithms all take precomputed distance matrices whose calculation is embarrassingly parallel.
+
+% for the article, we'll ignore the steepest descent solver for now, it is useless
+% version 1: Exact Version (branch & bound)
+\paragraph{Exact Version: Branch \& Bound}
+First, an exact version of the consensus solver based on a branch \& bound design was created to compare the performance of different heuristics on small instances.
+
+\noindent The lower bound of an incomplete solution is estimated by the summation of pairwise distances between the chosen objects and the best distance they have to remaining sets of objects to be chosen. This bound is generally quite good on small instances, but its performance degrades rapidly as the number of molecules grows.
+
+% version 2: Genetic Algorithm
+\paragraph{Heuristic: Genetic Algorithm}
+The genetic algorithm solver uses generic mutation (random substitution) and crossover operators (uniform). To increase convergence rate, an improvement operator using a steepest descent procedure is used.
+
+\noindent The local search is done by finding the substitution which improves the most the current sum of pairs distance. The operator applies a small number of iterations of local search with a certain probability.
 
 
 
 \subsection*{MC-Cons}
+% specify that this is an heuristic
 
-MC-Cons is a two-step optimization process relying on the minimization of the sum of pairwise distance of two distance functions. First, the 
+MC-Cons is a two-step optimization procedure relying on the minimization of the sum of pairwise distance of two distance functions to create a structural assignment. 
 
-\subsection*{Metaheuristics}
+% minimizing the tree distance
+\noindent First, \textit{tree consensus} are calculated based on the base pair tree representation of the secondary structures. The intuition is that the topology of the tree is the single most important aspect of structural comparison. The unit tree indel distance 
+
+% within tree consensus, minimizing a naive distance: string edit distance
+\noindent For each established tree consensus, all secondary structures whose base pair tree representation is in the tree consensus is filtered and a string edit distance consensus is calculated.
+
 
 \newpage
 
@@ -322,9 +374,14 @@ Maecenas convallis mauris sit amet sem ultrices gravida. Etiam eget sapien nibh.
 
 Nulla mi mi, venenatis sed ipsum varius, volutpat euismod diam. Proin rutrum vel massa non gravida. Quisque tempor sem et dignissim rutrum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at justo vitae nulla elementum commodo eu id massa. In vitae diam ac augue semper tincidunt eu ut eros. Fusce fringilla erat porttitor lectus cursus, vel sagittis arcu lobortis. Aliquam in enim semper, aliquam massa id, cursus neque. Praesent faucibus semper libero.
 
-% Please do not create a heading level below \subsection. For 3rd level headings, use \paragraph{}. 
-\subsection*{IRES}
+% Please do not create a heading level below \subsection. For 3rd level headings, use \subsubsection*{}. 
+\subsection*{Basic Example: IRES}
 
+Iron Response Elements (IREs) can be used as a toy example.
+
+Take the 10 first suboptimals
+
+ 
 Although IRES tend to fold in very similar shapes, 
 
 \subsection*{A more advanced level: tRNA alternative folding}
@@ -338,6 +395,9 @@ Nulla mi mi, venenatis sed ipsum varius, Table~\ref{table1} volutpat euismod dia
 CO\textsubscript{2} Maecenas convallis mauris sit amet sem ultrices gravida. Etiam eget sapien nibh. Sed ac ipsum eget enim egestas ullamcorper nec euismod ligula. Curabitur fringilla pulvinar lectus consectetur pellentesque. Quisque augue sem, tincidunt sit amet feugiat eget, ullamcorper sed velit. 
 
 Sed non aliquet felis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris commodo justo ac dui pretium imperdiet. Sed suscipit iaculis mi at feugiat. Ut neque ipsum, luctus id lacus ut, laoreet scelerisque urna. Phasellus venenatis, tortor nec vestibulum mattis, massa tortor interdum felis, nec pellentesque metus tortor nec nisl. Ut ornare mauris tellus, vel dapibus arcu suscipit sed. Nam condimentum sem eget mollis euismod. Nullam dui urna, gravida venenatis dui et, tincidunt sodales ex. Nunc est dui, sodales sed mauris nec, auctor sagittis leo. Aliquam tincidunt, ex in facilisis elementum, libero lectus luctus est, non vulputate nisl augue at dolor. For more information, see \nameref{S1_Text}.
+
+\section*{Software Availability} %taken from dcGOR: Software for Ontologies and Domain Annotation
+As open-source software, MC-Cons is freely available under the GNU LGPL v3.0 license. It is distributed at GitHub, https://github.com/major-lab/MC-Cons along with documentation and working examples. The algorithms are implemented in C++ with no external dependencies and offers a very simple command line interface.
 
 \section*{Supporting Information}
 
