@@ -288,7 +288,7 @@ Minimizing the sum of pairwise distance between sets of objects is far from new 
 
 
 
-\subsection*{Heuristic Consensus Solvers}
+\subsection*{Consensus Solvers}
 % complexity justifies meta-heuristic
 Given the complexity of the consensus problem, the use of heuristics is well justified.
 
@@ -307,34 +307,39 @@ First, an exact version of the consensus solver based on a branch \& bound desig
 
 % version 2: Genetic Algorithm
 \paragraph{Heuristic: Genetic Algorithm}
-The genetic algorithm solver uses generic mutation (random substitution) and crossover operators (uniform). To increase convergence rate, an improvement operator using a steepest descent procedure is used.
+The genetic algorithm solver uses generic mutation (random substitution) and crossover operators (uniform) along with elitist selection. To increase convergence rate, an improvement operator using a steepest descent procedure is used.
 
 \noindent The local search is done by finding the substitution which improves the most the current sum of pairs distance. The operator applies a small number of iterations of local search with a certain probability.
 
 
 
 \subsection*{MC-Cons}
-% specify that this is an heuristic
-
-MC-Cons is a two-step optimization procedure relying on the minimization of the sum of pairwise distance of two distance functions to create a structural assignment. 
-
-% minimizing the tree distance
-\noindent First, \textit{tree consensus} are calculated based on the base pair tree representation of the secondary structures. The intuition is that the topology of the tree is the single most important aspect of structural comparison. The unit tree indel distance 
 
 % within tree consensus, minimizing a naive distance: string edit distance
-\noindent For each established tree consensus, all secondary structures whose base pair tree representation is in the tree consensus is filtered and a string edit distance consensus is calculated.
+MC-Cons is a two-step optimization procedure (Fig.~\ref{fig1}). First, \textit{base pair tree consensus} are calculated. This insures that the final consensus will minimize the difference in base pair topology.
+For each base pair tree consensus, the subset of secondary structures whose base pair tree are  in the consensus are kept. String edit distance consensus (on Vienna dot brackets) are then calculated. Normally this distance function would not be suitable, but since tree distance is already minimized, the final consensus is satisfying.\newline
+
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.4]{figs/mccons_flowchart2.jpg}
+\caption{{\bf Flowchart illustration of MC-Cons procedure.}
+The two-step procedure is quite simple. The user only inputs data and chooses which consensus solver, either the exact one for small instances or the genetic algorithm for larger problems.}
+\label{fig1}
+\end{center}
+\end{figure}
+
+
+
 
 
 \newpage
 
 % For figure citations, please use "Fig." instead of "Figure".
-Nulla mi mi, Fig.~\ref{fig1} venenatis sed ipsum varius, volutpat euismod diam. Proin rutrum vel massa non gravida. Quisque tempor sem et dignissim rutrum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at justo vitae nulla elementum commodo eu id massa. In vitae diam ac augue semper tincidunt eu ut eros. Fusce fringilla erat porttitor lectus cursus, \nameref{S1_Video} vel sagittis arcu lobortis. Aliquam in enim semper, aliquam massa id, cursus neque. Praesent faucibus semper libero.
+%Nulla mi mi, Fig.~\ref{fig1} venenatis sed ipsum varius, volutpat euismod diam. Proin rutrum vel massa non gravida. Quisque tempor sem et dignissim rutrum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at justo vitae nulla elementum commodo eu id massa. In vitae diam ac augue semper tincidunt eu ut eros. Fusce fringilla erat porttitor lectus cursus, \nameref{S1_Video} vel sagittis arcu lobortis. Aliquam in enim semper, aliquam massa id, cursus neque. Praesent faucibus semper libero.
 
-\begin{figure}[h]
-\caption{{\bf Figure Title first bold sentence Nulla mi mi, venenatis sed ipsum varius, volutpat euismod diam.}
-Figure Caption Proin rutrum vel massa non gravida. Quisque tempor sem et dignissim rutrum. A: Lorem ipsum dolor sit amet. B: Consectetur adipiscing elit.}
-\label{fig1}
-\end{figure}
+
 
 \begin{enumerate}
 \item{react}
