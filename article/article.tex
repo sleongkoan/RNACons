@@ -317,13 +317,13 @@ The genetic algorithm solver uses generic mutation (random substitution) and cro
 
 % within tree consensus, minimizing a naive distance: string edit distance
 MC-Cons is a two-step optimization procedure (Fig.~\ref{fig1}). First, \textit{base pair tree consensus} are calculated. This insures that the final consensus will minimize the difference in base pair topology.
-For each base pair tree consensus, the subset of secondary structures whose base pair tree are  in the consensus are kept. String edit distance consensus (on Vienna dot brackets) are then calculated. Normally this distance function would not be suitable, but since tree distance is already minimized, the final consensus is satisfying.\newline
+For each base pair tree consensus and for each group of structures, the subset of secondary structures whose base pair tree fits the one assigned to that group is kept. String edit distance consensus (on Vienna dot brackets) are then calculated. Normally this distance function would not be sufficient, but since tree distance is already minimized, the final consensus is satisfactory.\newline
 
 
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[scale=0.4]{figs/mccons_flowchart2.jpg}
+\includegraphics[scale=0.4]{figs/mccons_flowchart2.eps}
 \caption{{\bf Flowchart illustration of MC-Cons procedure.}
 The two-step procedure is quite simple. The user only inputs data and chooses which consensus solver, either the exact one for small instances or the genetic algorithm for larger problems.}
 \label{fig1}
