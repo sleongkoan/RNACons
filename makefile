@@ -1,7 +1,7 @@
 
 CPP       = g++
 # compiling flags here
-FLAGS   = -O2
+FLAGS   = -O2 -Wunused -Wunreachable-code
 
 LINKER   = g++ -o
 # linking flags here

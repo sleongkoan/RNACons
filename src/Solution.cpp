@@ -1,32 +1,19 @@
 #include "../include/Solution.h"
 
 
-Solution::Solution()
+Solution::Solution(std::vector<int> genes, double score)
 {
-    genes = std::vector<int>();
-    score = std::numeric_limits<double>::infinity();
+    genes_ = genes;
+    score_ = score;
+
 }
 
-
-Solution::Solution(std::vector<int> chosen_genes)
-{
-    genes = chosen_genes;
-    score = std::numeric_limits<double>::infinity();
-}
-
-
-Solution::Solution(std::vector<int> chosen_genes, double calculated_score)
-{
-    this->genes = chosen_genes;
-    this->score = calculated_score;
-
-}
 
 Solution::Solution(const Solution& other)
 {
     // copy constructor
-    genes = other.get_genes();
-    score = other.get_score();
+    genes_ = other.get_genes();
+    score_ = other.get_score();
 }
 
 
@@ -35,40 +22,35 @@ Solution::~Solution() { }
 
 const std::vector<int> & Solution::get_genes() const
 {
-    return this->genes;
+    return genes_;
 }
+
 
 void Solution::set_gene(int position, int new_gene)
 {
-    this->genes[position] = new_gene;
-}
-
-
-void Solution::add_gene(int new_gene)
-{
-    this->genes.push_back(new_gene);
+    genes_[position] = new_gene;
 }
 
 
 double Solution::get_score() const
 {
-    return this->score;
+    return score_;
 }
 
 void Solution::set_score(double new_score)
 {
-    this->score = new_score;
+    score_ = new_score;
 }
 
 bool Solution::operator<(const Solution &other) const
 {
-    return this->score < other.score;
+    return score_ < other.score_;
 }
 
 
 bool Solution::operator==(const Solution &other)
 {
-    return this->genes == other.genes;
+    return genes_ == other.genes_;
 }
 
 
@@ -76,12 +58,11 @@ std::ostream& operator<< (std::ostream &out, Solution &sol)
 {
     // outputs the genes and the score to the stream
     out << "[";
-    for (std::vector<int>::iterator it = sol.genes.begin();
-            it != sol.genes.end(); ++it)
+    for (size_t i = 0; i != sol.genes_.size(); ++i)
     {
-        out << *it << " ";
+        out << sol.genes_[i] << " ";
     }
-    out << " : " << sol.score << "]" << std::endl;
+    out << " : " << sol.score_ << "]" << std::endl;
     return out;
 }
 

@@ -1,17 +1,16 @@
 #ifndef SOLUTION_H
 #define SOLUTION_H
 
-#include <iostream>
+#include <iostream>  // <<
 #include <vector>
-#include <limits>
+#include <limits>    // infinity for default score
 
 class Solution
 {
 public:
     // constructors and destructors
-    Solution();
-    Solution(std::vector<int> chosen_genes);
-    Solution(std::vector<int> chosen_genes, double score);
+    Solution(std::vector<int> genes=std::vector<int>(),
+             double score=std::numeric_limits<double>::infinity());
     Solution(const Solution& other); // copy constructor
 
     ~Solution();
@@ -19,7 +18,6 @@ public:
     // getters and setters
     const std::vector<int> & get_genes() const;
     void set_gene(int position, int new_gene);
-    void add_gene(int new_gene);
 
     double get_score() const;
     void set_score(double new_score);
@@ -32,8 +30,8 @@ public:
     friend std::ostream& operator<< (std::ostream &out, Solution &sol);
 
 private:
-    std::vector<int> genes;
-    double score;
+    std::vector<int> genes_;
+    double score_;
 };
 
 
