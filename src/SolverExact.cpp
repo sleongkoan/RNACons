@@ -6,9 +6,7 @@
 // constructors and destructors
 SolverExact::SolverExact(bool silent) : Solver(silent) { }
 
-
 SolverExact::~SolverExact() { }
-
 
 
 double find_smallest_distance_range(int self_index,
@@ -58,16 +56,17 @@ std::vector< std::vector<double> > elem_range_distance_matrix(std::vector<RangeI
 }
 
 
-bool is_leaf(SolutionNode sol)
+bool is_leaf(SubSolution sol)
 {
+    // checks wether or not a solution is complete
     return (sol.get_ranges().size() == 0);
 }
 
 
-void expand_solution(SolutionNode solution,
+void expand_solution(SubSolution solution,
                      std::vector< std::vector<double> > elem_range_dm,
                      std::vector< std::vector<double> > distance_matrix,
-                     std::priority_queue< SolutionNode > & search_space,
+                     std::priority_queue< SubSolution > & search_space,
                      double cutoff)
 {
     // used to create all children of a node
@@ -96,7 +95,7 @@ void expand_solution(SolutionNode solution,
         new_genes.push_back(new_gene);
 
         // create the new solution, score it and add it if its worth it
-        SolutionNode new_solution = SolutionNode(new_genes, new_ranges);
+        SubSolution new_solution = SubSolution(new_genes, new_ranges);
         new_solution.set_score(elem_range_dm, distance_matrix);
 
         if (new_solution.get_score() <= cutoff)
@@ -115,14 +114,12 @@ std::vector<Solution> SolverExact::solve(std::vector< std::vector<double> > dist
                                          std::vector<Range> ranges,
                                          unsigned long seeds[6]) const
 {
-    // could explore solutions by order of lowest
-    // possible cost (most promising) or otherwise
-    // only difference is the size the search space will get to
-    std::priority_queue<SolutionNode> search_space = std::priority_queue<SolutionNode>();
-    std::vector<SolutionNode> satisfying_solutions = std::vector<SolutionNode>();
+    // use a priority queue to represent the current search space
+    std::priority_queue<SubSolution> search_space = std::priority_queue<SubSolution>();
+    std::vector<SubSolution> satisfying_solutions = std::vector<SubSolution>();
     double best_score = std::numeric_limits<double>::max();
 
-    // sort the ranges by their size
+    // sort the ranges by their size (to avoid big branching at the start)
     std::vector<RangeIndex> sorted_ranges = std::vector<RangeIndex>();
     for (int i = 0; i != ranges.size(); ++i)
     {
@@ -132,8 +129,8 @@ std::vector<Solution> SolverExact::solve(std::vector< std::vector<double> > dist
     std::sort(sorted_ranges.begin(), sorted_ranges.end(), compare_range);
 
 
-    // 
-    search_space.push(SolutionNode(std::vector<int>(), sorted_ranges));
+    // initialize the search space with the empty subsolution
+    search_space.push(SubSolution(std::vector<int>(), sorted_ranges));
     std::vector< std::vector<double> > e_r_dm = elem_range_distance_matrix(sorted_ranges, distance_matrix);
 
 
@@ -142,7 +139,7 @@ std::vector<Solution> SolverExact::solve(std::vector< std::vector<double> > dist
     {
 
         // fetch current solution
-        SolutionNode current_sol = search_space.top();
+        SubSolution current_sol = search_space.top();
         search_space.pop();
 
         // if optimal, add to the best

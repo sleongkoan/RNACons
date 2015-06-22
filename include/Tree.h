@@ -9,7 +9,6 @@
 #include <assert.h>
 
 #include "Node.h"
-#include "RNA.h"
 
 
 class Tree
@@ -41,6 +40,20 @@ private:
     std::vector<int> leftmost_descendents;
     std::vector<int> keyroots;
 };
+
+
+// used to assert that dot bracket is balanced
+// and contains no illegal symbols
+bool is_valid_dot_bracket(std::string dot_bracket);
+
+
+// (((..).))) -> ((()))
+std::string only_paired(std::string dot_bracket);
+
+
+// converts dot bracket to Nodes, used by Tree constructor
+// don't forget to free it
+Node* dot_bracket_to_node(std::string  dot_bracket);
 
 int unit_distance(const Tree A, const Tree B);
 

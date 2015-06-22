@@ -31,10 +31,10 @@ private:
 };
 
 
-// node <-> bracket interconversion
+// node -> bracket reduction
 void node_to_bracket(Node* node, std::vector<char>& brackets);
 
-// helpers
+// computes the postorder enumeration of the nodes
 std::vector<Node*> get_postorder_enumeration(Node* root);
 
 

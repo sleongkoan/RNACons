@@ -3,7 +3,7 @@
 
 #include "Solver.h"  // abstract class and useful functions
 #include "Solution.h"
-#include "SolutionNode.h"
+#include "SubSolution.h"
 
 #include <algorithm>
 #include <limits>
@@ -11,11 +11,14 @@
 
 #include <assert.h>
 
+
+// solves the consensus problem using a branch and bound design
+// calculation of the lower bound of a subsolution is described in the
+// Solver.cpp implementation file
 class SolverExact: public Solver{
 public:
     // constructors and destructors
     SolverExact(bool silent);
-
     ~SolverExact();
 
     // solver call

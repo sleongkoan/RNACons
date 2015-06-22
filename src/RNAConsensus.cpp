@@ -1,5 +1,70 @@
 #include "../include/RNAConsensus.h"
 
+/***********************************************************************\
+ *
+ * File:           RngStream.cpp for multiple streams of Random Numbers
+ * Language:       C++ (ISO 1998)
+ * Copyright:      Pierre L'Ecuyer, University of Montreal
+ * Notice:         This code can be used freely for personal, academic,
+ *                 or non-commercial purposes. For commercial purposes, 
+ *                 please contact P. L'Ecuyer at: lecuyer@iro.umontreal.ca
+ * Date:           14 August 2001
+ *
+\***********************************************************************/
+
+int levenshtein(std::string a, std::string b)
+{
+    // string edit distance
+    int aLength = a.size();
+    int bLength = b.size();
+
+    std::vector< std::vector<int> > levDistances = std::vector< std::vector<int> >();
+    for(int i = 0; i < aLength+1; ++i)
+    {
+        levDistances.push_back(std::vector<int>(bLength+1, 0));
+    }
+
+
+    // fill first column
+    for (int i = 0; i < aLength+1; ++i)
+    {
+        levDistances[i][0] = i;
+    }
+
+    // fill second column
+    for (int j = 0; j < bLength+1; ++j)
+    {
+        levDistances[0][j] = j;
+    }
+
+    // fill the table now
+    for (int i = 0; i < aLength; ++i)
+    {
+        for (int j = 0; j < bLength; ++j)
+        {
+            if (a[i] == b[j])
+            {
+                levDistances[i + 1][j + 1] = levDistances[i][j];
+            }
+            else
+            {
+                int minDist = levDistances[i][j + 1];
+                int dist = levDistances[i + 1][j];
+                if (dist < minDist)
+                    minDist = dist;
+                dist = levDistances[i][j];
+                if (dist < minDist)
+                    minDist = dist;
+
+                levDistances[i + 1][j + 1] = minDist + 1;
+            }
+        }
+    }
+    return levDistances[aLength][bLength];
+}
+
+
+
 
 
 int get_subopt_length(std::string line)

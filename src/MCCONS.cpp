@@ -7,17 +7,24 @@ void MCCONS(std::string path,
             unsigned long seeds[6])
 {
 
-    // TREE CONSENSUS
-    // fetch the data and instantiate the tree consensus problem
+    // PHASE 1: TREE CONSENSUS
+
+    // data acquisition
     std::vector<std::vector<std::string> > dot_brackets = read_data(path);
     std::vector<std::vector<Tree> > trees = get_tree_lists(dot_brackets);
     ConsensusProblem<Tree> tree_problem = ConsensusProblem<Tree>(trees, *unit_distance);
+
+    // PHASE 1 SOLVING
+    if (! solver->is_silent())
+    {
+        std::cerr << "Phase 1: Base Pair Tree Consensus (1)" << std::endl;
+    }
 
     std::vector<Solution> tree_consensus = solver->solve(tree_problem.get_distance_matrix(),
                                                          tree_problem.get_ranges(),
                                                          seeds);
 
-    // filter the dot brackets by the tree consensus
+    // PHASE 1.5: FILTERING
     std::vector<std::vector< std::vector<std::string> > > prob2_data = std::vector< std::vector< std::vector<std::string> > >();
 
     // get the brackets
@@ -39,7 +46,12 @@ void MCCONS(std::string path,
     }
 
 
-    // TREE-STRING CONSENSUS
+    // PHASE 2: STRING CONSENSUS
+    if (! solver->is_silent())
+    {
+        // update on the number of optimal trees found
+        std::cerr << std::endl << "Phase 2: String Edit Distance on Vienna Dot Bracket (" << dot_bracket_problems.size() << ")" << std::endl;
+    }
     std::vector< std::vector<Solution> > dot_bracket_consensus = std::vector< std::vector<Solution> >();
     for (size_t i = 0; i != prob2_data.size(); ++i)
     {
@@ -57,6 +69,10 @@ void MCCONS(std::string path,
                 best_dot_bracket_score = dot_bracket_consensus[i][j].get_score();
             }
         }
+    }
+    if (! solver->is_silent())
+    {
+        std::cerr << std::endl;
     }
 
     // printing the results to stdout

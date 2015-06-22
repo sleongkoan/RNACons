@@ -1,6 +1,12 @@
 #include "../include/Solver.h"
 
 
+bool Solver::is_silent()
+{
+    return silent_;
+}
+
+
 std::vector<int> select_random_genes(std::vector<Range> ranges, RngStream *prng)
 {
     // randomly choose a gene from within each set of genes (represented by intervals)

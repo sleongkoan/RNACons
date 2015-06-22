@@ -12,7 +12,7 @@ struct Range
 {
     int low;
     int high;
-}; // to keep the range
+}; // to keep the boundaries of each group of objects
 
 
 template <class T>
@@ -36,6 +36,8 @@ private:
     std::vector< std::vector<double> > distance_matrix;
 };
 
+// used to assert that the distance matrix passed
+// is at least symmetric and has zero on the diagonal
 bool distance_is_symmetric(const std::vector< std::vector<double> > & distance_matrix);
 
 

@@ -17,20 +17,19 @@ struct RangeIndex
 
 
 // special solution type used for exact solver
-class SolutionNode
+class SubSolution
 {
 public:
     // constructor and destructor
-    SolutionNode(std::vector<int> genes,
+    SubSolution(std::vector<int> genes,
                  std::vector<RangeIndex> ranges,
                  double score = std::numeric_limits<double>::max());
-    SolutionNode(const SolutionNode& other);
-    ~SolutionNode();
+    SubSolution(const SubSolution& other);
+    ~SubSolution();
 
     // getters and setters
     const std::vector<int> & get_genes() const;
     void set_gene(int position, int new_gene);
-    void add_gene(int new_gene);
 
     std::vector<RangeIndex> get_ranges() const;
 
@@ -42,11 +41,11 @@ public:
     Solution return_solution();
 
     // some comparison operators
-    bool operator <(const SolutionNode &other) const;
-    bool operator ==(const SolutionNode &other);
+    bool operator <(const SubSolution &other) const;
+    bool operator ==(const SubSolution &other);
 
     // pretty printer
-    friend std::ostream& operator<< (std::ostream &out, const SolutionNode &sol);
+    friend std::ostream& operator<< (std::ostream &out, const SubSolution &sol);
 
 
 private:

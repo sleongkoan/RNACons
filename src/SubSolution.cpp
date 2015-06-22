@@ -1,11 +1,11 @@
 
-#include "../include/SolutionNode.h"
+#include "../include/SubSolution.h"
 
 
 // constructor and destructor
-SolutionNode::SolutionNode(std::vector<int> genes,
-                           std::vector<RangeIndex> ranges,
-                           double score)
+SubSolution::SubSolution(std::vector<int> genes,
+                         std::vector<RangeIndex> ranges,
+                         double score)
 {
     genes_ = genes;
     ranges_ = ranges;
@@ -13,7 +13,7 @@ SolutionNode::SolutionNode(std::vector<int> genes,
     return;
 }
 
-SolutionNode::SolutionNode(const SolutionNode& other)
+SubSolution::SubSolution(const SubSolution& other)
 {
     // copy constructor
     genes_ = other.get_genes();
@@ -22,39 +22,34 @@ SolutionNode::SolutionNode(const SolutionNode& other)
 }
 
 
-SolutionNode::~SolutionNode(){}
+SubSolution::~SubSolution(){}
 
 
 
 // getters and setters
-const std::vector<int> & SolutionNode::get_genes() const
+const std::vector<int> & SubSolution::get_genes() const
 {
     return genes_;
 }
 
-void SolutionNode::set_gene(int position, int new_gene)
+void SubSolution::set_gene(int position, int new_gene)
 {
     genes_[position] = new_gene;
     return;
 }
 
-void SolutionNode::add_gene(int new_gene)
-{
-    genes_.push_back(new_gene);
-    return;
-}
 
-std::vector<RangeIndex> SolutionNode::get_ranges() const
+std::vector<RangeIndex> SubSolution::get_ranges() const
 {
     return ranges_;
 }
 
-double SolutionNode::get_score() const
+double SubSolution::get_score() const
 {
     return score_;
 }
 
-void SolutionNode::set_score(std::vector< std::vector<double> > elem_range_dm,
+void SubSolution::set_score(std::vector< std::vector<double> > elem_range_dm,
                              std::vector< std::vector<double> > distance_matrix)
 {
     // set the score to the best possible score for this solution
@@ -89,27 +84,27 @@ void SolutionNode::set_score(std::vector< std::vector<double> > elem_range_dm,
 }
 
 
-Solution SolutionNode::return_solution()
+Solution SubSolution::return_solution()
 {
-    // convert to a solution and return it
+    // convert a subsolution to a solution and return it
     std::sort(genes_.begin(), genes_.end());
     return Solution(genes_, score_);
 }
 
 
-bool SolutionNode::operator<(const SolutionNode &other) const
+bool SubSolution::operator<(const SubSolution &other) const
 {
     return (score_ < other.score_);
 }
 
 
-bool SolutionNode::operator==(const SolutionNode &other)
+bool SubSolution::operator==(const SubSolution &other)
 {
     return (genes_ == other.genes_);
 }
 
 
-std::ostream& operator<< (std::ostream &out, const SolutionNode &sol)
+std::ostream& operator<< (std::ostream &out, const SubSolution &sol)
 {
     // genes
     out << "genes ";
