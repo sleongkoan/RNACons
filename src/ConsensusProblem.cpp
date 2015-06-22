@@ -9,26 +9,26 @@ ConsensusProblem<T>::ConsensusProblem(std::vector< std::vector<T> > data,
                                       int (*distance_function)(T a, T b))
 {
     // constructor
-    objects = vector<T>();
-    ranges = vector<Range>();
+    objects_ = vector<T>();
+    ranges_ = vector<Range>();
     int cumul = 0;
 
     for (int x = 0; x < data.size(); ++x)
     {
         for (int y = 0; y < data[x].size(); ++y)
         {
-            objects.push_back(data[x][y]);
+            objects_.push_back(data[x][y]);
         }
         Range r = {cumul, (int) (cumul + data[x].size())};
-        ranges.push_back( r );
+        ranges_.push_back( r );
         cumul += data[x].size();
     }
 
     // fill the distance matrix
-    this->distance_matrix = vector< vector<double> >();
-    for(int i = 0; i < objects.size(); ++i)
+    distance_matrix_ = vector< vector<double> >();
+    for(int i = 0; i < objects_.size(); ++i)
     {
-        this->distance_matrix.push_back(vector<double>(objects.size(), std::numeric_limits<double>::infinity()));
+        distance_matrix_.push_back(vector<double>(objects_.size(), std::numeric_limits<double>::infinity()));
     }
 
     // memoize distance calculations
@@ -36,24 +36,24 @@ ConsensusProblem<T>::ConsensusProblem(std::vector< std::vector<T> > data,
     // function must be metric!
     // create dict and prefill it
     map < T, map <T, double> > memoized_distances = map < T, map <T, double> >();
-    for (int i = 0; i < objects.size(); ++i)
+    for (int i = 0; i < objects_.size(); ++i)
     {
-        memoized_distances[objects[i]] = map<T, double>();
+        memoized_distances[objects_[i]] = map<T, double>();
 
     }
 
     // only compare those not of the same group
     // compute distances only once for each pair of objects
     // to do so, objects must be hashable and have equality operators (in this implementation at least)
-    for(int i = 0; i < ranges.size()-1; ++i)
+    for(int i = 0; i < ranges_.size()-1; ++i)
     {
-        int low1 = ranges[i].low;
-        int high1 = ranges[i].high;
+        int low1 = ranges_[i].low;
+        int high1 = ranges_[i].high;
 
-        for(int j = i+1; j < ranges.size(); ++j)
+        for(int j = i+1; j < ranges_.size(); ++j)
         {
-            int low2 = ranges[j].low;
-            int high2 = ranges[j].high;
+            int low2 = ranges_[j].low;
+            int high2 = ranges_[j].high;
 
             // compare every objects in the range
             for (int index_obj1 = low1; index_obj1 < high1; ++index_obj1)
@@ -61,8 +61,8 @@ ConsensusProblem<T>::ConsensusProblem(std::vector< std::vector<T> > data,
                 for(int index_obj2 = low2; index_obj2 < high2; ++index_obj2)
                 {
                     //
-                    T obj1 = objects[index_obj1];
-                    T obj2 = objects[index_obj2];
+                    T obj1 = objects_[index_obj1];
+                    T obj2 = objects_[index_obj2];
 
                     // check if they already have been compared
                     if(memoized_distances[obj1].find(obj2) == memoized_distances[obj1].end())
@@ -73,8 +73,8 @@ ConsensusProblem<T>::ConsensusProblem(std::vector< std::vector<T> > data,
                         memoized_distances[obj2][obj1] = distance;
                     }
                     // assign to the matrix
-                    this->distance_matrix[index_obj1][index_obj2] = memoized_distances[obj1][obj2];
-                    this->distance_matrix[index_obj2][index_obj1] = memoized_distances[obj2][obj1];
+                    distance_matrix_[index_obj1][index_obj2] = memoized_distances[obj1][obj2];
+                    distance_matrix_[index_obj2][index_obj1] = memoized_distances[obj2][obj1];
                 }
             }
         }
@@ -82,13 +82,13 @@ ConsensusProblem<T>::ConsensusProblem(std::vector< std::vector<T> > data,
 
 
     // fill the diagonal with zeros
-    for (int i = 0; i < distance_matrix.size(); ++i)
+    for (int i = 0; i < distance_matrix_.size(); ++i)
     {
-        distance_matrix[i][i] = 0.;
+        distance_matrix_[i][i] = 0.;
     }
 
     // check that the distance used is symmetric
-    assert(distance_is_symmetric(distance_matrix) && "Distance Matrix is not symmetric");
+    assert(distance_is_symmetric(distance_matrix_) && "Distance Matrix is not symmetric");
     return;
 }
 
@@ -123,14 +123,14 @@ template <class T> ConsensusProblem<T>::~ConsensusProblem() { }
 template <class T>
 const std::vector<T> & ConsensusProblem<T>::get_objects()
 {
-    return this->objects;
+    return objects_;
 }
 
 
 template<class T>
 const std::vector< Range > & ConsensusProblem<T>::get_ranges()
 {
-    return this->ranges;
+    return ranges_;
 
 }
 
@@ -138,7 +138,7 @@ const std::vector< Range > & ConsensusProblem<T>::get_ranges()
 template<class T>
 const std::vector< std::vector<double> > & ConsensusProblem<T>::get_distance_matrix()
 {
-    return this->distance_matrix;
+    return distance_matrix_;
 
 }
 

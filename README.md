@@ -22,8 +22,8 @@ The simple string edit distance is used because it does work quite well.
 
 
 There are currently two versions of the consensus optimizer available,
-one using an hybrid Genetic Algorithm and the other one a Monte Carlo
-coupled with steepest descent.
+one using an exact solver with Branch and Bound strategy and an heursitc
+one using a Genetic Algorithm.
 
 
 ## Compilation Instructions
@@ -83,24 +83,23 @@ distance between all selected structures.
 ```bash
 
 # first, compile the C++ code
-# (you better have g++ and make installed, or mess with the makefile)
+# (supposes g++ and make installed)
 make all
 
-# let's try all the 3 versions of the algorithm
+# let's try the two versions of the algorithm
 
-# genetic algorithm, with a population of 200 individuals and 100 generations
-bin/mccons_ga -f data/example.marna -p 200 -n 100 --silent
-
-# monte Carlo + steepest descent, with sample size of 10000
-bin/mccons_mc -f data/example.marna -n 10000 --silent
-
-# exact version (by branch and bound)
+# first, the exact version of MC-Cons (by branch and bound)
 bin/mccons_exact -f data/example.marna
+
+# then compare with the genetic algorithm,
+# additional parameters are available
+# (defaults do fine on most small-medium instances)
+bin/mccons_ga -f data/example.marna
 
 ```
 
 
 ## To Do
-- [ ] output clustering (make it pretty)
-- [ ] tRNA y-shaped consensus
+- [ ] pretty print the consensus
+- [ ] tRNA y-shaped consensus (waiting for the sequences)
 - [ ] RNAse P alignment http://www.mbio.ncsu.edu/rnasep/seqs&structures.html

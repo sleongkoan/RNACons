@@ -1,7 +1,7 @@
 
 CPP       = g++
 # compiling flags here
-FLAGS   = -O2 -Wunused -Wunreachable-code
+FLAGS   = -O2 -Wunused -Wunreachable-code -std=c++98
 
 LINKER   = g++ -o
 # linking flags here
@@ -17,26 +17,22 @@ SOURCES  := $(wildcard $(SRCDIR)/*.c)
 INCLUDES := $(wildcard $(INCLUDEDIR)/*.h)
 
 # the objects
-OBJECTS  := obj/ConsensusProblem.o obj/Node.o obj/ProgressBar.o obj/RNA.o\
-obj/RNAConsensus.o obj/RngStream.o obj/Solution.o obj/SolutionNode.o\
+OBJECTS  := obj/ConsensusProblem.o obj/Node.o obj/ProgressBar.o\
+obj/RNAConsensus.o obj/RngStream.o obj/Solution.o obj/SubSolution.o\
 obj/SolverGA.o obj/SolverMC.o obj/SolverExact.o obj/Tree.o obj/MCCONS.o\
 obj/OptionParser.o obj/Solver.o
 
 # executable specific objects
-MCOBJECTS := obj/MCCONS_MC.o
 GAOBJECTS := obj/MCCONS_GA.o
 EXACTOBJECTS := obj/MCCONS_EXACT.o
 
 rm       = rm -f
 
-all: $(BINDIR)/mccons_mc $(BINDIR)/mccons_ga $(BINDIR)/mccons_exact
+all: $(BINDIR)/mccons_ga $(BINDIR)/mccons_exact
 
 
 # compiling
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
-	@$(CPP) $(FLAGS) -c $< -o $@
-
-$(MCOBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@$(CPP) $(FLAGS) -c $< -o $@
 
 $(GAOBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
@@ -47,9 +43,6 @@ $(EXACTOBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 
 
 # linking
-$(BINDIR)/mccons_mc: $(OBJECTS) $(MCOBJECTS)
-	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(MCOBJECTS)
-
 $(BINDIR)/mccons_ga: $(OBJECTS) $(GAOBJECTS)
 	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(GAOBJECTS)
 

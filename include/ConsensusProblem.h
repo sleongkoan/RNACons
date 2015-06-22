@@ -31,9 +31,9 @@ public:
 
 
 private:
-    std::vector<T> objects;
-    std::vector<Range> ranges;
-    std::vector< std::vector<double> > distance_matrix;
+    std::vector<T> objects_;
+    std::vector<Range> ranges_;
+    std::vector< std::vector<double> > distance_matrix_;
 };
 
 // used to assert that the distance matrix passed
