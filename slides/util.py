@@ -3,8 +3,10 @@
 import copy
 import subprocess
 import shlex
+import xml.etree
+import math
 
-VARNA_PATH = "../../VARNAv3-92.jar"
+VARNA_PATH = "../../VARNAv3-93.jar"
 
 def call_command(command, pipe=None, echo=False):
     """simple shell call interface for python"""
@@ -101,3 +103,50 @@ def step2(name, sequence, structure):
     return
 
 
+def get_bpsize(image_path, bpstroke="rgb(0%, 0%, 100%)"):
+    """calculate the base pair size given a varna generated svg image"""
+    # parse the image
+    xml_tree = xml.etree.ElementTree.parse(image_path)
+    root = xml_tree.getroot()
+
+    # find the size of a base pair (by color and name)
+    elems = root.getchildren()
+    linesize = None
+    for elem in elems:
+        if (elem.tag.find("line") != -1) and (elem.attrib["stroke"] == bpstroke):
+            x1 = float(elem.attrib["x1"])
+            x2 = float(elem.attrib["x2"])
+            y1 = float(elem.attrib["y1"])
+            y2 = float(elem.attrib["y2"])
+            linesize = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+            break
+    return linesize
+
+
+def scaleSVG(image_path, base_pair_length, bpstroke="rgb(0%, 0%, 100%)"):
+    """scale the svg in such a way that the base pair
+    size is the same as the one given as argument"""
+    # parse the image
+    xml_tree = xml.etree.ElementTree.parse(image_path)
+    root = xml_tree.getroot()
+
+    # find the size of a base pair (by color and name)
+    elems = root.getchildren()
+    linesize = None
+    for elem in elems:
+        if (elem.tag.find("line") != -1) and (elem.attrib["stroke"] == bpstroke):
+            x1 = float(elem.attrib["x1"])
+            x2 = float(elem.attrib["x2"])
+            y1 = float(elem.attrib["y1"])
+            y2 = float(elem.attrib["y2"])
+            linesize = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+            break
+    assert(not linesize is None)
+
+    # calculate the ratio
+    scale = linesize / float(base_pair_length)
+    # set the scale transform
+    root.attrib["transform"] = "scale({0})".format(scale)
+
+    xml_tree.write(image_path)
+    return

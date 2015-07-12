@@ -51,3 +51,4 @@ bin/
 # article pdf and other generated files (for now)
 article/article.pdf
 *.eps
+*.pyc
