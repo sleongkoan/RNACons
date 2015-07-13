@@ -62,18 +62,19 @@ def preprocess_data(data, limit_subopts=float("inf")):
     # put it in list format (easier to call varna with this)
     data_list = []
     for name, seq, subopts in data:
+      tmp = []
       for i, subopt in enumerate(subopts):
-        data_list.append((name+"_{}".format(i), seq, subopt))
-
+        tmp.append((name+"_{}".format(i), seq, subopt))
+      data_list.append(tmp)
     return data_list
 
 
-def call_VARNA(name, sequence, structure, options=""):
+def call_VARNA(name, sequence, structure, bpcolor, options=""):
     """calls varna with given options"""
 
     # compose the call
     varna_call = "java -cp {0} fr.orsay.lri.varna.applications.VARNAcmd ".format(VARNA_PATH)
-    call_params = "-sequenceDBN '{1}' -structureDBN '{2}' {3}".format(name, sequence, structure, options)
+    call_params = "-sequenceDBN '{1}' -structureDBN '{2}' -bp {3} {4}".format(name, sequence, structure, bpcolor, options)
     full_call = varna_call + call_params
 
     # print and call
@@ -83,14 +84,14 @@ def call_VARNA(name, sequence, structure, options=""):
     return
 
 
-def step1(name, sequence, structure):
+def step1(name, sequence, structure, bpcolor):
     """creates illustration for step 1 of the demonstration"""
-    call_VARNA(name, sequence, structure, options='-periodNum {0} -o "{1}_step1.svg"'.format(len(sequence), name))
+    call_VARNA(name, sequence, structure, bpcolor, options='-periodNum {0} -o "{1}_step1.svg"'.format(len(sequence), name))
     return
 
 
 
-def step2(name, sequence, structure):
+def step2(name, sequence, structure, bpcolor):
     """creates illustration for step 1 of the demonstration, only the skeleton"""
     # eliminate bulges
     structure = copy.copy(structure)
@@ -99,7 +100,14 @@ def step2(name, sequence, structure):
     #structure = "(" + structure + ")"  # add artificial root to make it a tree
     sequence = "".join(["A" for _ in structure])
 
-    call_VARNA(name, sequence, structure, options='-periodNum {0} -baseInner #ffffff -baseOutline #ffffff -baseName #ffffff -baseNum #ffffff -bpStyle line -o "{1}_step2.svg"'.format(len(sequence), name))
+    call_VARNA(name, sequence, structure, bpcolor, options='-border "20x20" -periodNum {0} -baseInner #ffffff -baseOutline #ffffff -baseName #ffffff -baseNum #ffffff -bpStyle line -o "{1}_step2.svg"'.format(len(sequence), name))
+    return
+
+
+def apply_steps(data, color):
+    for name, seq, struct in data:
+        step1(name, seq, struct, color)
+        step2(name, seq, struct, color)
     return
 
 
