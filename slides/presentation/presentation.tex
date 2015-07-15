@@ -1,0 +1,209 @@
+
+\documentclass{beamer}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg,.eps}
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
+\include{graphics}
+
+
+\title{MC-Cons: RNA 2D structural assignment}
+\author{Gabriel C-Parent}
+%\date{project name}
+
+
+\usetheme{Execushares}
+
+\begin{document}
+
+\maketitle
+
+
+\begin{frame}
+	\frametitle{outline}
+	\begin{center}
+		\begin{itemize}
+			\item what?
+			\item why?
+			\item how?
+			\item what's next?
+			\item Q\&A
+		\end{itemize}
+	\end{center}
+\end{frame}
+
+
+
+\section{what?}
+
+\subsection{graphical example}
+
+\begin{frame}
+	\frametitle{so you have structures...}
+\begin{figure}[!htb]
+\centering
+\resizebox{0.5\textwidth}{!}{\input{all_subopts.pdf_tex}}
+\caption{Given secondary structures of functionally related RNAs, which ones might explain the function?}
+\end{figure} 
+\end{frame}
+
+
+
+\begin{frame}
+	\frametitle{now you can have consensus!}
+	\begin{figure}[!htb]
+	\centering
+	\resizebox{0.75\textwidth}{!}{\input{consensus_example.pdf_tex}}
+	\caption{Let's suppose that their function is explained by a subset of similar structures (consensus). \\\hspace{\textwidth}In this case, 2 consensus make sense. Sometimes you get more, sometimes you get less.}
+	\end{figure} 
+\end{frame}
+
+
+
+\section{why?}
+
+\begin{frame}
+	\frametitle{what's the point?}
+\begin{figure}[!htb]
+\centering
+\resizebox{0.55\textwidth}{!}{\input{consensus_banner.pdf_tex}}
+\end{figure} 
+
+	\begin{itemize}
+		
+		\item goal: finding common/similar structures within suboptimal secondary structures
+		\item useful for
+		\begin{itemize}
+			\item improving secondary structure prediction for functionally related RNAs
+			\item exploring shared alternative structures
+		\end{itemize}
+	\end{itemize}
+	
+\end{frame}
+
+
+\section{how?}
+
+\subsection{general workflow}
+\begin{frame}
+	\frametitle{the workflow}
+	\begin{columns}
+		\column{0.38\linewidth}
+		\centering
+		\begin{figure}[!htb]
+			\resizebox{1.\textwidth}{!}{\input{workflow.pdf_tex}}
+		\end{figure} 
+        
+        \column{0.58\linewidth}
+        \begin{itemize}
+        		\item a consensus minimizes the sum of pairs of distances between objects
+        		\item optimization steps
+        		\begin{enumerate}
+        		        			\item base pair structural similarity (modified tree edit distance)
+        			\item string edit distance on Vienna dot-bracket representation
+        		\end{enumerate}
+
+        \end{itemize}
+         \end{columns}
+         
+\end{frame} 
+
+
+\subsection{matching tree base pairs}
+\begin{frame}
+	\frametitle{first, we match base pairs structure}
+	\begin{figure}[!htb]
+	\centering
+	\resizebox{0.4\textwidth}{!}{\input{bp_tree.pdf_tex}}
+	\end{figure} 
+	
+	\begin{itemize}
+		\item base pair trees created (many-to-one function)
+		\item unit tree indel distance calculates number of base pairs to delete or create to transform a tree into another
+	\end{itemize}
+	
+
+\end{frame}
+
+
+
+\subsection{matching strings}
+\begin{frame}
+	\frametitle{refine by string edit distance}
+
+\end{frame}
+
+
+
+\section{examples}
+\subsection{IREs}
+\begin{frame}
+	\frametitle{IREs}
+	\begin{figure}[!htb]
+	\centering
+	\resizebox{0.75\textwidth}{!}{\input{ires_consensus.pdf_tex}}
+	\caption{IREs structural assignment given 10 suboptimal for 29 different IRES.}
+	\end{figure} 
+\end{frame}
+
+
+
+\subsection{tRNAs}
+\begin{frame}
+	\frametitle{tRNAs}
+	
+
+\end{frame}
+
+
+\section{what's next?}
+\begin{frame}
+	\frametitle{future work}
+	\begin{itemize}
+		\item MC-Cons improvements
+		\begin{itemize}
+			\item parallelization
+			\item better distance functions?
+			\item heuristic improvement?
+		\end{itemize}
+		
+		\item derivative works
+		\begin{itemize}
+			\item 3D to 2D tree distance
+			\item base pair tree constraints/masks?
+		\end{itemize}				
+
+	\end{itemize}
+\end{frame}
+
+
+
+\section{Conclusion}
+
+\begin{frame}
+	\frametitle{Conclusion}
+	\begin{itemize}
+		\item Adversarial IR
+		\begin{itemize}
+			\item it's hard
+		\end{itemize}
+		\item Link Analysis/Mining
+		\begin{itemize}
+			\item wide variety of problems and domains
+		\end{itemize}
+		\item Link Analysis for Web
+		\begin{itemize}
+			\item Centrality
+			\item Pagerank
+			\item Topic-sensitive PageRank
+			\item Hubs and Authorities
+		\end{itemize}
+		\item Still many challenges
+	\end{itemize}
+\end{frame}
+
+\section{Q\&A}
+
+
+
+
+\end{document}

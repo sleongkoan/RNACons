@@ -350,7 +350,7 @@ def clustermap(data, pivot_kws=None, method='average', metric='euclidean',
 #show_solution(tree_solutions[0], tree_problem, cluster_method="complete")
 
 # look at the first dot bracket solution
-ex = show_solution(dot_bracket_solutions[0][0], dot_bracket_problems[0], cluster_method="complete")
+#ex = show_solution(dot_bracket_solutions[0][0], dot_bracket_problems[0], cluster_method="complete")
 
 
-ex.savefig("../../article/figs/consensus.eps")
+#ex.savefig("../../article/figs/consensus.eps")
