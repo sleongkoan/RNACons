@@ -85,7 +85,7 @@
 
 \subsection{general workflow}
 \begin{frame}
-	\frametitle{the workflow}
+	\frametitle{workflow}
 	\begin{columns}
 		\column{0.38\linewidth}
 		\centering
@@ -101,16 +101,16 @@
         		        			\item base pair structural similarity (modified tree edit distance)
         			\item string edit distance on Vienna dot-bracket representation
         		\end{enumerate}
-
+			\item two solver in C++ (branch \& bound and genetic algorithm)
         \end{itemize}
          \end{columns}
          
 \end{frame} 
 
 
-\subsection{matching tree base pairs}
+\subsection{matching base pairs}
 \begin{frame}
-	\frametitle{first, we match base pairs structure}
+	\frametitle{first match base pairs}
 	\begin{figure}[!htb]
 	\centering
 	\resizebox{0.4\textwidth}{!}{\input{bp_tree.pdf_tex}}
@@ -118,7 +118,7 @@
 	
 	\begin{itemize}
 		\item base pair trees created (many-to-one function)
-		\item unit tree indel distance calculates number of base pairs to delete or create to transform a tree into another
+		\item unit tree indel distance calculates number of base pairs to add or remove to transform a tree into another
 	\end{itemize}
 	
 
@@ -126,10 +126,18 @@
 
 
 
-\subsection{matching strings}
+\subsection{match the bulges}
 \begin{frame}
-	\frametitle{refine by string edit distance}
-
+	\frametitle{then match unpaired}
+	\begin{figure}[!htb]
+	\centering
+	\resizebox{0.75\textwidth}{!}{\input{tree_filtering.pdf_tex}}
+	\end{figure}	
+	\begin{itemize}
+		\item filtered by tree structure, now refine
+		\item placing the bulges around the skeleton...
+		\item string edit distance on dot-bracket
+	\end{itemize}
 \end{frame}
 
 
@@ -168,8 +176,8 @@
 		
 		\item derivative works
 		\begin{itemize}
+			\item base pair tree constraints/masks
 			\item 3D to 2D tree distance
-			\item base pair tree constraints/masks?
 		\end{itemize}				
 
 	\end{itemize}
@@ -177,31 +185,23 @@
 
 
 
-\section{Conclusion}
+\section{recap}
 
 \begin{frame}
-	\frametitle{Conclusion}
+	\frametitle{recap}
 	\begin{itemize}
-		\item Adversarial IR
-		\begin{itemize}
-			\item it's hard
-		\end{itemize}
-		\item Link Analysis/Mining
-		\begin{itemize}
-			\item wide variety of problems and domains
-		\end{itemize}
-		\item Link Analysis for Web
-		\begin{itemize}
-			\item Centrality
-			\item Pagerank
-			\item Topic-sensitive PageRank
-			\item Hubs and Authorities
-		\end{itemize}
-		\item Still many challenges
+		\item MC-Cons creates RNA 2D structural assignment
+		\item useful for finding structures explaining function
+		\item available at \url{https://github.com/major-lab/MC-Cons}
 	\end{itemize}
 \end{frame}
 
 \section{Q\&A}
+
+\begin{frame}
+	\frametitle{Q\&A}
+		\url{https://github.com/major-lab/MC-Cons}
+\end{frame}
 
 
 
