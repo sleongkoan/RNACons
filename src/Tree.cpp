@@ -54,6 +54,54 @@ std::string only_paired(std::string dot_bracket)
     return ret;
 }
 
+
+std::string db2shape( std::string dbwithdots ){
+    char db[dbwithdots.size()];
+    int dblen=0;
+    for( int i=0; i<dbwithdots.size(); ++i ){
+        if( dbwithdots[i]!='.' )
+        {
+            char c = dbwithdots[i];
+            c = c==')'?']':(c=='('?'[':c);
+            db[dblen++]=c;
+        }
+    }
+
+    //compute the idb (integer dot bracket) of the db
+    int buddies[dblen];
+    int stack[dblen];
+    int sp=-1;
+    int maxsp = -1; //needed to know if a db is only filled with '.'
+    for( int i=0;i<dblen;++i ){
+        if(db[i]=='['){
+            stack[++sp]=i;
+        } else if( db[i]==']' ){
+            buddies[i]=stack[sp];
+            buddies[stack[sp]]=i;
+            --sp;
+        }
+        maxsp = maxsp>sp?maxsp:sp;
+    }
+
+    int slen = 1; //1 and not 0 because if db[0] != '.' then there is no room for the first (
+    //1find length of shape
+    for( int i=1; i<dblen; ++i ){
+        if( ( buddies[i-1]-buddies[i]!=1 ) | ( db[i]!=db[i-1] ) ) ++slen;
+    }
+    // fill the shape
+    std::vector<char> shape = std::vector<char>(slen+1);
+    
+    int next=0;
+    if(maxsp>-1)shape[next++]='[';
+    for( int i=1; i<dblen; ++i ){
+        if( ( ( buddies[i-1]-buddies[i]!=1 ) | ( db[i]!=db[i-1] ) ) )
+            shape[next++]=db[i];
+    }
+    std::string result = std::string(shape.begin(), shape.begin() + next); //shape[next]=0;
+    return result;
+}
+
+
 Node* dot_bracket_to_node(std::string dot_bracket)
 {
     //creates a base pair tree from Vienna dot bracket

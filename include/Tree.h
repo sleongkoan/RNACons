@@ -50,6 +50,8 @@ bool is_valid_dot_bracket(std::string dot_bracket);
 // (((..).))) -> ((()))
 std::string only_paired(std::string dot_bracket);
 
+// (())..() -> [][]
+std::string db2shape(std::string dotbracket);
 
 // converts dot bracket to Nodes, used by Tree constructor
 // don't forget to free it

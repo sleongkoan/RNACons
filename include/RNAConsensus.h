@@ -10,11 +10,8 @@
 #include <ctype.h>  // tolower()
 #include <stdlib.h> // for exit
 
-// rna secondary structure general helpers (conversion and distances)
-
 
 int levenshtein(std::string a, std::string b);
-
 
 // file IO and MC-Cons utilities
 std::vector<std::vector<std::string> > read_data(std::string file_name);

@@ -1,16 +1,5 @@
 #include "../include/RNAConsensus.h"
 
-/***********************************************************************\
- *
- * File:           RngStream.cpp for multiple streams of Random Numbers
- * Language:       C++ (ISO 1998)
- * Copyright:      Pierre L'Ecuyer, University of Montreal
- * Notice:         This code can be used freely for personal, academic,
- *                 or non-commercial purposes. For commercial purposes, 
- *                 please contact P. L'Ecuyer at: lecuyer@iro.umontreal.ca
- * Date:           14 August 2001
- *
-\***********************************************************************/
 
 int levenshtein(std::string a, std::string b)
 {
