@@ -13,19 +13,21 @@ SolverGA::SolverGA(// misc parameters
                    int num_generations,
                    int improvement_depth,
                    int elite_size,
+                   int distance_threshold,
 
                    double crossover_prob,
                    double mutation_prob,
                    double improvement_prob) : Solver(silent)
 {
-
+    assert(distance_threshold >= 0);
     population_size_ = population_size;
     elite_size_ = elite_size;
+    distance_threshold_ = distance_threshold;
     num_generations_ = num_generations;
     improvement_depth_ = improvement_depth;
 
     crossover_prob_ = crossover_prob;
-    mutation_prob_ = mutation_prob,
+    mutation_prob_ = mutation_prob;
     improvement_prob_ = improvement_prob;
 
 }
@@ -155,6 +157,7 @@ std::vector<Solution> SolverGA::solve(std::vector< std::vector<double> > distanc
     Solution parent1;
     Solution parent2;
     double current_best_score;
+    double scaled_threshold = distance_threshold_ * ranges.size() * (ranges.size()-1);
     vector<Solution>::iterator sol_it;
 
     // start the progress meter
@@ -183,7 +186,7 @@ std::vector<Solution> SolverGA::solve(std::vector< std::vector<double> > distanc
         current_best_score = population[0].get_score(); // because it is sorted
         for (sol_it = population.begin(); sol_it != population.end(); ++sol_it)
         {
-            if (sol_it->get_score() == current_best_score)
+            if (sol_it->get_score() <= current_best_score + scaled_threshold)
             {
                 // try to find if it exists already in the elite vector
                 bool found = false;
@@ -283,5 +286,31 @@ std::vector<Solution> SolverGA::solve(std::vector< std::vector<double> > distanc
     // cleanup
     delete prng;
 
-    return best_solutions.back();
+    // keep all the unique best solutions up to a specified suboptimal threshold
+    std::vector<Solution> suitable_solutions = std::vector<Solution>();
+    double score_threshold = current_best_score + scaled_threshold;
+    for (size_t i = 0; i != best_solutions.size(); ++i)
+    {
+        for(size_t j = 0; j != best_solutions[i].size(); ++j)
+        {
+            if (best_solutions[i][j].get_score() <= score_threshold)
+            {
+                // verify if the solution is already in the optimal ones
+                bool found = false;
+                for(size_t k = 0; k < suitable_solutions.size(); ++k)
+                {
+                    if ( (best_solutions[i][j] == suitable_solutions[k]) )
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (! found)
+                {
+                    suitable_solutions.push_back(Solution(best_solutions[i][j]));
+                }
+            }
+        }
+    }
+    return suitable_solutions;
 }

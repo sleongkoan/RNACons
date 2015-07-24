@@ -19,6 +19,7 @@ public:
              int num_generations,
              int improvement_depth,
              int elite_size,
+             int distance_threshold,
 
              double crossover_prob,
              double mutation_prob,
@@ -33,6 +34,7 @@ public:
 private:
     int population_size_;
     int elite_size_;
+    int distance_threshold_;
     int num_generations_;
     int improvement_depth_;
 

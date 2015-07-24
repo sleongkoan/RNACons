@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     parser.add_option("-p", "--popsize").dest("popSize").help("genetic algorithm population size").type("size_t");
     parser.add_option("-n", "--numgen").dest("numGenerations").type("size_t").help("genetic algorithm number of generations");
     parser.add_option("-s", "--silent").action("store_true").dest("silent").help("don't display status to stderr");
+    parser.add_option("-t", "--threshold").dest("threshold").type("size_t").help("consider up to t additional score for trees");
     optparse::Values options = parser.parse_args(argc, argv);
 
 
@@ -32,6 +33,7 @@ int main(int argc, char *argv[])
     double IMPROVEMENT_PROBABILITY = 0.05;
     size_t POPULATION_SIZE = 250;
     size_t NUM_GENERATIONS = 250;
+    size_t SUBOPTIMAL_THRESHOLD = 0;
     bool silent = false;
 
 
@@ -53,23 +55,43 @@ int main(int argc, char *argv[])
           NUM_GENERATIONS = atoi(options["numGenerations"].c_str());
       }
 
+      if (options.is_set("threshold"))
+      {
+          SUBOPTIMAL_THRESHOLD = atoi(options["threshold"].c_str());
+      }
+
 
       std::string path = options["dataFile"];
 
       // instantiate the genetic algorithm solver
-      Solver* solver = new SolverGA(silent,
-                                    POPULATION_SIZE,
-                                    NUM_GENERATIONS,
-                                    IMPROVEMENT_DEPTH,
-                                    ELITE_SIZE,
+      // tree solver, will consider suboptimal consensus
+      Solver* tree_solver = new SolverGA(silent,
+                                         POPULATION_SIZE,
+                                         NUM_GENERATIONS,
+                                         IMPROVEMENT_DEPTH,
+                                         ELITE_SIZE,
+                                         SUBOPTIMAL_THRESHOLD, // specified subopt threshold for trees
 
-                                    CROSSOVER_PROBABILITY,
-                                    MUTATION_PROBABILITY,
-                                    IMPROVEMENT_PROBABILITY);
+                                         CROSSOVER_PROBABILITY,
+                                         MUTATION_PROBABILITY,
+                                         IMPROVEMENT_PROBABILITY);
+
+      Solver* dot_bracket_solver = new SolverGA(silent,
+                                                POPULATION_SIZE,
+                                                NUM_GENERATIONS,
+                                                IMPROVEMENT_DEPTH,
+                                                ELITE_SIZE,
+                                                0,  // no threshold for this one
+
+                                                CROSSOVER_PROBABILITY,
+                                                MUTATION_PROBABILITY,
+                                                IMPROVEMENT_PROBABILITY);
 
       // execute and cleanup
-      MCCONS(path, solver, SEEDS);
-      delete solver;
+      MCCONS(path, tree_solver, dot_bracket_solver, SEEDS);
+      delete tree_solver;
+      delete dot_bracket_solver;
+
     } else
     {
       // something went wrong with the arguemnts, print error message and exit

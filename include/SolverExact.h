@@ -18,13 +18,15 @@
 class SolverExact: public Solver{
 public:
     // constructors and destructors
-    SolverExact(bool silent);
+    SolverExact(double suboptimal_threshold, bool silent);
     ~SolverExact();
 
     // solver call
     std::vector<Solution> solve(std::vector< std::vector<double> > distance_matrix,
                                 std::vector<Range> ranges,
                                 unsigned long seeds[6]) const;
+private:
+    double suboptimal_threshold_;
 };
 
 

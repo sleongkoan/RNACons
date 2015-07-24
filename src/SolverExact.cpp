@@ -4,7 +4,10 @@
 
 
 // constructors and destructors
-SolverExact::SolverExact(bool silent) : Solver(silent) { }
+SolverExact::SolverExact(double suboptimal_threshold, bool silent) : Solver(silent)
+{
+    suboptimal_threshold_ = suboptimal_threshold;
+}
 
 SolverExact::~SolverExact() { }
 
@@ -118,6 +121,7 @@ std::vector<Solution> SolverExact::solve(std::vector< std::vector<double> > dist
     std::priority_queue<SubSolution> search_space = std::priority_queue<SubSolution>();
     std::vector<SubSolution> satisfying_solutions = std::vector<SubSolution>();
     double best_score = std::numeric_limits<double>::max();
+    double scaled_threshold = suboptimal_threshold_ * (ranges.size() * (ranges.size()-1));
 
     // sort the ranges by their size (to avoid big branching at the start)
     std::vector<RangeIndex> sorted_ranges = std::vector<RangeIndex>();
@@ -142,13 +146,21 @@ std::vector<Solution> SolverExact::solve(std::vector< std::vector<double> > dist
         SubSolution current_sol = search_space.top();
         search_space.pop();
 
-        // if optimal, add to the best
-        if ((is_leaf(current_sol)) && (current_sol.get_score() <= best_score))
+        // if full solution, check if good enough and add to the best or delete it
+        if (is_leaf(current_sol))
         {
-            best_score = current_sol.get_score();
-            satisfying_solutions.push_back(current_sol);
-        } else {
-            expand_solution(current_sol, e_r_dm, distance_matrix, search_space, best_score);
+            // check if worth adding to satisfying solutions
+            if ((current_sol.get_score() <= best_score + scaled_threshold))
+            {
+                satisfying_solutions.push_back(current_sol);
+            }
+            // check if the score was actually the best seen and update if it is
+            if (current_sol.get_score() < best_score)
+            {
+                best_score = current_sol.get_score();
+            }
+        } else { // not a complete solution
+            expand_solution(current_sol, e_r_dm, distance_matrix, search_space, best_score + scaled_threshold);
         }
 
         iteration += 1;
@@ -158,8 +170,8 @@ std::vector<Solution> SolverExact::solve(std::vector< std::vector<double> > dist
     std::vector<Solution> final_solutions = std::vector<Solution>();
     for (size_t i = 0; i != satisfying_solutions.size(); ++i)
     {
-        // add only those with optimal score
-        if (satisfying_solutions[i].get_score() == best_score)
+        // add only those satisfying scoring constraints
+        if (satisfying_solutions[i].get_score() <= best_score + scaled_threshold)
         {
             final_solutions.push_back(satisfying_solutions[i].return_solution());
         }
