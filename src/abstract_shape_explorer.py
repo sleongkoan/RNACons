@@ -210,4 +210,4 @@ if __name__ == '__main__':
     else:
         with open(args.output_path, "w") as writer:
             for elem in filtered:
-                writer.write(elem)
+                writer.write(str(elem))

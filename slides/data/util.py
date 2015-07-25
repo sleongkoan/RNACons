@@ -1,14 +1,14 @@
 """interface with flashfold RNA secondary structure folding tool"""
 
+from collections import Counter
 import copy
+import math
+import matplotlib.cm
+import matplotlib.colors
 import os
 import subprocess
 import shlex
-import math
 from xml.dom import minidom
-from collections import Counter
-import matplotlib.cm
-import matplotlib.colors
 
 
 VARNA_PATH = "VARNAv3-93.jar"
@@ -134,58 +134,6 @@ def apply_steps(data, color):
         step1(name, seq, struct, color)
         step2(name, seq, struct, color)
     return
-
-
-#def get_bpsize(image_path, bpstroke="rgb(0%, 0%, 100%)"):
-    #"""calculate the base pair size given a varna generated svg image"""
-    ## parse the image
-    #xml_tree = xml.etree.ElementTree.parse(image_path)
-    #root = xml_tree.getroot()
-
-    ## find the size of a base pair (by color and name)
-    #elems = root.getchildren()
-    #linesize = None
-    #for elem in elems:
-        #if (elem.tag.find("line") != -1) and (elem.attrib["stroke"] == bpstroke):
-            #x1 = float(elem.attrib["x1"])
-            #x2 = float(elem.attrib["x2"])
-            #y1 = float(elem.attrib["y1"])
-            #y2 = float(elem.attrib["y2"])
-            #linesize = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-            #break
-    #return linesize
-
-
-#def scaleSVG(image_path, base_pair_length, bpstroke="rgb(0%, 0%, 100%)"):
-    #"""scale the svg in such a way that the base pair
-    #size is the same as the one given as argument"""
-    ## parse the image
-    #xml_tree = xml.etree.ElementTree.parse(image_path)
-    #root = xml_tree.getroot()
-
-    ## find the size of a base pair (by color and name)
-    #elems = root.getchildren()
-    #linesize = None
-    #for elem in elems:
-        #if (elem.tag.find("line") != -1) and (elem.attrib["stroke"] == bpstroke):
-            #x1 = float(elem.attrib["x1"])
-            #x2 = float(elem.attrib["x2"])
-            #y1 = float(elem.attrib["y1"])
-            #y2 = float(elem.attrib["y2"])
-            #linesize = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-            #break
-    #assert(not linesize is None)
-
-    ## calculate the ratio
-    #scale = linesize / float(base_pair_length)
-    ## set the scale transform
-    #root.attrib["transform"] = "scale({0})".format(scale)
-
-    #xml_tree.write(image_path)
-    #return
-
-
-
 
 
 def remove_text_nodes(file_path):
