@@ -1,5 +1,6 @@
 
 #include "../include/MCCONS.h"
+#include "../include/ProgressBar.h"
 
 // sorting predicate for pairs of size_t, double by double
 struct pairs_sort_predicate {
@@ -21,9 +22,11 @@ void MCCONS(std::string path,
     std::vector<std::vector<std::string> > dot_brackets = read_data(path);
     std::vector<std::vector<Tree> > trees = get_tree_lists(dot_brackets);
     ConsensusProblem<Tree> tree_problem = ConsensusProblem<Tree>(trees, *unit_distance);
+    int num_relations = dot_brackets.size() * (dot_brackets.size() - 1);  // n (n -1)
 
     // PHASE 1 SOLVING
-    if (! tree_solver->is_silent())
+    bool silent_output = tree_solver->is_silent();
+    if (! silent_output)
     {
         std::cerr << "Phase 1: Base Pair Tree Consensus (1)" << std::endl;
     }
@@ -48,12 +51,12 @@ void MCCONS(std::string path,
 
     // PRINT THE TREE CONSENSUS
     std::cerr << std::endl << "Tree Consensus Solutions" << std::endl;
-    if (! tree_solver->is_silent())
+    if (! silent_output)
     {
         int index;
         for(size_t i = 0; i != tree_consensus.size(); ++i)
         {
-            std::cerr << "> " << i << " " << tree_consensus[i].get_score() << std::endl;
+            std::cerr << "> " << i << " " << tree_consensus[i].get_score()/num_relations << std::endl;
             for(size_t j = 0; j != tree_consensus[i].get_genes().size(); ++j)
             {
                 index = tree_consensus[i].get_genes()[j];
@@ -87,20 +90,29 @@ void MCCONS(std::string path,
 
 
     // PHASE 2: STRING CONSENSUS
-    if (! dot_bracket_solver->is_silent())
+    if (! silent_output)
     {
         // update on the number of optimal trees found
         std::cerr << std::endl << "Phase 2: String Edit Distance on Vienna Dot Bracket (" << dot_bracket_problems.size() << ")" << std::endl;
     }
+    // if too many output, make the solver silent and add a progress bar over all tree consensus instead of individually
+    bool too_much_progress_bar = (tree_consensus.size() > 10) && (! silent_output);
+    if (too_much_progress_bar)
+    {
+        dot_bracket_solver->flip_silent();
+    }
     std::vector< std::vector<Solution> > dot_bracket_consensus = std::vector< std::vector<Solution> >();
+    ProgressBar progress = ProgressBar();
     for (size_t i = 0; i != prob2_data.size(); ++i)
     {
         dot_bracket_consensus.push_back(dot_bracket_solver->solve(dot_bracket_problems[i].get_distance_matrix(),
                                                                  dot_bracket_problems[i].get_ranges(),
                                                                  seeds));
+        progress.update((float) i / tree_consensus.size());
     }
+    progress.clean();
 
-    if (! dot_bracket_solver->is_silent())
+    if (! silent_output)
     {
         std::cerr << std::endl;
     }
@@ -108,7 +120,6 @@ void MCCONS(std::string path,
     // printing the results to stdout
     // print the best dotbracket consensus for each tree consensus
     int gene;
-    int num_relations = dot_brackets.size() * (dot_brackets.size() - 1);  // n (n -1)
     double tree_score, best_dot_bracket_score;
 
     int sol_index = 0;
@@ -128,7 +139,7 @@ void MCCONS(std::string path,
         {
             if (dot_bracket_consensus[i][j].get_score() == best_dot_bracket_score) {
                 // output the consensus
-                std::cout << "> " << sol_index << " " << tree_score << " " << best_dot_bracket_score << std::endl;
+                std::cout << "> " << sol_index << " " << tree_score << " " << best_dot_bracket_score / num_relations << std::endl;
                 sol_index += 1;
                 for (size_t gene_index = 0; gene_index != dot_bracket_consensus[i][j].get_genes().size(); ++gene_index) {
                     gene = dot_bracket_consensus[i][j].get_genes()[gene_index];

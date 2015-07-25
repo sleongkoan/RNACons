@@ -31,9 +31,9 @@ int main(int argc, char *argv[])
     double CROSSOVER_PROBABILITY = 0.5;
     double MUTATION_PROBABILITY = 0.05;
     double IMPROVEMENT_PROBABILITY = 0.05;
+    double SUBOPTIMAL_THRESHOLD = 0;
     size_t POPULATION_SIZE = 250;
     size_t NUM_GENERATIONS = 250;
-    size_t SUBOPTIMAL_THRESHOLD = 0;
     bool silent = false;
 
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
       if (options.is_set("threshold"))
       {
-          SUBOPTIMAL_THRESHOLD = atoi(options["threshold"].c_str());
+          SUBOPTIMAL_THRESHOLD = atof(options["threshold"].c_str());
       }
 
 
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
                                                 NUM_GENERATIONS,
                                                 IMPROVEMENT_DEPTH,
                                                 ELITE_SIZE,
-                                                0,  // no threshold for this one
+                                                0.,  // no threshold for this one
 
                                                 CROSSOVER_PROBABILITY,
                                                 MUTATION_PROBABILITY,

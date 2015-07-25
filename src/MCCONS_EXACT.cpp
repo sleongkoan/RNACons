@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     OptionParser parser = OptionParser().description("MC-Cons Consensus Optimizer Using an Exact Branch and Bound Solver");
     parser.add_option("-f", "--data").dest("data_file").help("path to MARNA-like input file");
     parser.add_option("-t", "--threshold").dest("threshold").type("size_t").help("consider up to t additional score for trees");
+    parser.add_option("-i", "--interrupt").dest("interrupt").type("bool").help("do only tree consensus");
     optparse::Values options = parser.parse_args(argc, argv);
 
 
@@ -27,7 +28,7 @@ int main(int argc, char *argv[])
       double SUBOPTIMAL_THRESHOLD = 0;
       if (options.is_set("threshold"))
       {
-          SUBOPTIMAL_THRESHOLD = atoi(options["threshold"].c_str());
+          SUBOPTIMAL_THRESHOLD = atof(options["threshold"].c_str());
       }
 
       // instantiate the genetic algorithm solver

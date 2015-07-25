@@ -13,7 +13,7 @@ SolverGA::SolverGA(// misc parameters
                    int num_generations,
                    int improvement_depth,
                    int elite_size,
-                   int distance_threshold,
+                   double distance_threshold,
 
                    double crossover_prob,
                    double mutation_prob,

@@ -24,6 +24,10 @@ public:
         silent_ = silent;
     }
 
+    void flip_silent()
+    {
+        silent_ = ! silent_;
+    }
     // used by MC-Cons, accesses the status of the solver
     bool is_silent();
 
