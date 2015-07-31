@@ -27,12 +27,6 @@ class Consensus(object):
     def __eq__(self, other): # equality on score
         return self.tree_dist == other.tree_dist and self.bp_dist == other.bp_dist
 
-    def to_shape5(self):
-        shapes = []
-        for subopt in self.subopts:
-            shapes.append(find_shapes(subopt)[0]) # shape level 5 (most abstract)
-        return shapes
-
 
 def read_consensus(file_name):
     """read marna-like file format"""
@@ -88,7 +82,8 @@ def read_marna(file_name):
     return data
 
 
-def find_shapes(structure):
+def find_shapes(structure, level=5):
+    assert level in [1, 3, 5]
     list_opener = []
     list_stems = []
 
@@ -156,22 +151,26 @@ def find_shapes(structure):
 
     level1 = level1.strip().replace("[_]", "[]")
     level1 = level1.replace(" ", "")
+    if level == 1:
+        return level1
     # from level 1, build level 3 (remove unpaired symbols)
     level3 = level1.replace("_", "")
     level3 = level3.replace(" ", "")
+    if level3 == 3:
+        return level3
     # from level 3, build level 5 by removing stems with bulges
     level5 = level3
     while level5.count("[[]]") > 0:
         level5 = level5.replace("[[]]", "[]")
 
-    return level5, level3, level1
+    return level5
 
 
-def get_unique_abstract_shapes(consensus):
+def get_unique_abstract_shapes(consensus, level=5):
     shape_to_consensus = dict()
     index = 0
     for elem in consensus:
-        shapes = elem.to_shape5()
+        shapes = [find_shapes(i, level) for i in elem.subopts]
         shape_signature = "\n".join(shapes)
         if shape_signature in shape_to_consensus:  # already has key
             shape_to_consensus[shape_signature].append(elem)
@@ -194,14 +193,15 @@ def get_unique_abstract_shapes(consensus):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("A simple parser for filtering potential consensus by abstract shape representatives (shreps)")
-    parser.add_argument('-cf',action="store", required=True, dest="consensus_file_path", help="path of the consensus file")
+    parser.add_argument('-cf', action="store", required=True, dest="consensus_file_path", help="path of the consensus file")
     parser.add_argument('-mf', action="store", required=True, dest="marna_file_path", help="path of the marna input file to the consensus")
-    parser.add_argument('-o', action="store", dest="output_path", default=None, help="output file path (default is stdout)")
+    parser.add_argument('-o',  action="store", dest="output_path", default=None, help="output file path (default is stdout)")
+    parser.add_argument('-l',  action="store", dest="level", type=int, default=5, help="abstract shape level to use for filtering")
     args = parser.parse_args()
 
     marna_data = read_marna(args.marna_file_path)
     consensus = read_consensus(args.consensus_file_path)
-    filtered = get_unique_abstract_shapes(consensus)
+    filtered = get_unique_abstract_shapes(consensus, args.level)
     for index, potential_consensus in enumerate(filtered):
         potential_consensus.number = index
     if args.output_path is None:

@@ -181,30 +181,17 @@ def concat_images(svg_paths, destination):
     return
 
 
-def pretty_print_consensus(consensus, destination, cmap='copper'):
+def pretty_print_consensus(consensus_data, sequences, destination, cmap='copper'):
     """pretty print the first consensus of a problem using VARNA"""
 
-    assert isinstance(consensus[0], str), "must be a single consensus"
+    assert isinstance(consensus_data[0], str), "must be a single consensus"
+    hex_color = "#000000"
 
-
-    # remove duplicates in the consensus and instead display their number
-    cnt = Counter()
-    for struct in consensus:
-        cnt[struct] += 1
-
-    sorted_by_number = cnt.most_common(len(consensus)+1)
-
-    # colormap generator:
-    cm = matplotlib.cm.get_cmap(cmap)
-    max_occurrences = float(sorted_by_number[0][1])
-
-    # write the varna output to tmp
     file_names = []
-    for index, (struct, num_occurrences) in enumerate(sorted_by_number):
-        new_name = "{0}_{1}".format(index, num_occurrences)
-        color = cm((num_occurrences+1.) / (max_occurrences+1.))
-        hex_color = matplotlib.colors.rgb2hex(color)
-        seq = "".join(["A" for _ in range(len(struct)/2)])
+    for index in range(len(consensus)):
+        new_name = "{0}_{1}".format(index, "tmp")
+        struct = consensus_data[index]
+        seq = sequences[index]
 
         step1(new_name, seq, struct, hex_color)
         file_name = new_name+ "_step1.svg"
@@ -213,8 +200,8 @@ def pretty_print_consensus(consensus, destination, cmap='copper'):
 
     # concatenate into a single picture and remove all intermediates
     concat_images(file_names, destination)
-
     return file_names  # for later deletion if needed
+
 
 def delete_files(file_names):
     for file_name in file_names:
