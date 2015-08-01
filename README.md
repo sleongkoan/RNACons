@@ -64,6 +64,13 @@ All suboptimal structures must be represented in Vienna dot bracket notation.
     ...
 
 
+## Requirements
+
+- C++ compiler
+- make
+- vanilla python 2 interpreter (no package dependencies)
+
+
 ## Output format
 
 Consensus are outputted in the following fasta-like format to standard
