@@ -5,12 +5,31 @@
 import argparse
 
 
+def is_valid_dot_bracket(dot_bracket):
+    """tests Vienna dot-bracket for illegal structure (or symbol)"""
+    counter = 0
+    for i in dot_bracket:
+        if i == '(':
+            counter += 1
+        elif i == ')':
+            counter -= 1
+        elif i != '.':  # illegal symbol
+            return False
+        if counter < 0:  # unbalanced structure
+            return False
+    if counter != 0:
+        return False  # unbalanced structure
+    return True
+
+
 class Consensus(object):
     """simple object to hold all the information about a consensus"""
     def __init__(self, number, tree_dist, bp_dist, subopts, level):
         self.number = number
         self.tree_dist = tree_dist
         self.bp_dist = bp_dist
+        for subopt in subopts:
+            assert is_valid_dot_bracket(subopt), "problematic structure: {}".format(subopt)
         self.subopts = subopts
         self.abstract_shapes = ([dot_bracket_to_abstract_shape(subopt, level)
                                 for subopt in self.subopts])
