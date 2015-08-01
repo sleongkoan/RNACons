@@ -30,7 +30,16 @@ suboptimal consensus solutions along the optimal one(s).
 A shape explorer tool is given to filter suboptimal consensus solutions by
 keeping only the best consensus for each arrangement of abstract shapes.
 
-## Compilation Instructions
+
+## Requirements
+
+- C++ compiler
+- make
+- vanilla python 2 interpreter (no package dependencies)
+
+
+
+## Build Instructions
 
 Using the provided makefile, just use the following (seems to work fine
 on Linux and OSX).
@@ -40,7 +49,7 @@ make all
 ```
 
 
-## Input files
+## Input Files
 
 Input files must be of the following fasta-like format.
 That is it should look like this (here suboptimal\_i\_j
@@ -64,14 +73,7 @@ All suboptimal structures must be represented in Vienna dot bracket notation.
     ...
 
 
-## Requirements
-
-- C++ compiler
-- make
-- vanilla python 2 interpreter (no package dependencies)
-
-
-## Output format
+## Output Format
 
 Consensus are outputted in the following fasta-like format to standard
 output (suboptimal\_n\_l would be the chosen suboptimal at index l of
@@ -89,7 +91,8 @@ distance between all selected structures.
     > solution_index tree_score string_edit_score
     ...
 
-## Usage example
+
+## Usage Examples
 
 ```bash
 # first, compile the C++ code
