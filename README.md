@@ -97,7 +97,7 @@ make all
 bin/mccons_exact -f examples/mccons_example.marna
 
 # exact version with suboptimal consensus
-# here, all consensus within an average 0.8 unit tree distance
+# here, all consensus within an average 0.5 unit tree distance
 # more than the best consensus will be kept
 bin/mccons_exact -f examples/mccons_example.marna -t 0.5
 
