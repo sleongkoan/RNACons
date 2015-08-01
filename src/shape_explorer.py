@@ -114,6 +114,7 @@ def dot_bracket_to_abstract_shape(structure, level):
     # 5: Most abstract - helix nesting pattern and no unpaired regions
     assert level in [1, 3, 5]
     list_opener = []
+
     list_stems = []
     i = 0
     list_stem_start = []
