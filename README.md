@@ -22,9 +22,13 @@ The simple string edit distance is used because it does work quite well.
 
 
 There are currently two versions of the consensus optimizer available,
-one using an exact solver with Branch and Bound strategy and an heursitc
-one using a Genetic Algorithm.
+one using an exact solver with Branch and Bound strategy and an heuristic
+one using an Hybrid Genetic Algorithm. Each version has an option to return
+suboptimal consensus solutions along the optimal one(s).
 
+
+A shape explorer tool is given to filter suboptimal consensus solutions by
+keeping only the best consensus for each arrangement of abstract shapes.
 
 ## Compilation Instructions
 
@@ -78,23 +82,40 @@ distance between all selected structures.
     > solution_index tree_score string_edit_score
     ...
 
-## Example
+## Usage example
 
 ```bash
-
 # first, compile the C++ code
 # (supposes g++ and make installed)
 make all
 
-# let's try the two versions of the algorithm
 
-# first, the exact version of MC-Cons (by branch and bound)
-bin/mccons_exact -f data/example.marna
+# MC-CONS USAGE
 
-# then compare with the genetic algorithm,
-# additional parameters are available
-# (defaults do fine on most small-medium instances)
-bin/mccons_ga -f data/example.marna
+# exact version (by branch and bound)
+# use only on very small instances
+bin/mccons_exact -f examples/mccons_example.marna
+
+# exact version with suboptimal consensus
+# here, all consensus within an average 0.8 unit tree distance
+# more than the best consensus will be kept
+bin/mccons_exact -f examples/mccons_example.marna -t 0.5
+
+# heuristic version (an hybrid genetic algorithm, with steepest descent)
+# defaults parameters behave fine on most small and medium instances
+# population size and number of generations should be increased for large instances
+bin/mccons_ga -f examples/mccons_example.marna
+
+# same suboptimal threshold consideration as for the exact solver
+bin/mccons_ga -f examples/mccons_example.marna -t 0.5
+
+
+# SHAPE EXPLORER USAGE
+
+# when considering suboptimal consensus, MC-Cons often returns too
+# many consensus to be useful. This performs a selection of those
+# with best scores for each arrangement of RNA abstract shapes (level 1, 3 or 5)
+src/shape_explorer.py -i examples/shape_explorer_example.marna -l 5 -s
 
 ```
 
