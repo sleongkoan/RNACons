@@ -72,6 +72,8 @@ All suboptimal structures must be represented in Vienna dot bracket notation.
     >name_
     ...
 
+Check out examples/mccons_example.marna for a real example.
+
 
 ## Output Format
 
@@ -90,6 +92,8 @@ distance between all selected structures.
     suboptimal_n_l
     > solution_index tree_score string_edit_score
     ...
+
+Check out examples/shape_explorer_example.marna for a real example.
 
 
 ## Usage Examples
