@@ -72,7 +72,7 @@ All suboptimal structures must be represented in Vienna dot bracket notation.
     >name_
     ...
 
-Check out examples/mccons_example.marna for a real example.
+Check out data/examples/mccons_example.marna for a real example.
 
 
 ## Output Format
@@ -93,7 +93,7 @@ distance between all selected structures.
     > solution_index tree_score string_edit_score
     ...
 
-Check out examples/shape_explorer_example.marna for a real example.
+Check out data/examples/shape_explorer_example.marna for a real example.
 
 
 ## Usage Examples
@@ -108,20 +108,20 @@ make all
 
 # exact version (by branch and bound)
 # use only on very small instances
-bin/mccons_exact -f examples/mccons_example.marna
+bin/mccons_exact -f data/examples/mccons_example.marna
 
 # exact version with suboptimal consensus
 # here, all consensus within an average 0.5 unit tree distance
 # more than the best consensus will be kept
-bin/mccons_exact -f examples/mccons_example.marna -t 0.5
+bin/mccons_exact -f data/examples/mccons_example.marna -t 0.5
 
 # heuristic version (an hybrid genetic algorithm, with steepest descent)
 # defaults parameters behave fine on most small and medium instances
 # population size and number of generations should be increased for large instances
-bin/mccons_ga -f examples/mccons_example.marna
+bin/mccons_ga -f data/examples/mccons_example.marna
 
 # same suboptimal threshold consideration as for the exact solver
-bin/mccons_ga -f examples/mccons_example.marna -t 0.5
+bin/mccons_ga -f data/examples/mccons_example.marna -t 0.5
 
 
 # SHAPE EXPLORER USAGE
@@ -129,7 +129,7 @@ bin/mccons_ga -f examples/mccons_example.marna -t 0.5
 # when considering suboptimal consensus, MC-Cons often returns too
 # many consensus to be useful. This performs a selection of those
 # with best scores for each arrangement of RNA abstract shapes (level 1, 3 or 5)
-src/shape_explorer.py -i examples/shape_explorer_example.marna -l 5 -s
+src/shape_explorer.py -i data/examples/shape_explorer_example.marna -l 5 -s
 
 ```
 
