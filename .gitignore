@@ -61,3 +61,6 @@ article/article.pdf
 *.pdf
 *.pdf_tex
 *.svg
+
+# temporary files
+tmp/
