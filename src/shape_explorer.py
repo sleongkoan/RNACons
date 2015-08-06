@@ -6,17 +6,18 @@ import argparse
 from util import Consensus, read_consensus_file
 
 
-def find_best_consensus_by_shapes(consensus_list):
+def find_best_consensus_by_shapes(consensus_list, level):
     """Find the best consensus for each arrangement of shapes.
        Consensus are compared first by tree distance,
        if equal, we break the tie with the string edit distance.
        If the scores are identical to the best, we keep all."""
     assert isinstance(consensus_list, list)
+    assert level in [1, 3, 5]
 
     shape_to_consensus = dict()
 
     for consensus in consensus_list:
-        shape_signature = consensus.get_shape_signature()
+        shape_signature = consensus.get_shape_signature(level)
         if shape_signature in shape_to_consensus:  # already has key
             shape_to_consensus[shape_signature].append(consensus)
         else:
@@ -61,8 +62,8 @@ if __name__ == '__main__':
     ARGS = PARSER.parse_args()
 
     # filter out the suboptimal consensus for each arrangement of shapes
-    CONSENSUS_LIST = read_consensus_file(ARGS.consensus_file_path, ARGS.level)
-    FILTERED_CONSENSUS = find_best_consensus_by_shapes(CONSENSUS_LIST)
+    CONSENSUS_LIST = read_consensus_file(ARGS.consensus_file_path)
+    FILTERED_CONSENSUS = find_best_consensus_by_shapes(CONSENSUS_LIST, ARGS.level)
 
     # renumber the selected consensus
     for INDEX, SELECTED_CONSENSUS in enumerate(FILTERED_CONSENSUS):
@@ -72,7 +73,7 @@ if __name__ == '__main__':
     # (with or without abstract shapes)
     STRFN = lambda x: x.__str__()
     if ARGS.display_abstract_shape == True:
-        STRFN = lambda x: x.str_with_shapes()
+        STRFN = lambda x: x.str_with_shapes(ARGS.level)
 
     # output to either stdout or specified file
     if ARGS.output_path == "stdout":

@@ -22,8 +22,7 @@ def is_valid_dot_bracket(dot_bracket):
     return True
 
 
-
-def dot_bracket_to_abstract_shape(structure, level):
+def dot_bracket_to_abstract_shape(structure):
     """Converts a Vienna dot-bracket structure into
        its corresponding abstract shape as defined in RNAshapes.
        Written by Stephen Leong Koan, IRIC, 2013"""
@@ -31,7 +30,6 @@ def dot_bracket_to_abstract_shape(structure, level):
     # 1: Most accurate - all loops and all unpaired
     # 3: Nesting pattern for all loop types but no unpaired regions
     # 5: Most abstract - helix nesting pattern and no unpaired regions
-    assert level in [1, 3, 5]
     list_opener = []
 
     list_stems = []
@@ -68,7 +66,7 @@ def dot_bracket_to_abstract_shape(structure, level):
     for stem in list_stems:
         range_open = range(min(stem['opener']), max(stem['opener'])+1)
         range_close = range(min(stem['closer']), max(stem['closer'])+1)
-        range_occupied.extend(range_open+range_close)
+        range_occupied.extend(range_open + range_close)
 
         temp_lvl1_open = " "
         for i in range_open:
@@ -102,23 +100,17 @@ def dot_bracket_to_abstract_shape(structure, level):
 
     level_1 = level_1.strip().replace("[_]", "[]")
     level_1 = level_1.replace(" ", "")
-    if level == 1:
-        return level_1
 
     # from level 1, build level 3 (remove unpaired symbols)
     level_3 = level_1.replace("_", "")
     level_3 = level_3.replace(" ", "")
-    if level == 3:
-        return level_3
 
     # from level 3, build level 5 by removing stems with bulges
     level_5 = level_3
     while level_5.count("[[]]") > 0:
         level_5 = level_5.replace("[[]]", "[]")
 
-    return level_5
-
-
+    return (level_5, level_3, level_1)
 
 
 class Node(object):
@@ -249,12 +241,12 @@ def treedist(tree_1, tree_2, node_index_1, node_index_2, treedists):
 
             # case 2
             else:
-                p = tree_1.lmds[index_1+ioff]-1-ioff
-                q = tree_2.lmds[index_2+joff]-1-joff
+                index_3 = tree_1.lmds[index_1+ioff]-1-ioff
+                index_4 = tree_2.lmds[index_2+joff]-1-joff
                 forest_distance[index_1][index_2] = min(
                                       (forest_distance[index_1-1][index_2] + 1),
                                       (forest_distance[index_1][index_2-1] + 1),
-                                      (forest_distance[p][q] +
+                                      (forest_distance[index_3][index_4] +
                                         treedists[index_1+ioff][index_2+joff]))
 
 
@@ -315,23 +307,34 @@ def levenshtein(string_1, string_2):
     return current[length_1]
 
 
+def matrix_average(matrix):
+    """compute the arithmetic mean of the matrix"""
+    total = 0.
+    num_elems = 0
+    for row in matrix:
+        for value in row:
+            num_elems += 1
+            total += value
+    return total / num_elems
 
 
 class Consensus(object):
     """simple object to hold all the information about a consensus"""
-    def __init__(self, number, tree_dist, bp_dist, subopts, level):
-        self.number = number
-        self.tree_dist = tree_dist
-        self.bp_dist = bp_dist
+    def __init__(self, number, subopts):
+        assert number >= 0
+        assert isinstance(subopts, list)
         for subopt in subopts:
             assert is_valid_dot_bracket(subopt)
+
+        # assign basic fields
+        self.number = number
         self.subopts = subopts
-        self.abstract_shapes = ([dot_bracket_to_abstract_shape(subopt, level)
+        self.abstract_shapes = ([dot_bracket_to_abstract_shape(subopt)
                                 for subopt in self.subopts])
         # compute the distance matrices
-        self.tree_dists = [[0 for _ in range(len(self.subopts))]
+        self.tree_dists = [[0. for _ in range(len(self.subopts))]
                                   for _ in range(len(self.subopts))]
-        self.string_dists = [[0 for _ in range(len(self.subopts))]
+        self.string_dists = [[0. for _ in range(len(self.subopts))]
                                     for _ in range(len(self.subopts))]
         self.trees = [dot_bracket_to_tree(subopt) for subopt in self.subopts]
         for index_1, subopt_1 in enumerate(self.subopts):
@@ -344,9 +347,11 @@ class Consensus(object):
         return
 
     def __str__(self):
-        ret = "> {0} {1} {2}\n".format(self.number,
-                                       self.tree_dist,
-                                       self.bp_dist)
+        avg_tree_dist   = matrix_average(self.tree_dists)
+        avg_string_dist = matrix_average(self.string_dists)
+        ret = "> {0} {1:.3f} {2:.3f}\n".format(self.number,
+                                       avg_tree_dist,
+                                       avg_string_dist)
         for subopt in self.subopts:
             ret += "{0}\n".format(subopt)
         ret += "\n"
@@ -355,45 +360,61 @@ class Consensus(object):
     def __repr__(self):
         return str(self)
 
-    def str_with_shapes(self):
+    def str_with_shapes(self, level):
         """string representation with abstract shapes along suboptimals"""
-        ret = "> {0} {1} {2}\n".format(self.number,
-                                self.tree_dist,
-                                self.bp_dist)
+        assert level in [5, 3, 1]
+        level_to_index = [None, 2, None, 1, None, 0]
+        access_index = level_to_index[level]
+
+        avg_tree_dist   = matrix_average(self.tree_dists)
+        avg_string_dist = matrix_average(self.string_dists)
+
+        ret = "> {0} {1:.3f} {2:.3f}\n".format(self.number,
+                                               avg_tree_dist,
+                                               avg_string_dist)
         for subopt, shape in zip(self.subopts, self.abstract_shapes):
-            ret += "{0} {1}\n".format(subopt, shape)
+            ret += "{0} {1}\n".format(subopt, shape[access_index])
         ret += "\n"
         return ret
 
-    def get_shape_signature(self):
+
+    def get_shape_signature(self, level):
         """return string of shapes separated by newline"""
+        assert level in [5, 3, 1]
+        level_to_index = [None, 2, None, 1, None, 0]
+        access_index = level_to_index[level]
         ret = ""
         for shape in self.abstract_shapes:
-            ret += "{}\n".format(shape)
+            ret += "{}\n".format(shape[access_index])
         return ret
 
+
     def __lt__(self, other):
-        if self.tree_dist == other.tree_dist:
-            return self.bp_dist < other.bp_dist
+        if matrix_average(self.tree_dists) == matrix_average(other.tree_dists):
+            return (matrix_average(self.string_dists) <
+                    matrix_average(other.string_dists))
         else:
-            return self.tree_dist < other.tree_dist
+            return (matrix_average(self.tree_dists) <
+                    matrix_average(other.tree_dists))
 
     def __gt__(self, other):
         return other < self
 
     def __eq__(self, other): # equality on score
-        return ((self.tree_dist == other.tree_dist) and
-                (self.bp_dist == other.bp_dist))
+        equal_tree_dists = (matrix_average(self.tree_dists) ==
+                              matrix_average(other.tree_dists))
+        equal_string_dists = (matrix_average(self.string_dists) ==
+                                matrix_average(other.string_dists))
+        return equal_tree_dists and equal_string_dists
 
 
-def read_consensus_file(file_name, level):
+
+def read_consensus_file(file_name):
     """read consensus file made by MC-Cons (all versions)"""
 
     # data holders
     consensus = []
     number = -1
-    avg_tree_dist = -1.
-    avg_dotb_dist = -1.
     subopts = []
 
     with open(file_name) as data_file:
@@ -404,14 +425,9 @@ def read_consensus_file(file_name, level):
             if line.startswith(">"):
                 if subopts:
                     consensus.append(Consensus(number,
-                                               avg_tree_dist,
-                                               avg_dotb_dist,
-                                               subopts,
-                                               level))
+                                               subopts))
                 split = line.strip().split(" ")
                 number = int(split[1])
-                avg_tree_dist = float(split[2])
-                avg_dotb_dist = float(split[3])
                 subopts = []
 
             # reading a consensus structure
@@ -425,9 +441,6 @@ def read_consensus_file(file_name, level):
         # last consensus (if the file wasn't empty)
         if subopts:
             consensus.append(Consensus(number,
-                                       avg_tree_dist,
-                                       avg_dotb_dist,
-                                       subopts,
-                                       level))
+                                       subopts))
     return consensus
 
