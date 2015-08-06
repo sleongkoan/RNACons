@@ -1,3 +1,6 @@
+#! /usr/bin/env python
+"""Clustering functions used when pretty printing consensus"""
+
 # some clustering utilities
 import scipy.cluster
 import seaborn

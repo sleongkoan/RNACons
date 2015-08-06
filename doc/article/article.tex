@@ -159,7 +159,7 @@
 % Please capitalize all terms in the title except conjunctions, prepositions, and articles.
 \begin{flushleft}
 {\Large
-\textbf\newline{MC-Cons: RNA secondary structure assignments}
+\textbf\newline{MC-Cons: RNA secondary structural assignments}
 }
 \newline
 % Insert author names, affiliations and corresponding author email (do not include titles, positions, or degrees).
@@ -245,19 +245,47 @@ RNA secondary structural assignment is an interesting problem. Bla bla bla.
 \newpage
 \section*{Methods}
 
+
+\subsection*{The Workflow}
+
+% within tree consensus, minimizing a naive distance: string edit distance
+MC-Cons is a two-step optimization procedure (Fig.~\ref{fig1}).
+
+First, \textit{base pair tree consensus} are calculated.
+This insures that the final consensus will minimize the difference in base pair topology.
+For each base pair tree consensus and for each group of structures, the subset of secondary structures whose base pair tree fits the one assigned to that group is kept.
+
+String edit distance consensus (on Vienna dot brackets) are then calculated. Normally this distance function would not be sufficient, but since tree distance is already minimized, the final consensus is satisfactory.\newline
+
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.4]{figs/mccons_flowchart2.eps}
+\caption{{\bf Flowchart illustration of MC-Cons procedure.}
+The two-step procedure is quite simple. The user only inputs data and chooses which consensus solver, either the exact one for small instances or the genetic algorithm for larger problems.}
+\label{fig1}
+\end{center}
+\end{figure}
+
+
+
 \subsection*{Base Pair Tree Representation of Secondary Structure}
 % base pair tree representation vs abstract shapes
 % upsides and downsides of the
 % representation compared to abstract shape
 RNA secondary structure can represented by base pair trees, where only base pairs are considered. This representation is very similar to level 5 RNA abstract shape \cite{abstract_shapes}, albeit the stem length information is conserved.
-Although this representation greatly increases the size of the auxiliary space (codomain) compared to level 5 abstract shapes, it does not suffer from major changes in representation if small stem-loops are added or removed. It also does not map structures of widely varying stem length to the same element in the codomain.
+Although this representation greatly increases the size of the auxiliary space (codomain) compared to level 5 abstract shapes, it does not suffer from major changes in representation if small stem-loops are added or removed.
 
-%example of the conversion process 
-\noindent The mapping from a Vienna dot bracket representation can be made simply by removing the dots (unpaired nucleotides) and then creating a tree from it. Since all nodes represent base pairs, the resulting tree can be considered unlabelled. Note that an artificial root is added to all structures. 
 
 \subsection*{Unit Tree Indel Distance}
 
 % relation to the tree edit distance (special scoring scheme)
+A tree edit distance function is used to compare base pair trees.
+
+Insertions and deletions of base pairs have unit cost and since all nodes have the same label there is no relabelling.
+
+This distance function is called the unit tree indel distance It is referred to as a tree indel distance and 
 The unit tree indel distance is a simple and intuitive distance function based on the well known tree edit distance \cite{tai, zhang_shasha}, where insertions and deletions have a unit cost.
 Since it is applied to base pair trees which are unlabelled, node relabelling comes at no cost.
 
@@ -279,7 +307,7 @@ Since it is applied to base pair trees which are unlabelled, node relabelling co
 % basic properties
 %\noindent Naively, given $n$ molecules each with $m$ secondary structures, the going through the full search space would involve the evaluation of $m^n$ solutions. This is obviously not a good ideaHowever, the idea of 
 
-Minimizing the sum of pairwise distance between sets of objects is far from new and a significant body of work has been done in the field of location theory \cite{compact_location}. \newline
+Minimizing the sum of pairwise distance between sets of objects has been extensively investigated in the field of location theory \cite{compact_location}. Indeed, each step of the \newline
 
 
 % mapping of the consensuss problem to the compact location problem by
@@ -315,23 +343,6 @@ The genetic algorithm solver uses generic mutation (random substitution) and cro
 \noindent The local search is done by finding the substitution which improves the most the current sum of pairs distance. The operator applies a small number of iterations of local search with a certain probability.
 
 
-
-\subsection*{MC-Cons}
-
-% within tree consensus, minimizing a naive distance: string edit distance
-MC-Cons is a two-step optimization procedure (Fig.~\ref{fig1}). First, \textit{base pair tree consensus} are calculated. This insures that the final consensus will minimize the difference in base pair topology.
-For each base pair tree consensus and for each group of structures, the subset of secondary structures whose base pair tree fits the one assigned to that group is kept. String edit distance consensus (on Vienna dot brackets) are then calculated. Normally this distance function would not be sufficient, but since tree distance is already minimized, the final consensus is satisfactory.\newline
-
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[scale=0.4]{figs/mccons_flowchart2.eps}
-\caption{{\bf Flowchart illustration of MC-Cons procedure.}
-The two-step procedure is quite simple. The user only inputs data and chooses which consensus solver, either the exact one for small instances or the genetic algorithm for larger problems.}
-\label{fig1}
-\end{center}
-\end{figure}
 
 
 
