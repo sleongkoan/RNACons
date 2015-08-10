@@ -73,7 +73,7 @@ if __name__ == '__main__':
     # (with or without abstract shapes)
     STRFN = lambda x: x.__str__()
     if ARGS.display_abstract_shape == True:
-        STRFN = lambda x: x.str_with_shapes(ARGS.level)
+        STRFN = lambda x: x.str_with_shapes_order(ARGS.level)
 
     # output to either stdout or specified file
     if ARGS.output_path == "stdout":

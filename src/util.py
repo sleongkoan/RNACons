@@ -1,7 +1,6 @@
 """Objects and functions used in multiple scripts"""
 
 
-
 import collections
 
 
@@ -360,7 +359,7 @@ class Consensus(object):
     def __repr__(self):
         return str(self)
 
-    def str_with_shapes(self, level):
+    def str_with_shapes_order(self, level):
         """string representation with abstract shapes along suboptimals"""
         assert level in [5, 3, 1]
         level_to_index = [None, 2, None, 1, None, 0]
@@ -372,8 +371,11 @@ class Consensus(object):
         ret = "> {0} {1:.3f} {2:.3f}\n".format(self.number,
                                                avg_tree_dist,
                                                avg_string_dist)
-        for subopt, shape in zip(self.subopts, self.abstract_shapes):
-            ret += "{0} {1}\n".format(subopt, shape[access_index])
+        order = consensus_to_order(self)
+        for index in order:
+            subopt = self.subopts[index]
+            shape = self.abstract_shapes[index][access_index]
+            ret += "{0} {1} {2}\n".format(subopt, index, shape)
         ret += "\n"
         return ret
 
@@ -397,8 +399,10 @@ class Consensus(object):
             return (matrix_average(self.tree_dists) <
                     matrix_average(other.tree_dists))
 
+
     def __gt__(self, other):
         return other < self
+
 
     def __eq__(self, other): # equality on score
         equal_tree_dists = (matrix_average(self.tree_dists) ==
@@ -443,4 +447,184 @@ def read_consensus_file(file_name):
             consensus.append(Consensus(number,
                                        subopts))
     return consensus
+
+
+
+def _compute_weighted_distances(consensus,
+                                shape_weight=10000000.,
+                                tree_weight=100000.,
+                                string_weight=1.):
+    """converts the multiple distances used into a single distance
+       matrix by a simple weighted sum (many possibilities)"""
+
+    # first, we'd like to establish a distance between shapes
+    num_elems = len(consensus.subopts)
+    shape_dists = [[0. for _ in range(num_elems)] for _ in range(num_elems)]
+    # calculate the unit tree edit distance on the shapes
+    for index_1 in range(num_elems - 1):
+        (level_5_1, _, _) = consensus.abstract_shapes[index_1]
+        dot_bracket_1 = level_5_1.replace("[", "(")
+        dot_bracket_1 = dot_bracket_1.replace("]", ")")
+        tree_1 = dot_bracket_to_tree(dot_bracket_1)
+        for index_2 in range(index_1 + 1, num_elems):
+            (level_5_2, _, _) = consensus.abstract_shapes[index_2]
+            dot_bracket_2 = level_5_2.replace("[", "(")
+            dot_bracket_2 = dot_bracket_2.replace("]", ")")
+            tree_2 = dot_bracket_to_tree(dot_bracket_2)
+            # assign it to the matrix
+            dist = unlabeled_distance(tree_1, tree_2)
+            shape_dists[index_1][index_2] = dist
+            shape_dists[index_2][index_1] = dist
+
+    # add the 3 matrices with proper weights
+    new_matrix = [[0. for _ in range(num_elems)] for _ in range(num_elems)]
+    for index_1 in range(num_elems):
+        for index_2 in range(num_elems):
+            shape_score = shape_weight * shape_dists[index_1][index_2]
+            tree_score = tree_weight * consensus.tree_dists[index_1][index_2]
+            string_score = (string_weight *
+                            consensus.string_dists[index_1][index_2])
+            total_score = tree_score + shape_score + string_score
+            new_matrix[index_1][index_2] = total_score
+    return new_matrix
+
+
+def _matrix_to_dict(matrix):
+    """convert a matrix to a dict, keeping only lower triangular part"""
+    distance_dict = dict()
+    for index_1 in range(len(matrix)):
+        for index_2 in range(index_1 + 1, len(matrix)):
+            distance_dict[(index_1, index_2)] = matrix[index_1][index_2]
+    return distance_dict
+
+
+def _dict_argmin(distance_dict):
+    """return the keys of the minimal value"""
+    assert isinstance(distance_dict, dict)
+    best_value = float('inf')
+    best_key = None
+    for key, value in distance_dict.iteritems():
+        if value < best_value:
+            best_key = key
+            best_value = value
+    return best_key, best_value
+
+
+def _flatten_nested_tuple(nested_tuple):
+    """convert a nested tuple of integer indices into a flat list"""
+    flat_list = []
+    tuples_list = [nested_tuple]
+    while tuples_list:
+        # decompose the tuple into its constituents
+        current_tuple = tuples_list.pop()
+        if isinstance(current_tuple, tuple):
+            for elem in current_tuple:
+                if isinstance(elem, tuple):
+                    tuples_list.append(elem)
+                else:
+                    flat_list.append(elem)
+        else:
+            flat_list.append(current_tuple)
+    return flat_list
+
+
+def _average_distance(distance_matrix, group1, group2):
+    """calculate the arithmetic mean of the distances between
+    all elems of the two groups"""
+    num_compared = len(group1) * len(group2)
+    total = 0.
+    for index1 in group1:
+        for index2 in group2:
+            total += distance_matrix[index1][index2]
+    return total / num_compared
+
+
+def _update_distance_dict(distance_dict, distance_matrix, key1, key2):
+    """updates the matrix dictionary by recalculating distances"""
+    # remove useless keys
+    useless_keys = set()
+    remaining_keys = set()
+    key = (key1, key2)
+    for part1, part2 in distance_dict.iterkeys():
+        if part1 in key:
+            useless_keys.add((part1, part2))
+        else:
+            remaining_keys.add(part1)
+        if part2 in key:
+            useless_keys.add((part1, part2))
+        else:
+            remaining_keys.add(part2)
+    for key in useless_keys:
+        del distance_dict[key]
+
+    # create the new key
+    new_key = (key1, key2)
+    elems1 = _flatten_nested_tuple(new_key)
+
+    # create a dict mapping keys to their elements
+    keys_to_flat = dict()
+    for key in remaining_keys:
+        keys_to_flat[key] = _flatten_nested_tuple(key)
+
+    # recalculate average distance between old keys and new key
+    for key, elems2 in keys_to_flat.iteritems():
+        distance_dict[(key, new_key)] = _average_distance(distance_matrix,
+                                                          elems1,
+                                                          elems2)
+    return distance_dict
+
+
+def linkage_upgma(distance_matrix):
+    """compute the Unweighted Pair Group Method with Arithmetic Mean linkage"""
+    # make sure that the matrix is at least symmetric
+    for i in range(len(distance_matrix)):
+        for j in range(len(distance_matrix)):
+            assert distance_matrix[i][j] == distance_matrix[j][i]
+    # make sure that the distance(i, i) = 0
+    for i in range(len(distance_matrix)):
+        assert distance_matrix[i][i] == 0
+
+    # convert to a dictionary
+    distance_dict = _matrix_to_dict(distance_matrix)
+
+    # start the UPGMA algorithm
+    final_cluster = ()
+    fusions = []
+    while True:
+        #print "\n"
+        #for (k1, k2), v in distance_dict.iteritems():
+        #    print "{}, {} : {}".format(k1, k2, v)
+        #print "\n"
+        if len(distance_dict) <= 2:  # last choice
+            final_cluster, cost = _dict_argmin(distance_dict)
+            fusions.append((final_cluster[0], final_cluster[1], cost))
+            break
+        else:
+            (key1, key2), cost = _dict_argmin(distance_dict)
+            distance_dict = _update_distance_dict(distance_dict,
+                                                  distance_matrix,
+                                                  key1,
+                                                  key2)
+            fusions.append((key1, key2, cost))
+    return final_cluster, fusions
+
+
+def linkage_to_order(linkage):
+    """ """
+    order = str(linkage)
+    order = order.replace("(", "")
+    order = order.replace(")", "")
+    order = order.replace(" ", "")
+    order = order.split(",")
+    order = [int(i) for i in order]
+    return order
+
+
+def consensus_to_order(consensus, print_shapes=False):
+    """ """
+    dist = _compute_weighted_distances(consensus)
+    linkage, steps = linkage_upgma(dist)
+    return linkage_to_order(linkage)
+
+
 
