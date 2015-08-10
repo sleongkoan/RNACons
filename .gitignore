@@ -59,8 +59,13 @@ article/article.pdf
 
 # svg and pdf intermediates
 *.pdf
+#!doc/article/refs/centrality/*.pdf
+!doc/article/refs/*
+#doc/slides/*.pdf
 *.pdf_tex
 *.svg
 
 # temporary files
 tmp/
+
+

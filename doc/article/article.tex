@@ -210,7 +210,8 @@ Institute for Research in Immunology and Cancer, and Department of Computer Scie
 % WHAT KIND OF ARTICLE? : software paper right? although it's more algorithm with implementation given
 
 \section*{Abstract}
-%Discovery and characterization of functional RNA structures remains challenging due to deficiencies in de novo secondary structure modeling. Here we describe a dynamic programming approach for model-free sequence comparison that incorporates high-throughput chemical probing data. Based on SHAPE probing data alone, ribosomal RNAs (rRNAs) from three diverse organisms – the eubacteria E. coli and C. difficile and the archeon H. volcanii – could be aligned with accuracies comparable to alignments based on actual sequence identity. When both base sequence identity and chemical probing reactivities were considered together, accuracies improved further. Derived sequence alignments and chemical probing data from protein-free RNAs were then used as pseudo-free energy constraints to model consensus secondary structures for the 16S and 23S rRNAs. There are critical differences between these experimentally-informed models and currently accepted models, including in the functionally important neck and decoding regions of the 16S rRNA. We infer that the 16S rRNA has evolved to undergo large-scale changes in base pairing as part of ribosome function. As high-quality RNA probing data become widely available, structurally-informed sequence alignment will become broadly useful for de novo motif and function discovery.
+
+We consider the problem of selecting 
 RNA secondary structural assignment is an interesting problem. Bla bla bla.
 
 
@@ -243,85 +244,81 @@ RNA secondary structural assignment is an interesting problem. Bla bla bla.
 % "Models" is not a valid title for PLoS ONE authors. However, PLoS ONE
 % authors may use "Analysis"
 \newpage
-\section*{Methods}
+\section*{Design and Implementation}
+
+\subsection*{Consensus Problem}
+
+Given $n$ sets of $ m_1, m_2... m_n$ objects, the consensus problem is to find a set of $n$ objects, one per set, minimizing the sum of their pairwise distance.
+
+\noindent The consensus problem can be transformed into a MIN-SUM \textit{compact location problem} \cite{compact_location}. To reduce it, we add a large positive penalty $M$ to the distance of objects belonging to the same set. This way, any consensus using more than one object belonging to the same set is noncompetitive. Since the MIN-SUM compact location problem is NP-HARD, even for metric distance functions \cite{compact_location}, the use of heuristics is justified.
 
 
-\subsection*{The Workflow}
-
-% within tree consensus, minimizing a naive distance: string edit distance
-MC-Cons is a two-step optimization procedure (Fig.~\ref{fig1}).
-
-First, \textit{base pair tree consensus} are calculated.
-This insures that the final consensus will minimize the difference in base pair topology.
-For each base pair tree consensus and for each group of structures, the subset of secondary structures whose base pair tree fits the one assigned to that group is kept.
-
-String edit distance consensus (on Vienna dot brackets) are then calculated. Normally this distance function would not be sufficient, but since tree distance is already minimized, the final consensus is satisfactory.\newline
-
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[scale=0.4]{figs/mccons_flowchart2.eps}
-\caption{{\bf Flowchart illustration of MC-Cons procedure.}
-The two-step procedure is quite simple. The user only inputs data and chooses which consensus solver, either the exact one for small instances or the genetic algorithm for larger problems.}
-\label{fig1}
-\end{center}
-\end{figure}
-
-
-
-\subsection*{Base Pair Tree Representation of Secondary Structure}
-% base pair tree representation vs abstract shapes
-% upsides and downsides of the
-% representation compared to abstract shape
-RNA secondary structure can represented by base pair trees, where only base pairs are considered. This representation is very similar to level 5 RNA abstract shape \cite{abstract_shapes}, albeit the stem length information is conserved.
-Although this representation greatly increases the size of the auxiliary space (codomain) compared to level 5 abstract shapes, it does not suffer from major changes in representation if small stem-loops are added or removed.
-
-
-\subsection*{Unit Tree Indel Distance}
-
-% relation to the tree edit distance (special scoring scheme)
-A tree edit distance function is used to compare base pair trees.
-
-Insertions and deletions of base pairs have unit cost and since all nodes have the same label there is no relabelling.
-
-This distance function is called the unit tree indel distance It is referred to as a tree indel distance and 
-The unit tree indel distance is a simple and intuitive distance function based on the well known tree edit distance \cite{tai, zhang_shasha}, where insertions and deletions have a unit cost.
-Since it is applied to base pair trees which are unlabelled, node relabelling comes at no cost.
-
-% interpretation of a score
-\noindent Under this scoring scheme, a distance of $n$ means that the smallest number of base pair breakage or formation to transition from a base pair tree to another is $n$. The distance function retains the metric properties.
-
-\noindent Overall, the unit tree indel distance is an interesting distance function with both intuitive interpretation and very useful mathematical properties.
-
-
-
-\subsection*{Minimizing Sum of Pairwise Distances}
 
 % introduce the problem
 
 % sp-alignment
 
 % introduce compact location problem
-
 % basic properties
 %\noindent Naively, given $n$ molecules each with $m$ secondary structures, the going through the full search space would involve the evaluation of $m^n$ solutions. This is obviously not a good ideaHowever, the idea of 
 
-Minimizing the sum of pairwise distance between sets of objects has been extensively investigated in the field of location theory \cite{compact_location}. Indeed, each step of the \newline
+%Minimizing the sum of pairwise distance between sets of objects has been extensively investigated in the field of location theory \cite{compact_location}. Indeed, each step of the \newline
+%
+%
+%% mapping of the consensuss problem to the compact location problem by
+%% tweaking the distance function using infinity as intra group distance
+%% may need more details to proove it, let's see what Francois thinks
+%\noindent The consensus problem described here can be reduced to an instance of the minimum average distance placement (MIN-SUM) by modifying the distance function in use such that elements belonging to the same group have infinite distance, thereby guaranteeing that a consensus will never contain more than one element of each group. This convenient reduction allows us to benefit from previously derived hardness results and justify the use of meta-heuristics.
+%
+%\noindent Using a metric distance function, one might think that it would be possible to reduce efficiently the search space, but even finding a near-optimal placement within a certain factor of the optimal has been proved to be NP-Hard \cite{compact_location}.
 
 
-% mapping of the consensuss problem to the compact location problem by
-% tweaking the distance function using infinity as intra group distance
-% may need more details to proove it, let's see what Francois thinks
-\noindent The consensus problem described here can be reduced to an instance of the minimum average distance placement (MIN-SUM) by modifying the distance function in use such that elements belonging to the same group have infinite distance, thereby guaranteeing that a consensus will never contain more than one element of each group. This convenient reduction allows us to benefit from previously derived hardness results and justify the use of meta-heuristics.
 
-\noindent Using a metric distance function, one might think that it would be possible to reduce efficiently the search space, but even finding a near-optimal placement within a certain factor of the optimal has been proved to be NP-Hard \cite{compact_location}.
+\subsection*{RNA Secondary Structure and the Consensus Problem}
+
+Most RNA secondary structure prediction tools allow for the exploration of suboptimal secondary structures. Very often, the experimentally determined structures of reference structures can be found close to the best structure found.
+
+When working with functionally related RNAs such as Iron Response Elements (IREs) or transfer RNAs (tRNAs), one might expect that the function can be explained by some, potentially many, shared structures. To this end, our goal was to devise a method capable of finding similar structures
+%citer l'article de mc-fold et Paul
+
+MC-Cons is a two-step optimization procedure (Fig.~\ref{fig1}). The first step is to create consensus of base pair trees using a tree edit distance function to compare them. This step insures that the overall topology of stems in the structures of the consensus is as similar as possible. The second step refines the consensus previously created by minimizing the string edit distance on the Vienna dot-bracket representation of RNA secondary structure. This step insures that unpaired regions match as well as possible.
+
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.4]{figs/mccons_flowchart2.eps}
+\caption{{\bf Flowchart illustration of MC-Cons}
+The two-step procedure is simple. Its input is a marna-like formatted file of RNA sequences and secondary structures in Vienna dot-bracket format. Its output is a marna-like formatted  The two main optimization steps are highlighted in grey.}
+\label{fig1}
+\end{center}
+\end{figure}
+
+
+\subsection*{Base Pair Trees and Unit Tree Indel Distance}
+% base pair tree representation vs abstract shapes
+% upsides and downsides of the
+% representation compared to abstract shape
+We define base pair trees as ordered rooted trees built from the base pairs of a RNA secondary structure. This representation is similar to the RNA abstract shapes level 5 \cite{abstract_shapes} with the added benefit that it preserve stems length information.
+
+
+% relation to the tree edit distance (special scoring scheme)
+\noindent To compare such trees, we use a standard tree edit distance \cite{zhang_shasha} along with a custom scoring scheme to compare base pair trees. Under this scoring scheme, insertions and deletions have unit cost.
+
+% interpretation of a score
+\noindent This distance function is intuitive. A distance of $n$ between two base pair trees means that it is possible to convert each tree into the other with a minimum of $n$ modifications (insertions and deletions of base pairs).
+
+%Notice that the distance function retains the metric properties (non-negativity, symmetry, subadditivity).
+
+
+
+
 
 
 
 \subsection*{Consensus Solvers}
 % complexity justifies meta-heuristic
-Given the complexity of the consensus problem, the use of heuristics is well justified.
+Given the complexity of the consensus problem, the use of heuristics is well justified. We still give an exact solver.
 
 % check which details should be given, keep it as simple as possible
 % article using metaheuristics? stuff from class maybe?
@@ -364,6 +361,8 @@ The genetic algorithm solver uses generic mutation (random substitution) and cro
 % Results and Discussion can be combined.
 \newpage
 \section*{Results}
+
+To demonstrate the performance of MC-Cons, 
 Nulla mi mi, venenatis sed ipsum varius, Table~\ref{table1} volutpat euismod diam. Proin rutrum vel massa non gravida. Quisque tempor sem et dignissim rutrum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at justo vitae nulla elementum commodo eu id massa. In vitae diam ac augue semper tincidunt eu ut eros. Fusce fringilla erat porttitor lectus cursus, vel sagittis arcu lobortis. Aliquam in enim semper, aliquam massa id, cursus neque. Praesent faucibus semper libero.
 
 
@@ -417,8 +416,8 @@ CO\textsubscript{2} Maecenas convallis mauris sit amet sem ultrices gravida. Eti
 
 Sed non aliquet felis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris commodo justo ac dui pretium imperdiet. Sed suscipit iaculis mi at feugiat. Ut neque ipsum, luctus id lacus ut, laoreet scelerisque urna. Phasellus venenatis, tortor nec vestibulum mattis, massa tortor interdum felis, nec pellentesque metus tortor nec nisl. Ut ornare mauris tellus, vel dapibus arcu suscipit sed. Nam condimentum sem eget mollis euismod. Nullam dui urna, gravida venenatis dui et, tincidunt sodales ex. Nunc est dui, sodales sed mauris nec, auctor sagittis leo. Aliquam tincidunt, ex in facilisis elementum, libero lectus luctus est, non vulputate nisl augue at dolor. For more information, see \nameref{S1_Text}.
 
-\section*{Software Availability} %taken from dcGOR: Software for Ontologies and Domain Annotation
-As open-source software, MC-Cons is freely available under the GNU LGPL v3.0 license. It is distributed at GitHub, https://github.com/major-lab/MC-Cons along with documentation and working examples. The algorithms are implemented in portable ISO 1998 C++ without external dependencies and offers a very simple command line interface.
+\section*{Availability and Future Directions} %taken from dcGOR: Software for Ontologies and Domain Annotation
+As open-source software, MC-Cons is freely available under the GNU LGPL v3.0 license. It is available at https://github.com/major-lab/MC-Cons along with documentation and working examples. The algorithms are implemented in ISO 1998 C++ without external dependencies and a basic command line interface.
 
 \newpage
 \section*{Supporting Information}
