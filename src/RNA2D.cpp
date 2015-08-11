@@ -47,13 +47,13 @@ bool is_valid_dot_bracket(std::string dot_bracket)
 }
 
 
-std::string db2shape( std::string dbwithdots){
-    char db[dbwithdots.size()];
+std::string shape_level_5(std::string dot_bracket){
+    char db[dot_bracket.size()];
     int dblen=0;
-    for( int i=0; i<dbwithdots.size(); ++i ){
-        if( dbwithdots[i]!='.' )
+    for( int i=0; i<dot_bracket.size(); ++i ){
+        if( dot_bracket[i]!='.' )
         {
-            char c = dbwithdots[i];
+            char c = dot_bracket[i];
             c = c==')'?']':(c=='('?'[':c);
             db[dblen++]=c;
         }

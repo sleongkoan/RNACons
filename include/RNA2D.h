@@ -7,15 +7,17 @@
 #include <string>
 #include <vector>
 
-
-
-std::string only_paired(std::string dot_bracket);
-
-
+// asserts that the Vienna dot bracket is valid
+// (balanced, no illegal symbols)
 bool is_valid_dot_bracket(std::string dot_bracket);
 
 
-std::string db2shape( std::string dbwithdots);
+// removes the dots from the vienna dot bracket
+std::string only_paired(std::string dot_bracket);
+
+
+// converts the dot bracket to a level 5 RNA abstract shape
+std::string shape_level_5( std::string dot_bracket);
 
 
 #endif  // RNA2D_H

@@ -23,35 +23,39 @@ obj/SolverGA.o obj/SolverExact.o obj/Tree.o obj/MCCONS.o\
 obj/OptionParser.o obj/Solver.o obj/Readers.o
 
 # executable specific objects
-GAOBJECTS := obj/MCCONS_GA.o
-EXACTOBJECTS := obj/MCCONS_EXACT.o
-
+EXACTOBJECTS := obj/mcconsExact.o
+HEURISTICOBJECTS := obj/mcconsHeuristic.o
+SHAPEEXPLORER := obj/shapeExplorer.o
 rm       = rm -f
 
-all: $(BINDIR)/mccons_ga $(BINDIR)/mccons_exact
+all: $(BINDIR)/mcconsHeuristic $(BINDIR)/mcconsExact $(BINDIR)/shapeExplorer
 
 
 # compiling
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@$(CPP) $(FLAGS) -c $< -o $@
-
-$(GAOBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
+$(HEURISTICOBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@$(CPP) $(FLAGS) -c $< -o $@
 
 $(EXACTOBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@$(CPP) $(FLAGS) -c $< -o $@
 
+$(SHAPEEXPLORER): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
+	@$(CPP) $(FLAGS) -c $< -o $@
+
 
 # linking
-$(BINDIR)/mccons_ga: $(OBJECTS) $(GAOBJECTS)
-	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(GAOBJECTS)
+$(BINDIR)/mcconsHeuristic: $(OBJECTS) $(HEURISTICOBJECTS)
+	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(HEURISTICOBJECTS)
 
-$(BINDIR)/mccons_exact: $(OBJECTS) $(EXACTOBJECTS)
+$(BINDIR)/mcconsExact: $(OBJECTS) $(EXACTOBJECTS)
 	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(EXACTOBJECTS)
 
+$(BINDIR)/shapeExplorer: $(OBJECTS) $(SHAPEEXPLORER)
+	@$(LINKER) $@ $(LFLAGS) $(OBJECTS) $(SHAPEEXPLORER)
 
 .PHONEY: clean
 clean:
-	@$(rm) $(OBJECTS) $(MCOBJECTS) $(GAOBJECTS) $(EXACTOBJECTS)
+	@$(rm) $(OBJECTS) $(MCOBJECTS) $(HEURISTICOBJECTS) $(EXACTOBJECTS) $(SHAPEEXPLORER)
 	@$(rm) $(BINDIR)/*
 
