@@ -1,10 +1,77 @@
 
 #include "../include/MCCONS.h"
-#include "../include/ProgressBar.h"
+
+
+std::vector< std::vector<Tree> > get_tree_lists(std::vector< std::vector<std::string> > dot_brackets_vectors)
+{
+    // for efficiency reasons, might want to use a Set, but a vector will do for now
+    std::vector< std::vector<Tree> > result = std::vector< std::vector<Tree> >();
+
+    for (size_t i = 0; i < dot_brackets_vectors.size(); ++i)
+    {
+        // initialize a vector of trees to add later
+        std::vector<std::string> current_unique_brackets = std::vector<std::string>();
+        std::vector<Tree> current_unique_trees = std::vector<Tree>();
+
+        for(size_t j = 0; j < dot_brackets_vectors[i].size(); ++j)
+        {
+            // calculate the bracket
+            std::string bracket = only_paired(dot_brackets_vectors[i][j]);
+
+            // check if it has already been added to the current inner vector
+            bool found = false;
+            for (size_t k = 0; k < current_unique_brackets.size(); ++k)
+            {
+                if (current_unique_brackets[k] == bracket)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                // create the new bracket and tree and add it to the current vector
+                current_unique_brackets.push_back(bracket);
+                current_unique_trees.push_back(Tree(bracket));
+            }
+        }
+        // add to the result
+        result.push_back(current_unique_trees);
+    }
+
+    return result;
+}
+
+
+std::vector< std::vector<std::string> > filter_dot_brackets(std::vector< std::vector<std::string> > dot_brackets_vectors,
+                                                            std::vector<std::string> brackets)
+{
+    // remove dot_brackets with the wrong base tree topology
+    std::vector< std::vector<std::string> > result = std::vector< std::vector<std::string> >();
+    for(unsigned int i = 0; i < dot_brackets_vectors.size(); ++i)
+    {
+        std::string bracket = brackets[i];
+        std::vector<std::string> compliant_dot_brackets = std::vector<std::string>();
+
+        for(unsigned int j = 0; j < dot_brackets_vectors[i].size(); ++j)
+        {
+            if(only_paired(dot_brackets_vectors[i][j]) == bracket)
+            {
+                compliant_dot_brackets.push_back(dot_brackets_vectors[i][j]);
+            }
+        }
+        result.push_back(compliant_dot_brackets);
+    }
+    return result;
+}
+
+
 
 // sorting predicate for pairs of size_t, double by double
 struct pairs_sort_predicate {
-    bool operator()(const std::pair<int,double> &left, const std::pair<int,double> &right) {
+    bool operator()(const std::pair<int,double> &left,
+                    const std::pair<int,double> &right) {
         return left.second < right.second;
     }
 };
@@ -13,27 +80,29 @@ struct pairs_sort_predicate {
 void MCCONS(std::string path,
             Solver* tree_solver,
             Solver* dot_bracket_solver,
-            unsigned long seeds[6])
+            unsigned long prng_seeds[6])
 {
 
     // PHASE 1: TREE CONSENSUS
 
     // data acquisition
-    std::vector<std::vector<std::string> > dot_brackets = read_data(path);
+    std::vector<std::vector<std::string> > dot_brackets = read_marna_file(path);
     std::vector<std::vector<Tree> > trees = get_tree_lists(dot_brackets);
-    ConsensusProblem<Tree> tree_problem = ConsensusProblem<Tree>(trees, *unit_distance);
-    int num_relations = dot_brackets.size() * (dot_brackets.size() - 1);  // n (n -1)
+    ConsensusProblem<Tree> tree_problem = ConsensusProblem<Tree>(trees, *unit_tree_indel_distance_trees);
+    int num_comparisons = dot_brackets.size() * (dot_brackets.size() - 1);  // n (n -1)
 
     // PHASE 1 SOLVING
     bool silent_output = tree_solver->is_silent();
     if (! silent_output)
     {
+        // print out the size of the search space
+        // long int 
         std::cerr << "Phase 1: Base Pair Tree Consensus (1)" << std::endl;
     }
 
     std::vector<Solution> tree_consensus = tree_solver->solve(tree_problem.get_distance_matrix(),
                                                               tree_problem.get_ranges(),
-                                                              seeds);
+                                                              prng_seeds);
 
     // sort the tree consensus by score (lower is better)
     std::vector< std::pair<int, double> > sorted_order = std::vector<std::pair<int, double> >();
@@ -56,7 +125,7 @@ void MCCONS(std::string path,
         int index;
         for(size_t i = 0; i != tree_consensus.size(); ++i)
         {
-            std::cerr << "> " << i << " " << tree_consensus[i].get_score()/num_relations << std::endl;
+            std::cerr << "> " << i << " " << tree_consensus[i].get_score()/num_comparisons << std::endl;
             for(size_t j = 0; j != tree_consensus[i].get_genes().size(); ++j)
             {
                 index = tree_consensus[i].get_genes()[j];
@@ -85,7 +154,7 @@ void MCCONS(std::string path,
     // instantiate the problems
     for (size_t i = 0; i != prob2_data.size(); ++i)
     {
-        dot_bracket_problems.push_back(ConsensusProblem<std::string>(prob2_data[i], *levenshtein));
+        dot_bracket_problems.push_back(ConsensusProblem<std::string>(prob2_data[i], *string_edit_distance));
     }
 
 
@@ -107,7 +176,7 @@ void MCCONS(std::string path,
     {
         dot_bracket_consensus.push_back(dot_bracket_solver->solve(dot_bracket_problems[i].get_distance_matrix(),
                                                                  dot_bracket_problems[i].get_ranges(),
-                                                                 seeds));
+                                                                 prng_seeds));
         progress.update((float) i / tree_consensus.size());
     }
     progress.clean();
@@ -126,7 +195,7 @@ void MCCONS(std::string path,
     for(size_t i = 0; i != dot_bracket_consensus.size(); ++i)
     {
         // figure out what the best scores are within each tree consensus
-        tree_score = tree_consensus[i].get_score() / num_relations;
+        tree_score = tree_consensus[i].get_score() / num_comparisons;
         best_dot_bracket_score = std::numeric_limits<double>::infinity();
         for(size_t j = 0; j != dot_bracket_consensus[i].size(); ++j)
         {
@@ -139,7 +208,7 @@ void MCCONS(std::string path,
         {
             if (dot_bracket_consensus[i][j].get_score() == best_dot_bracket_score) {
                 // output the consensus
-                std::cout << "> " << sol_index << " " << tree_score << " " << best_dot_bracket_score / num_relations << std::endl;
+                std::cout << "> " << sol_index << " " << tree_score << " " << best_dot_bracket_score / num_comparisons << std::endl;
                 sol_index += 1;
                 for (size_t gene_index = 0; gene_index != dot_bracket_consensus[i][j].get_genes().size(); ++gene_index) {
                     gene = dot_bracket_consensus[i][j].get_genes()[gene_index];

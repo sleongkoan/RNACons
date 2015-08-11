@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
           SUBOPTIMAL_THRESHOLD = atof(options["threshold"].c_str());
       }
 
-      // instantiate the genetic algorithm solver
+      // instantiate the solver
       Solver* tree_solver = new SolverExact(SUBOPTIMAL_THRESHOLD, false);
       Solver* dot_bracket_solver = new SolverExact(0., false);
 

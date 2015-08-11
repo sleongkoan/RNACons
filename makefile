@@ -17,10 +17,10 @@ SOURCES  := $(wildcard $(SRCDIR)/*.c)
 INCLUDES := $(wildcard $(INCLUDEDIR)/*.h)
 
 # the objects
-OBJECTS  := obj/ConsensusProblem.o obj/Node.o obj/ProgressBar.o\
-obj/RNAConsensus.o obj/RngStream.o obj/Solution.o obj/SubSolution.o\
-obj/SolverGA.o obj/SolverMC.o obj/SolverExact.o obj/Tree.o obj/MCCONS.o\
-obj/OptionParser.o obj/Solver.o
+OBJECTS  := obj/RNA2D.o obj/ConsensusProblem.o obj/Distances.o obj/ProgressBar.o\
+obj/RngStream.o obj/Solution.o obj/SubSolution.o\
+obj/SolverGA.o obj/SolverExact.o obj/Tree.o obj/MCCONS.o\
+obj/OptionParser.o obj/Solver.o obj/Readers.o
 
 # executable specific objects
 GAOBJECTS := obj/MCCONS_GA.o
