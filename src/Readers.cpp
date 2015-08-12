@@ -10,7 +10,7 @@ int get_subopt_length(std::string line)
             return i;
         }
     }
-    return 0; // will provoke failure later
+    return line.size(); // will provoke failure later
 }
 
 

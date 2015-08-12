@@ -4,18 +4,18 @@
 using optparse::OptionParser;
 
 
-void join(const std::vector<std::string>& v, char c, std::string& s)
+std::string join(const std::vector<std::string>& stringsToJoin, char separator)
 {
-   // simple string joining method
-   s.clear();
-
-   for (std::vector<std::string>::const_iterator p = v.begin();p != v.end(); ++p)
-   {
-      s += *p;
-      if (p != v.end() - 1)
-        s += c;
-   }
+    std::string concatenated = std::string();
+    for (size_t i = 0; i != stringsToJoin.size(); ++i)
+    {
+        concatenated = concatenated + separator;
+        concatenated = concatenated + stringsToJoin[i];
+    }
+    concatenated = concatenated + separator;
+    return concatenated;
 }
+
 
 
 class Consensus
@@ -37,35 +37,48 @@ public:
             structures_.push_back(std::string(structure_list[i]));
         }
 
+
+        // calculate the shape signature (unique arrangement of shapes in the consensus)
+        std::vector<std::string> shapes_ = std::vector<std::string>();
+        for (size_t i = 0; i != structure_list.size(); ++i)
+        {
+            shapes_.push_back(shape_level_5(structure_list[i]));
+        }
+        shapes_str_ = join(shapes_, '\n');
+
         // calculate a normalizing constant, n * n -1 unique comparisons
         double normalizing_constant = structure_list.size();
         normalizing_constant *= (normalizing_constant - 1);
 
-        // calculate the shape signature (unique arrangement of shapes in the consensus)
-        std::vector<std::string> shapes_ = std::vector<std::string>();
-        for (size_t j = 0; j != structure_list.size(); ++j)
-        {
-            shapes_.push_back(shape_level_5(structure_list[j]));
-        }
-        std::string shapes_str_;
-        join(shapes_, '\n', shapes_str_);
-
         // calculate both the unit tree indel distance and the string edit distance
-        double tree_dist_ = 0;
-        double string_dist_ = 0;
+        tree_dist_ = 0;
+        string_dist_ = 0;
 
-        for (size_t j = 0; j != structure_list.size(); ++j)
+        for (size_t i = 0; i != structure_list.size(); ++i)
         {
-            for(size_t k = 0; k != structure_list.size(); ++k)
+            for(size_t j = 0; j != structure_list.size(); ++j)
             {
-                tree_dist_ += unit_tree_indel_distance_strings(structure_list[j], structure_list[k]);
-                string_dist_ += string_edit_distance(structure_list[j], structure_list[k]);
+                tree_dist_ += unit_tree_indel_distance_strings(structures_[i], structures_[j]);
+                string_dist_ += string_edit_distance(structures_[i], structures_[j]);
+
             }
         }
-        tree_dist_ /= normalizing_constant;
-        string_dist_ /= normalizing_constant;
+        tree_dist_ = tree_dist_ / normalizing_constant;
+        string_dist_ = string_dist_ / normalizing_constant;
         index_ = -1;
         return;
+    }
+
+    Consensus(const Consensus& other)
+    {
+        shapes_ = other.shapes_;
+        structures_ = other.structures_;
+        shapes_str_ = other.shapes_str_;
+
+        tree_dist_ = other.tree_dist_;
+        string_dist_ = other.string_dist_;
+        index_ = other.index_;
+
     }
 
 
@@ -120,13 +133,15 @@ std::vector<Consensus> find_shape_representatives(std::vector<Consensus> consens
         {
             shapes_to_consensus[current.shapes_str_] = std::vector<Consensus>();
         }
-        shapes_to_consensus[current.shapes_str_].push_back(current);
+        shapes_to_consensus[current.shapes_str_].push_back(Consensus(current));
     }
 
     // sort the consensus by their score and keep only the best
     std::vector<Consensus> best_consensus = std::vector<Consensus>();
     double best_tree_dist, best_string_dist;
-    std::map<std::string, std::vector<Consensus> >::iterator consensus_iterator = std::map<std::string, std::vector<Consensus> >::iterator();
+    std::map<std::string, std::vector<Consensus> >::iterator consensus_iterator = 
+    std::map<std::string, std::vector<Consensus> >::iterator();
+
     for(consensus_iterator = shapes_to_consensus.begin();
         consensus_iterator != shapes_to_consensus.end();
         consensus_iterator++)
@@ -139,10 +154,11 @@ std::vector<Consensus> find_shape_representatives(std::vector<Consensus> consens
         best_string_dist = consensus_iterator->second[0].string_dist_;
         for(size_t i = 0; i != consensus_iterator->second.size(); ++i)
         {
-            if ((consensus_iterator->second[i].tree_dist_ == best_tree_dist) &&
-                (consensus_iterator->second[i].string_dist_ == best_string_dist))
+            Consensus current = Consensus(consensus_iterator->second[i]);
+            if ((current.tree_dist_ == best_tree_dist) &&
+                (current.string_dist_ == best_string_dist))
             {
-                best_consensus.push_back(Consensus(consensus_iterator->second[i]));
+                best_consensus.push_back(Consensus(current));
             }
             else
             {
@@ -164,19 +180,21 @@ int main(int argc, char *argv[])
     parser.add_option("-i", "--input").dest("data_file").help("path to a MC-Cons output file");
     optparse::Values options = parser.parse_args(argc, argv);
 
-
     if (options.is_set("data_file"))
     {
       // read the consensus file
       std::string path = options["data_file"];
       std::vector< std::vector< std::string> > consensus_list = read_consensus_file(path);
 
+
       // convert to a list of consensus
       std::vector<Consensus> input_consensus = std::vector<Consensus>();
       for (size_t i = 0; i != consensus_list.size(); ++i)
       {
           input_consensus.push_back(Consensus(consensus_list[i]));
+          input_consensus[i].index_ = i;
       }
+
 
       // filter the consensus
       std::vector<Consensus> best_consensus = find_shape_representatives(input_consensus);
