@@ -35,7 +35,6 @@ keeping only the best consensus for each arrangement of abstract shapes.
 
 - C++ compiler
 - make
-- vanilla python 2 interpreter (no package dependencies)
 
 
 
