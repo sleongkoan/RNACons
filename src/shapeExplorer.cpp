@@ -4,16 +4,15 @@
 using optparse::OptionParser;
 
 
-std::string join(const std::vector<std::string>& stringsToJoin, char separator)
+std::string join(const std::vector<std::string> stringsToJoin, char separator)
 {
-    std::string concatenated = std::string();
+    std::ostringstream buffer;
     for (size_t i = 0; i != stringsToJoin.size(); ++i)
     {
-        concatenated = concatenated + separator;
-        concatenated = concatenated + stringsToJoin[i];
+        buffer << separator << stringsToJoin[i];
     }
-    concatenated = concatenated + separator;
-    return concatenated;
+    buffer << separator;
+    return buffer.str();
 }
 
 
@@ -39,10 +38,10 @@ public:
 
 
         // calculate the shape signature (unique arrangement of shapes in the consensus)
-        std::vector<std::string> shapes_ = std::vector<std::string>();
+        shapes_ = std::vector<std::string>();
         for (size_t i = 0; i != structure_list.size(); ++i)
         {
-            shapes_.push_back(shape_level_5(structure_list[i]));
+            shapes_.push_back(std::string(shape_level_5(structure_list[i])));
         }
         shapes_str_ = join(shapes_, '\n');
 
@@ -69,17 +68,11 @@ public:
         return;
     }
 
-    Consensus(const Consensus& other)
-    {
-        shapes_ = other.shapes_;
-        structures_ = other.structures_;
-        shapes_str_ = other.shapes_str_;
-
-        tree_dist_ = other.tree_dist_;
-        string_dist_ = other.string_dist_;
-        index_ = other.index_;
-
-    }
+    Consensus(const Consensus& other):
+    shapes_(other.shapes_), structures_(other.structures_),
+    shapes_str_(other.shapes_str_), tree_dist_(other.tree_dist_),
+    string_dist_(other.string_dist_), index_(other.index_)
+    { }
 
 
     bool operator<(const Consensus &other) const
@@ -103,7 +96,21 @@ public:
                 (string_dist_ == other.string_dist_));
     }
 
+
     friend std::ostream& operator<< (std::ostream &out, Consensus &cons);
+
+
+    std::string to_str_with_shapes()
+    {
+        std::ostringstream buffer;
+        buffer << "> " << index_ << " " << tree_dist_ << " " << string_dist_ << '\n';
+        for (size_t i = 0; i != structures_.size(); ++i)
+        {
+            buffer << structures_[i] << " " << shapes_[i] << '\n';
+        }
+        buffer << '\n';
+        return buffer.str();
+    }
 
 };
 
@@ -138,7 +145,6 @@ std::vector<Consensus> find_shape_representatives(std::vector<Consensus> consens
 
     // sort the consensus by their score and keep only the best
     std::vector<Consensus> best_consensus = std::vector<Consensus>();
-    double best_tree_dist, best_string_dist;
     std::map<std::string, std::vector<Consensus> >::iterator consensus_iterator = 
     std::map<std::string, std::vector<Consensus> >::iterator();
 
@@ -150,13 +156,11 @@ std::vector<Consensus> find_shape_representatives(std::vector<Consensus> consens
         std::sort(consensus_iterator->second.begin(), consensus_iterator->second.end());
 
         // keep only the best consensus
-        best_tree_dist = consensus_iterator->second[0].tree_dist_;
-        best_string_dist = consensus_iterator->second[0].string_dist_;
+        Consensus best_current(consensus_iterator->second[0]);
         for(size_t i = 0; i != consensus_iterator->second.size(); ++i)
         {
             Consensus current = Consensus(consensus_iterator->second[i]);
-            if ((current.tree_dist_ == best_tree_dist) &&
-                (current.string_dist_ == best_string_dist))
+            if (current == best_current)
             {
                 best_consensus.push_back(Consensus(current));
             }
@@ -178,6 +182,7 @@ int main(int argc, char *argv[])
     // create the command line parser
     OptionParser parser = OptionParser().description("Shape Explorer: finding best consensus for each unique arrangement of level 5 RNA abstract shapes");
     parser.add_option("-i", "--input").dest("data_file").help("path to a MC-Cons output file");
+    parser.add_option("-s", "--shape").dest("shape").action("store_true").help("display shapes alongside structures");
     optparse::Values options = parser.parse_args(argc, argv);
 
     if (options.is_set("data_file"))
@@ -200,10 +205,21 @@ int main(int argc, char *argv[])
       std::vector<Consensus> best_consensus = find_shape_representatives(input_consensus);
 
       // write to stdout
-      for(size_t i = 0; i != best_consensus.size(); ++i)
+      if (options.is_set("shape"))
       {
-          best_consensus[i].index_ = i;
-          std::cout << best_consensus[i];
+          for(size_t i = 0; i != best_consensus.size(); ++i)
+          {
+            best_consensus[i].index_ = i;
+            std::cout << best_consensus[i].to_str_with_shapes();
+          }
+      }
+      else
+      {
+          for(size_t i = 0; i != best_consensus.size(); ++i)
+          {
+              best_consensus[i].index_ = i;
+              std::cout << best_consensus[i];
+          }
       }
       return 1;
 

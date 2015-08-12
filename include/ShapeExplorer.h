@@ -10,6 +10,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <sstream>
 
 
 // for each unique arrangement of level 5 shapes, find the ones with
