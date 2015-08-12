@@ -18,7 +18,7 @@ consensus based on strings edit distance on the Vienna dot-bracket is used.
 The simple string edit distance is used because it does work quite well.
 
 
-![](article/figs/mccons_flowchart2.jpg)
+![](doc/article/figs/mccons_flowchart2.jpg)
 
 
 There are currently two versions of the consensus optimizer available,
@@ -108,28 +108,28 @@ make all
 
 # exact version (by branch and bound)
 # use only on very small instances
-bin/mccons_exact -f data/examples/mccons_example.marna
+bin/mcconsExact -f data/examples/mccons_example.marna
 
 # exact version with suboptimal consensus
 # here, all consensus within an average 0.5 unit tree distance
 # more than the best consensus will be kept
-bin/mccons_exact -f data/examples/mccons_example.marna -t 0.5
+bin/mcconsExact -f data/examples/mccons_example.marna -t 0.5
 
 # heuristic version (an hybrid genetic algorithm, with steepest descent)
 # defaults parameters behave fine on most small and medium instances
 # population size and number of generations should be increased for large instances
-bin/mccons_ga -f data/examples/mccons_example.marna
+bin/mcconsHeuristic -f data/examples/mccons_example.marna
 
 # same suboptimal threshold consideration as for the exact solver
-bin/mccons_ga -f data/examples/mccons_example.marna -t 0.5
+bin/mcconsHeuristic -f data/examples/mccons_example.marna -t 0.5
 
 
 # SHAPE EXPLORER USAGE
 
 # when considering suboptimal consensus, MC-Cons often returns too
 # many consensus to be useful. This performs a selection of those
-# with best scores for each arrangement of RNA abstract shapes (level 1, 3 or 5)
-src/shape_explorer.py -i data/examples/shape_explorer_example.marna -l 5 -s
+# with best scores for each arrangement of RNA abstract shapes (level 5)
+bin/shapeExplorer -i data/examples/shape_explorer_example.marna -s
 
 ```
 
