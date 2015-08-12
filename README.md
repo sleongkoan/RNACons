@@ -3,32 +3,38 @@
 
 ## Description
 
-MC-Cons computes a structural assignment, that is, it assigns to each sequence
-the structure that maximizes the overall sum of pair-wise structural
-similarities.
+MC-Cons is an algorithm that finds  RNA secondary structure consensus.
+That is, with a list of sequences and potential structures, it tries to find
+a group of structures, one per sequence, who have the greatest similarity between
+all of them.
+
+To do so, it first represents RNA secondary structures as base pair trees.
+Base pair trees are ordered rooted trees built from the base pairs of a RNA
+secondary structure. A special tree edit distance is used to compare these trees.
+Potentially many equivalent consensus are found during this phase.
 
 
-It does so by first finding a tree structural assignment based on a simple
-tree representation.
-RNA base pairs are represented as nodes and a tree edit distance is used
-(insertion cost = 1, deletion cost = 1, substitution = 0).
-
-Once a tree consensus (or many) is found, the structures are filtered and a
-consensus based on strings edit distance on the Vienna dot-bracket is used.
-The simple string edit distance is used because it does work quite well.
+The second step refines the consensus previously created by minimizing the
+string edit distance on the Vienna dot-bracket representation of RNA secondary
+structure fitting the base pair trees. This step insures that unpaired regions
+match as well as possible.
 
 
 ![](doc/article/figs/mccons_flowchart2.jpg)
 
+## MC-Cons versions
 
-There are currently two versions of the consensus optimizer available,
-one using an exact solver with Branch and Bound strategy and an heuristic
-one using an Hybrid Genetic Algorithm. Each version has an option to return
-suboptimal consensus solutions along the optimal one(s).
+Two versions of the consensus optimizer available,
+one using an exact solver with Branch and Bound strategy and a heuristic
+one using an Hybrid Genetic Algorithm. Each solver can consider
+suboptimal consensus solutions during the first phase to preserve more
+variety in the final solutions.
 
 
-A shape explorer tool is given to filter suboptimal consensus solutions by
-keeping only the best consensus for each arrangement of abstract shapes.
+## Shape Explorer
+Shape explorer is a tool to explore MC-Cons outputs. This is useful mostly when MC-Cons
+considers suboptimal solutions. It filters consensus by keeping only the best consensus
+for each arrangement of abstract shapes level 5.
 
 
 ## Requirements
