@@ -25,8 +25,8 @@ match as well as possible.
 ## MC-Cons versions
 
 Two versions of the consensus optimizer available,
-one using an exact solver with Branch and Bound strategy and a heuristic
-one using an Hybrid Genetic Algorithm. Each solver can consider
+one using an exact solver with branch and bound strategy and a heuristic
+one using an hybrid genetic algorithm. Each solver can consider
 suboptimal consensus solutions during the first phase to preserve more
 variety in the final solutions.
 

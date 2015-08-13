@@ -106,7 +106,7 @@ public:
         buffer << "> " << index_ << " " << tree_dist_ << " " << string_dist_ << '\n';
         for (size_t i = 0; i != structures_.size(); ++i)
         {
-            buffer << structures_[i] << " " << shapes_[i] << '\n';
+            buffer << structures_[i] << "\t" << shapes_[i] << '\n';
         }
         buffer << '\n';
         return buffer.str();
