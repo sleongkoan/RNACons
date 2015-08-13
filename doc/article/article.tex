@@ -211,9 +211,6 @@ Institute for Research in Immunology and Cancer, and Department of Computer Scie
 
 \section*{Abstract}
 
-We consider the problem of selecting 
-RNA secondary structural assignment is an interesting problem. Bla bla bla.
-
 
 % Please keep the Author Summary between 150 and 200 words
 % Use first person. PLOS ONE authors please skip this step. 
@@ -274,14 +271,14 @@ Given $n$ sets of $ m_1, m_2... m_n$ objects, the consensus problem is to find a
 
 
 
-\subsection*{RNA Secondary Structure and the Consensus Problem}
+\subsection*{Consensus Problem and RNA Secondary Structure}
 
-Most RNA secondary structure prediction tools allow for the exploration of suboptimal secondary structures. Very often, the experimentally determined structures of reference structures can be found close to the best structure found.
+Most RNA secondary structure prediction tools allow for the exploration of suboptimal secondary structures. This is important because RNA achieve function only with multiple alternating structures \cite{need_subopts}. Also, the experimentally determined structures of reference structures are usually close to the best structure found.
 
-When working with functionally related RNAs such as Iron Response Elements (IREs) or transfer RNAs (tRNAs), one might expect that the function can be explained by some, potentially many, shared structures. To this end, our goal was to devise a method capable of finding similar structures
-%citer l'article de mc-fold et Paul
 
-MC-Cons is a two-step optimization procedure (Fig.~\ref{fig1}). The first step is to create consensus of base pair trees using a tree edit distance function to compare them. This step insures that the overall topology of stems in the structures of the consensus is as similar as possible. The second step refines the consensus previously created by minimizing the string edit distance on the Vienna dot-bracket representation of RNA secondary structure. This step insures that unpaired regions match as well as possible.
+\noindent Usually, we expect that the structures adopted by families of RNAs with similar functions such as Iron Response Elements (IREs) or transfer RNAs (tRNAs) are similar. To this end, our goal was to devise a method capable of finding similar structures within separate sets of suboptimal structures.
+
+\noindent MC-Cons is a two-step optimization procedure solving two consensus problems (Fig.~\ref{fig1}). The first step creates consensus of base pair trees using a tree edit distance function to compare them. This step insures that the overall topology of stems in the structures of the consensus is as similar as possible. The second step refines the consensus previously created by minimizing the string edit distance on the Vienna dot-bracket representation of RNA secondary structure. This step insures that unpaired regions match as well as possible.
 
 
 
@@ -289,7 +286,7 @@ MC-Cons is a two-step optimization procedure (Fig.~\ref{fig1}). The first step i
 \begin{center}
 \includegraphics[scale=0.4]{figs/mccons_flowchart2.eps}
 \caption{{\bf Flowchart illustration of MC-Cons}
-The two-step procedure is simple. Its input is a marna-like formatted file of RNA sequences and secondary structures in Vienna dot-bracket format. Its output is a marna-like formatted  The two main optimization steps are highlighted in grey.}
+The two-step procedure is simple. Its input is a marna-like formatted file of RNA sequences and secondary structures in Vienna dot-bracket format. The two main optimization steps are highlighted in grey.}
 \label{fig1}
 \end{center}
 \end{figure}
@@ -299,17 +296,14 @@ The two-step procedure is simple. Its input is a marna-like formatted file of RN
 % base pair tree representation vs abstract shapes
 % upsides and downsides of the
 % representation compared to abstract shape
-We define base pair trees as ordered rooted trees built from the base pairs of a RNA secondary structure. This representation is similar to the RNA abstract shapes level 5 \cite{abstract_shapes} with the added benefit that it preserve stems length information.
+Base pair trees are ordered rooted trees built from the base pairs of a RNA secondary structure. This representation is similar to the RNA abstract shapes level 5 \cite{abstract_shapes} with the added benefit that it preserve stems length information.
 
 
 % relation to the tree edit distance (special scoring scheme)
 \noindent To compare such trees, we use a standard tree edit distance \cite{zhang_shasha} along with a custom scoring scheme to compare base pair trees. Under this scoring scheme, insertions and deletions have unit cost.
 
 % interpretation of a score
-\noindent This distance function is intuitive. A distance of $n$ between two base pair trees means that it is possible to convert each tree into the other with a minimum of $n$ modifications (insertions and deletions of base pairs).
-
-%Notice that the distance function retains the metric properties (non-negativity, symmetry, subadditivity).
-
+\noindent This distance function is intuitive. A distance of $n$ between two base pair trees means that it is possible to convert each tree into the other with a minimum of $n$ modifications (insertions and deletions of base pairs). The unit tree indel distance function is metric.
 
 
 
@@ -318,30 +312,9 @@ We define base pair trees as ordered rooted trees built from the base pairs of a
 
 \subsection*{Consensus Solvers}
 % complexity justifies meta-heuristic
-Given the complexity of the consensus problem, the use of heuristics is well justified. We still give an exact solver.
+Two consensus solvers are available. Each one has the option of considering suboptimal solutions during the first optimization step. The first is an exact solver using a branch and bound design. The algorithm builds solutions incrementally and evaluates the lower bound of an incomplete solution by the summation of pairwise distances between the chosen objects and the best distance they have to remaining sets of objects to choose from. This algorithm works on small instances.
 
-% check which details should be given, keep it as simple as possible
-% article using metaheuristics? stuff from class maybe?
-
-% mention the interface, the solvers are given a precomputed distance matrix!
-\noindent Many simple heuristics were found to perform well within reasonable time. These algorithms all take precomputed distance matrices whose calculation is embarrassingly parallel.
-
-% for the article, we'll ignore the steepest descent solver for now, it is useless
-% version 1: Exact Version (branch & bound)
-\paragraph{Exact Version: Branch \& Bound}
-First, an exact version of the consensus solver based on a branch \& bound design was created to compare the performance of different heuristics on small instances.
-
-\noindent The lower bound of an incomplete solution is estimated by the summation of pairwise distances between the chosen objects and the best distance they have to remaining sets of objects to be chosen. This bound is generally quite good on small instances, but its performance degrades rapidly as the number of molecules grows.
-
-% version 2: Genetic Algorithm
-\paragraph{Heuristic: Genetic Algorithm}
-The genetic algorithm solver uses generic mutation (random substitution) and crossover operators (uniform) along with elitist selection. To increase convergence rate, an improvement operator using a steepest descent procedure is used.
-
-\noindent The local search is done by finding the substitution which improves the most the current sum of pairs distance. The operator applies a small number of iterations of local search with a certain probability.
-
-
-
-
+\noindent The second solver is an hybrid genetic algorithm which works well on medium to large instances. It uses generic mutation (random substitution) and crossover operators (uniform) along with an elitist selection. The algorithm also uses a local search procedure to increase the convergence rate. It finds the substitution which improves the most the current sum of pairwise distances. With a low probability, the improvement operator applies a small number of iterations of the local search.
 
 
 
@@ -362,7 +335,12 @@ The genetic algorithm solver uses generic mutation (random substitution) and cro
 \newpage
 \section*{Results}
 
-To demonstrate the performance of MC-Cons, 
+
+
+
+\paragraph{IRES}
+
+
 Nulla mi mi, venenatis sed ipsum varius, Table~\ref{table1} volutpat euismod diam. Proin rutrum vel massa non gravida. Quisque tempor sem et dignissim rutrum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at justo vitae nulla elementum commodo eu id massa. In vitae diam ac augue semper tincidunt eu ut eros. Fusce fringilla erat porttitor lectus cursus, vel sagittis arcu lobortis. Aliquam in enim semper, aliquam massa id, cursus neque. Praesent faucibus semper libero.
 
 
@@ -477,6 +455,8 @@ Dennis Shasha and Kaizhong Zhang. Fast algorithms for the unit cost
     editing distance between trees. Journal of Algorithms, 11(4):581–621,
     December 1990.
 
+\bibitem{need_subopts}
+Dethoff, Elizabeth A. and Petzold, Katja and Chugh, Jeetender and Casiano-Negroni, Anette and Al-Hashimi, Hashim M. Visualizing transient low-populated structures of RNA. Nature 491, 2012
 
 \bibitem{compact_location}
  S. O. Krumke, M. V. Marathe, H. Noltemeier, et al. Compact location problems Theoretical Computer Science, Vol. 181, No. 2. (1997), pp. 379-404
