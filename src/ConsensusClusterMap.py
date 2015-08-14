@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import scipy.cluster
 import seaborn
-from util import *
+from Util import *
 
 seaborn.set(font="monospace")
 
@@ -424,7 +424,7 @@ if __name__ == '__main__':
                         help="weight of the string edit distances in the weighted sum")
 
     # FIGURE SIZE PARAMETERS
-    PARSER.add_argument("--xsize", action="store", default=20,
+    PARSER.add_argument("--xsize", action="store", default=10,
                         type=int, dest="x_size",
                         help="size of the x axis")
     PARSER.add_argument("--ysize", action="store", default=10,
