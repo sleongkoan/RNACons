@@ -9,15 +9,20 @@ using optparse::OptionParser;
 
 int main(int argc, char *argv[])
 {
-    // GLOBAL SETTINGS (MODIFY AT YOUR OWN RISKS (WHICH ARE MINIMAL))
+    // seeds are unused but passed anyways (the algorithm isn't probabilistic)
     unsigned long SEEDS[6] = {42, 42, 42, 42, 42, 42};
 
 
     // create the command line parser
     OptionParser parser = OptionParser().description("MC-Cons Consensus Optimizer Using an Exact Branch and Bound Solver");
-    parser.add_option("-f", "--data").dest("data_file").help("path to MARNA-like input file");
+
+    // I/O
+    parser.add_option("-i", "--data").dest("data_file").help("path to MARNA-like input file");
+    // threshold
     parser.add_option("-t", "--threshold").dest("threshold").type("size_t").help("consider up to t additional score for trees");
-    parser.add_option("-i", "--interrupt").dest("interrupt").type("bool").help("do only tree consensus");
+
+
+    // parse the arguments
     optparse::Values options = parser.parse_args(argc, argv);
 
 

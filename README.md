@@ -113,20 +113,20 @@ make all
 
 # exact version (by branch and bound)
 # use only on very small instances
-bin/mcconsExact -f data/examples/mccons_example.marna
+bin/mcconsExact -i data/examples/mccons_example.marna
 
 # exact version with suboptimal consensus
 # here, all consensus within an average 0.5 unit tree distance
 # more than the best consensus will be kept
-bin/mcconsExact -f data/examples/mccons_example.marna -t 0.5
+bin/mcconsExact -i data/examples/mccons_example.marna -t 0.5
 
 # heuristic version (an hybrid genetic algorithm, with steepest descent)
 # defaults parameters behave fine on most small and medium instances
 # population size and number of generations should be increased for large instances
-bin/mcconsHeuristic -f data/examples/mccons_example.marna
+bin/mcconsHeuristic -i data/examples/mccons_example.marna
 
 # same suboptimal threshold consideration as for the exact solver
-bin/mcconsHeuristic -f data/examples/mccons_example.marna -t 0.5
+bin/mcconsHeuristic -i data/examples/mccons_example.marna -t 0.5
 
 
 # SHAPE EXPLORER USAGE
