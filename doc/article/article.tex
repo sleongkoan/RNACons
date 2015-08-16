@@ -245,7 +245,12 @@ Institute for Research in Immunology and Cancer, and Department of Computer Scie
 
 \subsection*{Consensus Problem}
 
-Given $n$ sets of $ m_1, m_2... m_n$ objects, the consensus problem is to find a set of $n$ objects, one per set, minimizing the sum of their pairwise distance.
+Given $k$ sets of $ m_1, m_2... m_n$ objects, the consensus problem is to find a set of $k$ objects, one per set, minimizing the sum of their pairwise distance. This is modelled as finding the smallest cycle in a complete $k$-partite graph.
+
+% http://stackoverflow.com/questions/17168049/max-weight-k-clique-in-a-complete-k-partite-graph
+% http://cstheory.stackexchange.com/questions/30679/k-clique-in-k-partite-graph
+% http://cstheory.stackexchange.com/questions/30605/many-one-reduction-from-inequality-problem-to-equality-problem
+\noindent The consensus problem is reformulated as the problem of finding a minimal $k$-clique in a complete weighted $k$-partite graph where $k$ is a free parameter. This problem is known to be intractable
 
 \noindent The consensus problem can be transformed into a MIN-SUM \textit{compact location problem} \cite{compact_location}. To reduce it, we add a large positive penalty $M$ to the distance of objects belonging to the same set. This way, any consensus using more than one object belonging to the same set is noncompetitive. Since the MIN-SUM compact location problem is NP-HARD, even for metric distance functions \cite{compact_location}, the use of heuristics is justified.
 
