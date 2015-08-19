@@ -1,5 +1,5 @@
-#ifndef SOLVERGA_H_
-#define SOLVERGA_H_
+#ifndef SOLVERHEURISTIC_H_
+#define SOLVERHEURISTIC_H_
 
 #include "Solver.h"  // abstract class and useful functions
 
@@ -8,13 +8,13 @@
 #include <assert.h>
 
 
-class SolverGA : public Solver{
+class SolverHeuristic : public Solver{
 public:
     // constructors and destructors
-    SolverGA(// generic information
+    SolverHeuristic(// generic information
              bool silent,
 
-             // GA settings
+             // heuristic parameters
              int population_size,
              int num_generations,
              int improvement_depth,
@@ -23,13 +23,14 @@ public:
 
              double crossover_prob,
              double mutation_prob,
-             double improvement_prob);
-    ~SolverGA();
+             double improvement_prob,
+             unsigned long seeds[6]);
+    ~SolverHeuristic();
 
     // solver call
     std::vector<Solution> solve(std::vector< std::vector<double> > distance_matrix,
-                                std::vector<Range> ranges,
-                                unsigned long seeds[6]) const;
+                                std::vector<Range> ranges) const;
+
 
 private:
     int population_size_;
@@ -41,9 +42,10 @@ private:
     double crossover_prob_;
     double mutation_prob_;
     double improvement_prob_;
+    unsigned long * seeds_;
 };
 
 
 
 
-#endif // SOLVERGA_H_
+#endif // SOLVERHEURISTIC_H_

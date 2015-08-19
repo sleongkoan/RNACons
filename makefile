@@ -19,7 +19,7 @@ INCLUDES := $(wildcard $(INCLUDEDIR)/*.h)
 # the objects
 OBJECTS  := obj/RNA2D.o obj/ConsensusProblem.o obj/Distances.o obj/ProgressBar.o\
 obj/RngStream.o obj/Solution.o obj/SubSolution.o\
-obj/SolverGA.o obj/SolverExact.o obj/Tree.o obj/MCCONS.o\
+obj/SolverHeuristic.o obj/SolverExact.o obj/Tree.o obj/MCCONS.o\
 obj/OptionParser.o obj/Solver.o obj/Readers.o
 
 # executable specific objects

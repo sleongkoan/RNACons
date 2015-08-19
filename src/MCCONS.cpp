@@ -79,8 +79,7 @@ struct pairs_sort_predicate {
 
 void MCCONS(std::string path,
             Solver* tree_solver,
-            Solver* dot_bracket_solver,
-            unsigned long prng_seeds[6])
+            Solver* dot_bracket_solver)
 {
 
     // PHASE 1: TREE CONSENSUS
@@ -101,8 +100,7 @@ void MCCONS(std::string path,
     }
 
     std::vector<Solution> tree_consensus = tree_solver->solve(tree_problem.get_distance_matrix(),
-                                                              tree_problem.get_ranges(),
-                                                              prng_seeds);
+                                                              tree_problem.get_ranges());
 
     // sort the tree consensus by score (lower is better)
     std::vector< std::pair<int, double> > sorted_order = std::vector<std::pair<int, double> >();
@@ -175,8 +173,7 @@ void MCCONS(std::string path,
     for (size_t i = 0; i != prob2_data.size(); ++i)
     {
         dot_bracket_consensus.push_back(dot_bracket_solver->solve(dot_bracket_problems[i].get_distance_matrix(),
-                                                                 dot_bracket_problems[i].get_ranges(),
-                                                                 prng_seeds));
+                                                                 dot_bracket_problems[i].get_ranges()));
         progress.update((float) i / tree_consensus.size());
     }
     progress.clean();

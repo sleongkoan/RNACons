@@ -23,8 +23,7 @@ public:
 
     // solver call
     std::vector<Solution> solve(std::vector< std::vector<double> > distance_matrix,
-                                std::vector<Range> ranges,
-                                unsigned long seeds[6]) const;
+                                std::vector<Range> ranges) const;
 private:
     double suboptimal_threshold_;
 };

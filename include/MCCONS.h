@@ -16,8 +16,7 @@
 // function which is controlled by feeding different solvers
 void MCCONS(std::string path,
             Solver* tree_solver,
-            Solver* dotbracket_solver,
-            unsigned long seeds[6]);
+            Solver* dotbracket_solver);
 
 
 #endif  // MCCONS_H

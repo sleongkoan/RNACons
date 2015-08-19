@@ -9,9 +9,6 @@ using optparse::OptionParser;
 
 int main(int argc, char *argv[])
 {
-    // seeds are unused but passed anyways (the algorithm isn't probabilistic)
-    unsigned long SEEDS[6] = {42, 42, 42, 42, 42, 42};
-
 
     // create the command line parser
     OptionParser parser = OptionParser().description("MC-Cons Consensus Optimizer Using an Exact Branch and Bound Solver");
@@ -40,8 +37,10 @@ int main(int argc, char *argv[])
       Solver* tree_solver = new SolverExact(SUBOPTIMAL_THRESHOLD, false);
       Solver* dot_bracket_solver = new SolverExact(0., false);
 
-      // execute and cleanup
-      MCCONS(path, tree_solver, dot_bracket_solver, SEEDS);
+      // execute
+      MCCONS(path, tree_solver, dot_bracket_solver);
+
+      // cleanup
       delete tree_solver;
       delete dot_bracket_solver;
     } else

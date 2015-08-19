@@ -1,7 +1,7 @@
 // MCCONS using a genetic algorithm solver
 
 #include "../include/MCCONS.h"
-#include "../include/SolverGA.h"
+#include "../include/SolverHeuristic.h"
 #include "../include/OptionParser.h"
 
 
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
 
       // instantiate the genetic algorithm solver
       // tree solver, will consider suboptimal consensus
-      Solver* tree_solver = new SolverGA(silent,
+      Solver* tree_solver = new SolverHeuristic(silent,
                                          POPULATION_SIZE,
                                          NUM_GENERATIONS,
                                          IMPROVEMENT_DEPTH,
@@ -131,9 +131,10 @@ int main(int argc, char *argv[])
 
                                          CROSSOVER_PROBABILITY,
                                          MUTATION_PROBABILITY,
-                                         IMPROVEMENT_PROBABILITY);
+                                         IMPROVEMENT_PROBABILITY,
+                                         SEEDS);
 
-      Solver* dot_bracket_solver = new SolverGA(silent,
+      Solver* dot_bracket_solver = new SolverHeuristic(silent,
                                                 POPULATION_SIZE,
                                                 NUM_GENERATIONS,
                                                 IMPROVEMENT_DEPTH,
@@ -142,10 +143,13 @@ int main(int argc, char *argv[])
 
                                                 CROSSOVER_PROBABILITY,
                                                 MUTATION_PROBABILITY,
-                                                IMPROVEMENT_PROBABILITY);
+                                                IMPROVEMENT_PROBABILITY,
+                                                SEEDS);
 
-      // execute and cleanup
-      MCCONS(path, tree_solver, dot_bracket_solver, SEEDS);
+      // execute
+      MCCONS(path, tree_solver, dot_bracket_solver);
+
+      // cleanup
       delete tree_solver;
       delete dot_bracket_solver;
 

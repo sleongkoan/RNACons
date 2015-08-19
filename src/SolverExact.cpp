@@ -114,8 +114,7 @@ bool compare_range(RangeIndex A, RangeIndex B) { return (A.high - A.low) < (B.hi
 
 
 std::vector<Solution> SolverExact::solve(std::vector< std::vector<double> > distance_matrix,
-                                         std::vector<Range> ranges,
-                                         unsigned long seeds[6]) const
+                                         std::vector<Range> ranges) const
 {
     // use a priority queue to represent the current search space
     std::priority_queue<SubSolution> search_space = std::priority_queue<SubSolution>();

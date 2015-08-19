@@ -1,11 +1,11 @@
-#include "../include/SolverGA.h"
+#include "../include/SolverHeuristic.h"
 
 
 using std::vector;
 
 
 // constructors and destructors
-SolverGA::SolverGA(// misc parameters
+SolverHeuristic::SolverHeuristic(// misc parameters
                    bool silent,
 
                    // GA settings
@@ -17,7 +17,8 @@ SolverGA::SolverGA(// misc parameters
 
                    double crossover_prob,
                    double mutation_prob,
-                   double improvement_prob) : Solver(silent)
+                   double improvement_prob,
+                   unsigned long seeds[6]) : Solver(silent)
 {
     assert(distance_threshold >= 0);
     population_size_ = population_size;
@@ -29,10 +30,11 @@ SolverGA::SolverGA(// misc parameters
     crossover_prob_ = crossover_prob;
     mutation_prob_ = mutation_prob;
     improvement_prob_ = improvement_prob;
+    seeds_ = seeds;
 
 }
 
-SolverGA::~SolverGA() { }
+SolverHeuristic::~SolverHeuristic() { }
 
 
 Solution uniform_crossover(Solution parent1,
@@ -129,9 +131,8 @@ vector<Solution> binary_tournament_selection(vector<Solution> population,
 
 
 
-std::vector<Solution> SolverGA::solve(std::vector< std::vector<double> > distance_matrix,
-                                        std::vector<Range> ranges,
-                                        unsigned long seeds[6]) const
+std::vector<Solution> SolverHeuristic::solve(std::vector< std::vector<double> > distance_matrix,
+                                             std::vector<Range> ranges) const
 {
     // solve the consensus problem using a genetic algorithm
 
@@ -148,7 +149,7 @@ std::vector<Solution> SolverGA::solve(std::vector< std::vector<double> > distanc
 
     // seed the pseudorandom generator (MRG32k3a from L'Ecuyer)
     RngStream * prng = new RngStream();
-    prng->SetSeed(seeds);
+    prng->SetSeed(seeds_);
 
     // some declarations for later
     vector< vector<Solution> > best_solutions = vector< vector<Solution> >();

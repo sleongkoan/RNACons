@@ -32,8 +32,7 @@ public:
     bool is_silent();
 
     virtual std::vector<Solution> solve(std::vector< std::vector<double> > distance_matrix,
-                                        std::vector<Range> ranges,
-                                        unsigned long seeds[6]) const = 0; // pure virtual
+                                        std::vector<Range> ranges) const = 0; // pure virtual
 
 
 protected:
