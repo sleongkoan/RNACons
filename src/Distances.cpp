@@ -59,8 +59,8 @@ void calculate_tree_distance(Tree A, Tree B, int i, int j,
 }
 
 
-int unit_tree_indel_distance_trees(const Tree first,
-                                   const Tree second)
+std::vector< std::vector<int> > tree_distance_trees(const Tree first,
+                                                    const Tree second)
 {
     // unlabeled tree indel distance
     // create and fill the vector that will hold the tree distances computed
@@ -86,7 +86,14 @@ int unit_tree_indel_distance_trees(const Tree first,
         }
     }
 
-    return tree_distances[tree_distances.size()-1][tree_distances[0].size()-1];
+    return tree_distances;
+}
+
+
+int unit_tree_indel_distance_trees(const Tree first,
+                                   const Tree second)
+{
+    return tree_distance_trees(first, second).back().back();
 }
 
 
@@ -101,7 +108,6 @@ int unit_tree_indel_distance_strings(const std::string first,
     return unit_tree_indel_distance_trees(first_tree,
                                           second_tree);
 }
-
 
 
 int string_edit_distance(std::string first,

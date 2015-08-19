@@ -35,51 +35,56 @@ ConsensusProblem<T>::ConsensusProblem(std::vector< std::vector<T> > data,
     // for it to work, objects must be able to be put inside a map and the distance
     // function must be metric!
     // create dict and prefill it
+    std::vector<T> unique_objects = std::vector<T>();
+    map<T, int> obj_to_index = map<T, int>();
+    for (size_t i = 0; i != objects_.size(); ++i)
+    {
+        T obj = objects_[i]; 
+        if (find(unique_objects.begin(), unique_objects.end(), obj) == unique_objects.end())
+        {
+            unique_objects.push_back(obj);
+            obj_to_index[obj] = unique_objects.size()-1;
+        }
+    }
+    std::vector< std::vector<double> > condensed_distances = std::vector< std::vector<double> >();
+    for (size_t i = 0; i < unique_objects.size(); ++i)
+    {
+        condensed_distances.push_back(vector<double>(unique_objects.size(), 0.));
+    }
+    /*
     map < T, map <T, double> > memoized_distances = map < T, map <T, double> >();
     for (int i = 0; i < objects_.size(); ++i)
     {
         memoized_distances[objects_[i]] = map<T, double>();
 
-    }
-
-    // only compare those not of the same group
-    // compute distances only once for each pair of objects
-    // to do so, objects must be hashable and have equality operators (in this implementation at least)
-    for(int i = 0; i < ranges_.size()-1; ++i)
+    }*/
+    double distance;
+    for (size_t i = 0; i != unique_objects.size() - 1; ++i)
     {
-        int low1 = ranges_[i].low;
-        int high1 = ranges_[i].high;
-
-        for(int j = i+1; j < ranges_.size(); ++j)
+        T obj1 = unique_objects[i];
+        for (size_t j = i + 1; j != unique_objects.size(); ++j)
         {
-            int low2 = ranges_[j].low;
-            int high2 = ranges_[j].high;
-
-            // compare every objects in the range
-            for (int index_obj1 = low1; index_obj1 < high1; ++index_obj1)
-            {
-                for(int index_obj2 = low2; index_obj2 < high2; ++index_obj2)
-                {
-                    //
-                    T obj1 = objects_[index_obj1];
-                    T obj2 = objects_[index_obj2];
-
-                    // check if they already have been compared
-                    if(memoized_distances[obj1].find(obj2) == memoized_distances[obj1].end())
-                    {
-                        // haven't been compared
-                        double distance = (*distance_function)(obj1, obj2);
-                        memoized_distances[obj1][obj2] = distance;
-                        memoized_distances[obj2][obj1] = distance;
-                    }
-                    // assign to the matrix
-                    distance_matrix_[index_obj1][index_obj2] = memoized_distances[obj1][obj2];
-                    distance_matrix_[index_obj2][index_obj1] = memoized_distances[obj2][obj1];
-                }
-            }
+            T obj2 = unique_objects[j];
+            // calculate and assign the distance
+            distance = (*distance_function)(obj1, obj2);
+            condensed_distances[i][j] = distance;
+            condensed_distances[j][i] = distance;
         }
     }
 
+    // fill the distance matrix
+    int index1, index2;
+    for (size_t i = 0; i != objects_.size() - 1; ++i)
+    {
+        index1 = obj_to_index[objects_[i]];
+        for (size_t j = i + 1; j != objects_.size(); ++j)
+        {
+            index2 = obj_to_index[objects_[j]];
+            distance = condensed_distances[index1][index2];
+            distance_matrix_[i][j] = distance;
+            distance_matrix_[j][i] = distance;
+        }
+    }
 
     // fill the diagonal with zeros
     for (int i = 0; i < distance_matrix_.size(); ++i)

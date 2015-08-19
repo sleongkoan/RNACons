@@ -1,6 +1,7 @@
 #ifndef CONSENSUSPROBLEM_H
 #define CONSENSUSPROBLEM_H
 
+#include <algorithm>
 #include <limits>
 #include <map>
 #include <string>

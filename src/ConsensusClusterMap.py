@@ -368,29 +368,38 @@ def len_digit(integer):
     return len(str(integer))
 
 
-def show_solution(consensus, distance_matrix, cluster_method="average", figsize=(20, 10)):
+def create_figure(consensus,
+                  distance_matrix,
+                  cluster_method="average",
+                  annotate=False,
+                  figsize=(20, 10),
+                  show_shape=False):
     """show a dendrogram with the distance matrix with objects on the y axis"""
     print_order, linkage = get_order_linkage(distance_matrix,
                                              cluster_method=cluster_method)
 
-    # create the figure
+    # create the labels
     ylabels = []
-    max_num_digits = max([len_digit(i) for i in print_order])
+    max_digit_length = max(map(lambda x: len_digit(x), print_order))
     for position in print_order:
-        num_digits = len_digit(position)
-        padding = "".join([" " for _ in range(max_num_digits - num_digits)])
-        ylabels.append("[{}] {} {}".format(position,
-                                           padding,
-                                           consensus.subopts[position]))
+        padding_length = max_digit_length - len_digit(position)
+        label = "[{}]".format(position)
+        label += "".join([" " for _ in range(padding_length)])
+        if show_shape == True:
+            label += " {}  ".format(consensus.abstract_shapes[position][0])
+        ylabels.append(label)
+    longest_label = max(map(lambda x: len(x), ylabels))
+    for index, position in enumerate(print_order):
+        padding = "".join([" " for _ in range(longest_label - len(ylabels[index]))])
+        ylabels[index] = ylabels[index] + padding
+        ylabels[index] = ylabels[index] + consensus.subopts[position]
     return clustermap(distance_matrix,
                       row_linkage=linkage,
-                      annot=False,
+                      annot=annotate,
                       col_cluster=False,
                       yticklabels=ylabels,
                       cbar=False,
                       figsize=figsize)
-
-
 
 
 if __name__ == '__main__':
@@ -398,7 +407,7 @@ if __name__ == '__main__':
     PARSER = argparse.ArgumentParser("displays a dendrogram and an "\
                                      "heatmap of a consensus")
 
-    # I/O parameters
+    # I/O PARAMETERS
     PARSER.add_argument('-i', action="store", required=True,
                         type=str, dest="consensus_file_path",
                         help="path of the consensus file returned by MC-Cons")
@@ -412,7 +421,7 @@ if __name__ == '__main__':
                         type=int, dest="consensus_index",
                         help="index of the consensus to display")
 
-    # WEIGHT PARAMETERS
+    # CLUSTERING PARAMETERS
     PARSER.add_argument('--shapew', action="store", required=False,
                         type=float, dest="shape_weight", default=100.,
                         help="weight of the abstract shapes in the weighted sum")
@@ -422,14 +431,22 @@ if __name__ == '__main__':
     PARSER.add_argument('--stringw', action="store", required=False,
                         type=float, dest="string_weight", default=1.,
                         help="weight of the string edit distances in the weighted sum")
+    PARSER.add_argument('--cluster', action="store", required=False,
+                        type=str, dest="cluster_method", default="average",
+                        choices=["single", "complete", "average", "weighted"],
+                        help="choose the clustering method")
 
-    # FIGURE SIZE PARAMETERS
+    # FIGURE PARAMETERS
     PARSER.add_argument("--xsize", action="store", default=10,
                         type=int, dest="x_size",
                         help="size of the x axis")
     PARSER.add_argument("--ysize", action="store", default=10,
                         type=int, dest="y_size",
                         help="size of the y axis")
+    PARSER.add_argument("--annotate", action="store_true",
+                        default=False, help="Display the weights in the distance matrix")
+    PARSER.add_argument("--showshape", dest="show_shape", default=False,
+                        action="store_true", required=False, help="Show the level 5 shape along the dot bracket")
 
     # parse the arguments
     ARGS = PARSER.parse_args()
@@ -449,7 +466,9 @@ if __name__ == '__main__':
                                                  ARGS.tree_weight,
                                                  ARGS.string_weight)
     # create the figure
-    FIGURE = show_solution(CONSENSUS, DISTANCE_MATRIX, figsize=(ARGS.x_size, ARGS.y_size))
+    FIGURE = create_figure(CONSENSUS, DISTANCE_MATRIX, cluster_method=ARGS.cluster_method,
+                           annotate=ARGS.annotate, figsize=(ARGS.x_size, ARGS.y_size),
+                           show_shape=ARGS.show_shape)
 
     # save the figure
     FIGURE.savefig(ARGS.output_path)
