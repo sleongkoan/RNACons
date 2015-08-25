@@ -15,56 +15,14 @@ seaborn.set(font="monospace")
 
 
 
-def _matrix_mask(data, mask):
-    """Ensure that data and mask are compatabile and add missing values.
-
-    Values will be plotted for cells where ``mask`` is ``False``.
-
-    ``data`` is expected to be a DataFrame; ``mask`` can be an array or
-    a DataFrame.
-
-    """
-    if mask is None:
-        mask = np.zeros(data.shape, np.bool)
-
-    if isinstance(mask, np.ndarray):
-        # For array masks, ensure that shape matches data then convert
-        if mask.shape != data.shape:
-            raise ValueError("Mask must have the same shape as data.")
-
-        mask = pd.DataFrame(mask,
-                            index=data.index,
-                            columns=data.columns,
-                            dtype=np.bool)
-
-    elif isinstance(mask, pd.DataFrame):
-        # For DataFrame masks, ensure that semantic labels match data
-        if not mask.index.equals(data.index) \
-           and mask.columns.equals(data.columns):
-            err = "Mask must have the same index and columns as data."
-            raise ValueError(err)
-
-    # Add any cells with missing data to the mask
-    # This works around an issue where `plt.pcolormesh` doesn't represent
-    # missing data properly
-    mask = mask | pd.isnull(data)
-
-    return mask
-
 class CustomClusterGrid(seaborn.matrix.Grid):
-    def __init__(self, data, pivot_kws=None, z_score=None, standard_scale=None,
-                 figsize=None, row_colors=None, col_colors=None, mask=None):
+    def __init__(self, data, pivot_kws=None, figsize=None, row_colors=None, col_colors=None):
         """Grid object for organizing clustered heatmap input on to axes"""
 
         if isinstance(data, pd.DataFrame):
-            self.data = data
+            self.data2d = data
         else:
-            self.data = pd.DataFrame(data)
-
-        self.data2d = self.format_data(self.data, pivot_kws, z_score,
-                                       standard_scale)
-
-        self.mask = _matrix_mask(self.data2d, mask)
+            self.data2d = pd.DataFrame(data)
 
         if figsize is None:
             width, height = 10, 10
@@ -89,8 +47,8 @@ class CustomClusterGrid(seaborn.matrix.Grid):
         ncols = 3 if self.row_colors is None else 4
 
         self.gs = matplotlib.gridspec.GridSpec(nrows, ncols, wspace=0.01, hspace=0.01,
-                                    width_ratios=width_ratios,
-                                    height_ratios=height_ratios)
+                                               width_ratios=width_ratios,
+                                               height_ratios=height_ratios)
 
         self.ax_row_dendrogram = self.fig.add_subplot(self.gs[nrows - 1, 0:2],
                                                       axisbg="white")
@@ -113,54 +71,6 @@ class CustomClusterGrid(seaborn.matrix.Grid):
         self.dendrogram_row = None
         self.dendrogram_col = None
 
-    def format_data(self, data, pivot_kws, z_score=None,
-                    standard_scale=None):
-        # Either the data is already in 2d matrix format, or need to do a pivot
-        if pivot_kws is not None:
-            data2d = data.pivot(**pivot_kws)
-        else:
-            data2d = data
-
-        if z_score is not None and standard_scale is not None:
-            raise ValueError(
-                'Cannot perform both z-scoring and standard-scaling on data')
-
-        if z_score is not None:
-            data2d = self.z_score(data2d, z_score)
-        if standard_scale is not None:
-            data2d = self.standard_scale(data2d, standard_scale)
-        return data2d
-
-    @staticmethod
-    def z_score(data2d, axis=1):
-        if axis == 1:
-            z_scored = data2d
-        else:
-            z_scored = data2d.T
-
-        z_scored = (z_scored - z_scored.mean()) / z_scored.var()
-
-        if axis == 1:
-            return z_scored
-        else:
-            return z_scored.T
-
-    @staticmethod
-    def standard_scale(data2d, axis=1):
-        # Normalize these values to range from 0 to 1
-        if axis == 1:
-            standardized = data2d
-        else:
-            standardized = data2d.T
-
-        subtract = standardized.min()
-        standardized = (standardized - subtract) / (
-            standardized.max() - standardized.min())
-
-        if axis == 1:
-            return standardized
-        else:
-            return standardized.T
 
     def dim_ratios(self, side_colors, axis, figsize, side_colors_ratio=0.05):
         figdim = figsize[axis]
@@ -230,13 +140,8 @@ class CustomClusterGrid(seaborn.matrix.Grid):
             self.ax_row_dendrogram.set_xticks([])
             self.ax_row_dendrogram.set_yticks([])
         # PLot the column dendrogram
-        if col_cluster:
-            self.dendrogram_col = dendrogram(
-                self.data2d, metric=metric, method=method, label=False,
-                axis=1, ax=self.ax_col_dendrogram, linkage=col_linkage)
-        else:
-            self.ax_col_dendrogram.set_xticks([])
-            self.ax_col_dendrogram.set_yticks([])
+        self.ax_col_dendrogram.set_xticks([])
+        self.ax_col_dendrogram.set_yticks([])
 
     def plot_colors(self, xind, yind, **kws):
         # Remove any custom colormap and centering
@@ -262,9 +167,9 @@ class CustomClusterGrid(seaborn.matrix.Grid):
 
     def plot_matrix(self, colorbar_kws, xind, yind, **kws):
         self.data2d = self.data2d.iloc[yind, xind]
-        self.mask = self.mask.iloc[yind, xind]
+
         seaborn.heatmap(self.data2d, ax=self.ax_heatmap, 
-                cbar_kws=colorbar_kws, mask=self.mask, **kws)
+                cbar_kws=colorbar_kws, **kws)
         self.ax_heatmap.yaxis.set_ticks_position('right')
         self.ax_heatmap.yaxis.set_label_position('right')
 
@@ -287,22 +192,20 @@ class CustomClusterGrid(seaborn.matrix.Grid):
         return self
 
 
-def clustermap(data, pivot_kws=None, method='average', metric='euclidean',
-               z_score=None, standard_scale=None, figsize=None, cbar_kws=None,
+def clustermap(data, method='average', metric='euclidean',
+               figsize=None,
                row_cluster=True, col_cluster=True,
                row_linkage=None, col_linkage=None,
-               row_colors=None, col_colors=None, mask=None, **kwargs):
+               row_colors=None, col_colors=None, **kwargs):
 
-    plotter = CustomClusterGrid(data, pivot_kws=pivot_kws, figsize=figsize,
-                          row_colors=row_colors, col_colors=col_colors,
-                          z_score=z_score, standard_scale=standard_scale,
-                          mask=mask)
+    plotter = CustomClusterGrid(data, figsize=figsize,
+                                row_colors=row_colors,
+                                col_colors=col_colors)
 
     return plotter.plot(metric=metric, method=method,
-                        colorbar_kws=cbar_kws,
-                        row_cluster=row_cluster, col_cluster=col_cluster,
-                        row_linkage=row_linkage, col_linkage=col_linkage,
-                        **kwargs)
+                        colorbar_kws=[], row_cluster=row_cluster,
+                        col_cluster=col_cluster, row_linkage=row_linkage,
+                        col_linkage=col_linkage, **kwargs)
 
 
 def compute_weighted_distances(consensus,
@@ -383,7 +286,7 @@ def create_figure(consensus,
     max_digit_length = max(map(lambda x: len_digit(x), print_order))
     for position in print_order:
         padding_length = max_digit_length - len_digit(position)
-        label = "[{}]".format(position)
+        label = "[{}] ".format(position)
         label += "".join([" " for _ in range(padding_length)])
         if show_shape == True:
             label += " {}  ".format(consensus.abstract_shapes[position][0])
@@ -414,7 +317,7 @@ if __name__ == '__main__':
 
     PARSER.add_argument('-o', action="store", required=True,
                         type=str, dest="output_path",
-                        help="output file path (default is stdout)")
+                        help="output file path (also specifies the graphic format)")
 
     # CONSENSUS INDEX (if there are more than one)
     PARSER.add_argument("--index", action="store", default=0,
@@ -457,7 +360,6 @@ if __name__ == '__main__':
     assert ARGS.y_size >= 0.
 
     # aquire the consensus to display
-    #assert ARGS.consensus_index in range(0, len(CONSENSUS_LIST)-1)
     CONSENSUS = read_consensus_file(ARGS.consensus_file_path, ARGS.consensus_index)
 
     # calculate the weighted distance matrix
