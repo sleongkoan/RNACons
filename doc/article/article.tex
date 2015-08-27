@@ -244,15 +244,16 @@ Institute for Research in Immunology and Cancer, and Department of Computer Scie
 \section*{Design and Implementation}
 
 \subsection*{Consensus Problem}
-
-Given $k$ sets of $ m_1, m_2... m_n$ objects, the consensus problem is to find a set of $k$ objects, one per set, minimizing the sum of their pairwise distance. This is modelled as finding the smallest cycle in a complete $k$-partite graph.
-
 % http://stackoverflow.com/questions/17168049/max-weight-k-clique-in-a-complete-k-partite-graph
 % http://cstheory.stackexchange.com/questions/30679/k-clique-in-k-partite-graph
 % http://cstheory.stackexchange.com/questions/30605/many-one-reduction-from-inequality-problem-to-equality-problem
-\noindent The consensus problem is reformulated as the problem of finding a minimal $k$-clique in a complete weighted $k$-partite graph where $k$ is a free parameter. This problem is known to be intractable
+Given $k$ sets of $m_0, m_1... m_k$ objects, the consensus problem is to find a set of $k$ objects, one per set, minimizing the sum of their pairwise distance.
+This is equivalent to the maximum edge-weighted clique problem in a complete $k$-partite graph. This problem is NP-hard and this justifies the use of heuristic methods on larger instances.
 
-\noindent The consensus problem can be transformed into a MIN-SUM \textit{compact location problem} \cite{compact_location}. To reduce it, we add a large positive penalty $M$ to the distance of objects belonging to the same set. This way, any consensus using more than one object belonging to the same set is noncompetitive. Since the MIN-SUM compact location problem is NP-HARD, even for metric distance functions \cite{compact_location}, the use of heuristics is justified.
+
+
+
+%\noindent The consensus problem can be transformed into a MIN-SUM \textit{compact location problem} \cite{compact_location}. To reduce it, we add a large positive penalty $M$ to the distance of objects belonging to the same set. This way, any consensus using more than one object belonging to the same set is noncompetitive. Since the MIN-SUM compact location problem is NP-HARD, even for metric distance functions \cite{compact_location}, the use of heuristics is justified.
 
 
 
@@ -278,7 +279,7 @@ Given $k$ sets of $ m_1, m_2... m_n$ objects, the consensus problem is to find a
 
 \subsection*{Consensus Problem and RNA Secondary Structure}
 
-Most RNA secondary structure prediction tools allow for the exploration of suboptimal secondary structures. This is important because RNA achieve function only with multiple alternating structures \cite{need_subopts}. Also, the experimentally determined structures of reference structures are usually close to the best structure found.
+Most RNA secondary structure prediction tools allow for the exploration of suboptimal secondary structures. This is important because some RNA achieve function only with multiple structures \cite{need_subopts}. Also, the experimentally determined structures of reference structures are often close to the best structure predicted.
 
 
 \noindent Usually, we expect that the structures adopted by families of RNAs with similar functions such as Iron Response Elements (IREs) or transfer RNAs (tRNAs) are similar. To this end, our goal was to devise a method capable of finding similar structures within separate sets of suboptimal structures.

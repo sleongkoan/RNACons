@@ -116,23 +116,6 @@ void MCCONS(std::string path,
     }
     tree_consensus = tree_consensus_tmp;
 
-    // PRINT THE TREE CONSENSUS
-    std::cerr << std::endl << "Tree Consensus Solutions" << std::endl;
-    if (! silent_output)
-    {
-        int index;
-        for(size_t i = 0; i != tree_consensus.size(); ++i)
-        {
-            std::cerr << "> " << i << " " << tree_consensus[i].get_score()/num_comparisons << std::endl;
-            for(size_t j = 0; j != tree_consensus[i].get_genes().size(); ++j)
-            {
-                index = tree_consensus[i].get_genes()[j];
-                std::cerr << tree_problem.get_objects()[index].get_brackets() << std::endl;
-            }
-            std::cerr << std::endl;
-        }
-    }
-
 
     // PHASE 1.5: FILTERING
     std::vector<std::vector< std::vector<std::string> > > prob2_data = std::vector< std::vector< std::vector<std::string> > >();

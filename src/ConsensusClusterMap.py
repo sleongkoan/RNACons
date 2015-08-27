@@ -13,10 +13,8 @@ from Util import *
 seaborn.set(font="monospace")
 
 
-
-
 class CustomClusterGrid(seaborn.matrix.Grid):
-    def __init__(self, data, pivot_kws=None, figsize=None, row_colors=None, col_colors=None):
+    def __init__(self, data, pivot_kws=None, figsize=(10, 10), row_colors=None, col_colors=None):
         """Grid object for organizing clustered heatmap input on to axes"""
 
         if isinstance(data, pd.DataFrame):
@@ -24,16 +22,8 @@ class CustomClusterGrid(seaborn.matrix.Grid):
         else:
             self.data2d = pd.DataFrame(data)
 
-        if figsize is None:
-            width, height = 10, 10
-            figsize = (width, height)
         self.fig = plt.figure(figsize=figsize)
-
-        if row_colors is not None:
-            row_colors = _convert_colors(row_colors)
         self.row_colors = row_colors
-        if col_colors is not None:
-            col_colors = _convert_colors(col_colors)
         self.col_colors = col_colors
 
         width_ratios = self.dim_ratios(self.row_colors,
@@ -46,7 +36,8 @@ class CustomClusterGrid(seaborn.matrix.Grid):
         nrows = 3 if self.col_colors is None else 4
         ncols = 3 if self.row_colors is None else 4
 
-        self.gs = matplotlib.gridspec.GridSpec(nrows, ncols, wspace=0.01, hspace=0.01,
+        self.gs = matplotlib.gridspec.GridSpec(nrows, ncols, wspace=0.01,
+                                               hspace=0.01,
                                                width_ratios=width_ratios,
                                                height_ratios=height_ratios)
 
@@ -65,14 +56,16 @@ class CustomClusterGrid(seaborn.matrix.Grid):
             self.ax_col_colors = self.fig.add_subplot(
                 self.gs[nrows - 2, ncols - 1])
 
-        self.ax_heatmap = self.fig.add_subplot(self.gs[nrows - 1, ncols - 1])
+        self.ax_heatmap = self.fig.add_subplot(self.gs[nrows - 1,
+                                                       ncols - 1])
 
 
         self.dendrogram_row = None
         self.dendrogram_col = None
 
 
-    def dim_ratios(self, side_colors, axis, figsize, side_colors_ratio=0.05):
+    def dim_ratios(self, side_colors, axis,
+                   figsize, side_colors_ratio=0.05):
         figdim = figsize[axis]
         # Get resizing proportion of this figure for the dendrogram and
         # colorbar, so only the heatmap gets bigger but the dendrogram stays
@@ -192,32 +185,40 @@ class CustomClusterGrid(seaborn.matrix.Grid):
         return self
 
 
-def clustermap(data, method='average', metric='euclidean',
-               figsize=None,
-               row_cluster=True, col_cluster=True,
-               row_linkage=None, col_linkage=None,
-               row_colors=None, col_colors=None, **kwargs):
+def clustermap(data,
+               method='average',
+               metric='euclidean',
+               figsize=(10, 10),
+               row_linkage=None,
+               col_linkage=None,
+               **kwargs):
 
-    plotter = CustomClusterGrid(data, figsize=figsize,
-                                row_colors=row_colors,
-                                col_colors=col_colors)
+    plotter = CustomClusterGrid(data,
+                                figsize=figsize,
+                                row_colors=None,
+                                col_colors=None)
 
-    return plotter.plot(metric=metric, method=method,
-                        colorbar_kws=[], row_cluster=row_cluster,
-                        col_cluster=col_cluster, row_linkage=row_linkage,
-                        col_linkage=col_linkage, **kwargs)
+    return plotter.plot(metric=metric,
+                        method=method,
+                        colorbar_kws=[],
+                        row_cluster=True,
+                        col_cluster=False,
+                        row_linkage=row_linkage,
+                        col_linkage=col_linkage,
+                        **kwargs)
 
 
 def compute_weighted_distances(consensus,
                                shape_weight,
                                tree_weight,
-                               string_weight=1.):
+                               string_weight):
     """converts the multiple distances used into a single distance
        matrix by a simple weighted sum (many possibilities)"""
 
     # first, we'd like to establish a distance between shapes
     num_elems = len(consensus.subopts)
     shape_dists = np.zeros((num_elems, num_elems))
+
     # calculate the unit tree edit distance on the shapes
     for index_1 in range(num_elems - 1):
         (level_5_1, _, _) = consensus.abstract_shapes[index_1]
@@ -299,7 +300,6 @@ def create_figure(consensus,
     return clustermap(distance_matrix,
                       row_linkage=linkage,
                       annot=annotate,
-                      col_cluster=False,
                       yticklabels=ylabels,
                       cbar=False,
                       figsize=figsize)

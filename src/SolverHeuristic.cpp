@@ -5,7 +5,7 @@ using std::vector;
 
 
 // constructors and destructors
-SolverHeuristic::SolverHeuristic(// misc parameters
+SolverHeuristic::SolverHeuristic(
                    bool silent,
 
                    // GA settings
@@ -43,18 +43,14 @@ Solution uniform_crossover(Solution parent1,
                            RngStream* prng)
 {
     // uniform crossover operator over the genes of two solutions
-    vector<int> inherited_genes = vector<int>();
-    double prob; // Uniform(0, 1)
-    for (size_t index = 0; index != parent1.get_genes().size(); ++index)
+    vector<int> inherited_genes (parent1.get_genes());
+    size_t gene_length = parent1.get_genes().size();
+
+    for (size_t index = 0; index != gene_length; ++index)
     {
-        prob = prng->RandU01();
-        if (prob < crossover_probability)
+        if (prng->RandU01() < crossover_probability)
         {
-            inherited_genes.push_back(parent1.get_genes()[index]);
-        }
-        else
-        {
-            inherited_genes.push_back(parent2.get_genes()[index]);
+            inherited_genes[index] = parent2.get_genes()[index];
         }
     }
     return Solution(inherited_genes);
@@ -62,27 +58,20 @@ Solution uniform_crossover(Solution parent1,
 
 
 Solution uniform_mutate(Solution& sol,
-                         std::vector<Range> ranges,
-                         RngStream *prng,
-                         double mutation_probability=0.1)
+                        std::vector<Range> ranges,
+                        double mutation_probability,
+                        RngStream *prng)
 {
     // mutate the solution by simply swapping with a probability
-    double prob;
-    vector<int> mutated_genes = vector<int>(sol.get_genes().size(), 0);
-
-    for (size_t index = 0; index != sol.get_genes().size(); ++index)
+    vector<int> mutated_genes (sol.get_genes());
+    size_t gene_size = mutated_genes.size();
+    for (size_t index = 0; index != gene_size; ++index)
     {
-        prob = prng->RandU01();
-        if (prob < mutation_probability)
+        if (prng->RandU01() < mutation_probability)
         {
             // exchange for a random gene within the same range
             mutated_genes[index] = prng->RandInt(ranges[index].low,
                                                  ranges[index].high-1);
-        }
-        else
-        {
-            // keep the same gene
-            mutated_genes[index] = sol.get_genes()[index];
         }
     }
     return Solution(mutated_genes);
@@ -249,24 +238,16 @@ std::vector<Solution> SolverHeuristic::solve(std::vector< std::vector<double> > 
             Solution child;
 
             // crossover
-            if (prng->RandU01() < crossover_prob_)
-            {
-                child = uniform_crossover(parent1, parent2, 0.5, prng);
-            }
-            else
-            {
-                child = Solution(parent1);
-            }
+            child = uniform_crossover(parent1, parent2, crossover_prob_, prng);
 
             // mutation
-            if (prng->RandU01() < mutation_prob_)
-                uniform_mutate(child, ranges, prng);
+            uniform_mutate(child, ranges, mutation_prob_, prng);
 
             // improvement
             if (prng->RandU01() < improvement_prob_)
                 steepest_improvement(child, distance_matrix, ranges, improvement_depth_);
 
-            // children is done
+            // children is complete
             children.push_back(child);
         }
 
