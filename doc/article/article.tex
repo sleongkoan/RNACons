@@ -282,7 +282,7 @@ This is equivalent to the maximum edge-weighted clique problem in a complete $k$
 Most RNA secondary structure prediction tools allow for the exploration of suboptimal secondary structures. This is important because some RNA achieve function only with multiple structures \cite{need_subopts}. Also, the experimentally determined structures of reference structures are often close to the best structure predicted.
 
 
-\noindent Usually, we expect that the structures adopted by families of RNAs with similar functions such as Iron Response Elements (IREs) or transfer RNAs (tRNAs) are similar. To this end, our goal was to devise a method capable of finding similar structures within separate sets of suboptimal structures.
+\noindent Usually, we expect that the structures adopted by families of RNAs with similar functions such as Iron Response Elements (IREs) or transfer RNAs (tRNAs) to be similar. To this end, our goal was to devise a method capable of finding similar structures within separate sets of suboptimal structures.
 
 \noindent MC-Cons is a two-step optimization procedure solving two consensus problems (Fig.~\ref{fig1}). The first step creates consensus of base pair trees using a tree edit distance function to compare them. This step insures that the overall topology of stems in the structures of the consensus is as similar as possible. The second step refines the consensus previously created by minimizing the string edit distance on the Vienna dot-bracket representation of RNA secondary structure. This step insures that unpaired regions match as well as possible.
 

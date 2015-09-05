@@ -448,7 +448,7 @@ def read_consensus_file(file_name,
                 consensus.append(Consensus(number,
                                           subopts))
     else:
-        current_index = -2
+        current_index = -1
         with open(file_name) as data_file:
             for line in data_file:
                 # starting new consensus
@@ -470,8 +470,7 @@ def read_consensus_file(file_name,
 
             # last consensus (if the file wasn't empty)
             if subopts:
-                consensus.append(Consensus(number,
-                                          subopts))
+                return Consensus(number, subopts)
     return consensus
 
 
