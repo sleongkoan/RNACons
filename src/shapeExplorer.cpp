@@ -27,7 +27,7 @@ public:
     double string_dist_;
     int index_;
 
-    Consensus(std::vector<std::string> structure_list)
+    Consensus(std::vector<std::string> structure_list, int level)
     {
         // keep the structures for pretty printing
         structures_ = std::vector<std::string>();
@@ -41,7 +41,7 @@ public:
         shapes_ = std::vector<std::string>();
         for (size_t i = 0; i != structure_list.size(); ++i)
         {
-            shapes_.push_back(std::string(shape_level_5(structure_list[i])));
+            shapes_.push_back(std::string(RNAshapes(structure_list[i], level)));
         }
         shapes_str_ = join(shapes_, '\n');
 
@@ -182,11 +182,17 @@ int main(int argc, char *argv[])
     // create the command line parser
     OptionParser parser = OptionParser().description("Shape Explorer: finding best consensus for each unique arrangement of level 5 RNA abstract shapes");
     parser.add_option("-i", "--input").dest("data_file").help("path to a MC-Cons output file");
+    parser.add_option("-l", "--level").dest("shape_level").help("level of the shape used (1, 3 or 5)").type("int");
     parser.add_option("-s", "--shape").dest("shape").action("store_true").help("display shapes alongside structures");
     optparse::Values options = parser.parse_args(argc, argv);
 
     if (options.is_set("data_file"))
     {
+      // parse the shape level desired
+      int level = atoi(options["shape_level"].c_str());
+      assert (level == 1 || level == 3 || level == 5);
+
+
       // read the consensus file
       std::string path = options["data_file"];
       std::vector< std::vector< std::string> > consensus_list = read_consensus_file(path);
@@ -196,7 +202,7 @@ int main(int argc, char *argv[])
       std::vector<Consensus> input_consensus = std::vector<Consensus>();
       for (size_t i = 0; i != consensus_list.size(); ++i)
       {
-          input_consensus.push_back(Consensus(consensus_list[i]));
+          input_consensus.push_back(Consensus(consensus_list[i], level));
           input_consensus[i].index_ = i;
       }
 
