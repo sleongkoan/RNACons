@@ -1,4 +1,4 @@
-"""interface with flashfold RNA secondary structure folding tool"""
+"""interface with VARNA through command line calls"""
 
 from collections import Counter
 import copy
