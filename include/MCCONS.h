@@ -12,11 +12,10 @@
 #include "RNA2D.h"
 #include "Solver.h"
 
+
 // The whole two-step optimization procedure is done by this
 // function which is controlled by feeding different solvers
-void MCCONS(std::string path,
-            Solver* tree_solver,
-            Solver* dotbracket_solver);
+void MCCONS(std::string path, Solver* tree_solver, Solver* dotbracket_solver);
 
 
 #endif  // MCCONS_H

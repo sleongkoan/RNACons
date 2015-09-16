@@ -1,118 +1,122 @@
 #include "../include/Tree.h"
-#include <map>
-#include <algorithm>
 
 
-Node::Node(Node* parent, int label)
-{
-    // constructor
-    if (parent)
-    {
-        parent->add_child(this);
-    }
-    this->label = label;
-    this->children = std::vector<Node*>();
-    this->parent = parent;
-}
 
-Node::~Node() { }
-
-const std::vector<Node*> & Node::get_children()
-{
-    return this->children;
-}
-
-void Node::add_child(Node* child)
-{
-    // add the child to this children's list
-    this->children.push_back(child);
-    return;
-}
-
-Node* Node::get_parent()
-{
-    return this->parent;
-}
-
-void Node::set_parent(Node* new_parent)
-{
-    this->parent = new_parent;
-    return;
-}
-
-int Node::get_label()
-{
-    return this->label;
-}
-
-void Node::set_label(int new_label)
-{
-    this->label = new_label;
-    return;
-}
-
-int Node::get_leftmost_descendent_label()
-{
-    //std::cout << "got here" << std::endl;
+// ==================================NODE======================================
+int Node::get_leftmost_descendent_index()
+{ // TODO: there is a better way to find them, but this works ok for now
     Node* position = this;
-    //std::cout << "got here" << std::endl;
     while (position->get_children().size() > 0)
     {
         position = position->get_children()[0];
     }
-    return position->get_label();
+    return position->get_index();
 }
 
 
-void postorder_list_helper(Node* node, std::vector<Node*>& res)
-{
-    // helper for the postorder_list function
+
+
+// =========================ORDERED LABELED TREE===============================
+void postorder_helper(Node* node, std::vector<Node*>& res)
+{  // recursive helper to get the postorder enumeration
     if (node)
     {
         for(size_t i = 0; i != node->get_children().size(); ++i)
         {
-            postorder_list_helper(node->get_children()[i], res);
+            postorder_helper(node->get_children()[i], res);
         }
         res.push_back(node);
     }
     return;
 }
 
+
 std::vector<Node*> get_postorder_enumeration(Node* root)
-{
-    std::vector<Node*> result = std::vector<Node*>();
-    postorder_list_helper(root, result);
-    return result;
+{  // get list of node pointers to the postorder enumeration
+    std::vector<Node*> postorder_enum = std::vector<Node*>();
+    postorder_helper(root, postorder_enum);
+    return postorder_enum;
 }
 
 
-Tree::Tree(std::string brackets)
+std::vector<int> OrderedLabeledTree::get_leftmost_descendents() const
 {
-    // all trees can be represented by a bracket (Vienna dot bracket minus the dots)
-    // convert the bracket its corresponding tree structure
-    if (! is_valid_dot_bracket(brackets))
-    {
-        std::cerr << "Badly formed dot bracket fed to tree constructor"
-        << std::endl << brackets << std::endl;
-        std::exit(EXIT_FAILURE);
-    }
+    return leftmost_descendents_;
+}
 
-    // create rooted tree
-    Node* root = new Node();
+
+std::vector<int> OrderedLabeledTree::get_keyroots() const
+{
+    return keyroots_;
+}
+
+
+char OrderedLabeledTree::get_label(int index) const
+{
+    return node_labels_[index];
+}
+
+
+std::vector<char> get_all_labels() const
+{  // returns the vector of all labels (postorder)
+    return node_labels_;
+}
+
+
+bool operator==(const OrderedLabeledTree &first, const OrderedLabeledTree &second)
+{
+    return first.equality_predicate(second);
+}
+
+
+bool operator!=(const OrderedLabeledTree &first, const OrderedLabeledTree &second)
+{
+    return !(first.equality_predicate(second);
+}
+
+
+bool operator<(const OrderedLabeledTree &first, const OrderedLabeledTree &second)
+{
+    return first.less_than_predicate(second);
+
+}
+
+
+std::ostream& operator<< (std::ostream &out, OrderedLabeledTree tree)
+{
+    out << tree.to_string() << std::endl;
+    return out;
+}
+
+
+// =================================RNA TREE===================================
+RNATree::RNATree(std::string string_repr,
+                 char opening_symbol,
+                 char closing_symbol,
+                 char unpaired_symbol)
+{
+    // 1- assign the string representation
+    string_repr_ = string_repr;
+
+    // 2- create rooted tree
+    Node root = Node(NULL, opening_symbol);
     Node* position = root;
-    int node_id = 0;
-    for (int i = 0; brackets[i] != '\0'; i++)
+    char c;
+    for (size_t i = 0; i != string_repr.size(); i++)
     {
-        char c = brackets[i];
-        if (c == '(')
+        c = string_repr[i];
+        if (c == opening_symbol)       // create new node and position goes down
         {
-            Node* child = new Node(position, node_id);
-            node_id = node_id + 1;
-            position = child;
+            Node child = Node(position, opening_symbol);
+            position = &(child);
         }
-        else if (c == ')')
+        else if (c == closing_symbol)  // position goes up
         {
             position = position->get_parent();
+        }
+        else if (c == unpaired_symbol) // add unpaired node, position stays same
+        {
+            Node child = Node(position, unpaired_symbol);
         }
         else
         {
@@ -120,116 +124,61 @@ Tree::Tree(std::string brackets)
         }
     }
 
-    // string representation
-    this->brackets = only_paired(brackets);
+    // 3- get postorder pointers
+    std::vector<Node*> postorder_nodes = get_postorder_enumeration(root);
 
-    // postorder enumeration of the nodes and label them according to their order
-    std::vector<Node*> nodes = get_postorder_enumeration(root);
-    for (unsigned int post_order_index = 0; post_order_index < nodes.size(); ++post_order_index)
-        nodes[post_order_index]->set_label(post_order_index);
-
-    // calculate the leftmost descendents
-    leftmost_descendents = std::vector<int>(nodes.size(), 0);
-    for (unsigned int node_index=0; node_index <  nodes.size(); ++node_index)
+    // 4- set the index and fetch labels
+    labels_ = std::vector<char>();
+    for (siz_t index = 0; index != postorder_nodes.size(); ++index)
     {
-        leftmost_descendents[node_index] = nodes[node_index]->get_leftmost_descendent_label();
+        postorder_nodes[index]->set_index(index);
+        labels_.push_back(postorder_nodes[index]->get_label());
     }
 
-    // calculate the keyroots based on the leftmost descendents
-    this->keyroots = std::vector<int>();
-    std::map<int, int> keyroots_map;
-    int leftmost_descendent_label;
-    for(int node_index = nodes.size()-1; node_index > -1; --node_index)
+    // 5- fetch the leftmost descendents
+    leftmost_descendents_ = std::vector<int>(postorder_nodes.size(), 0);
+    for (size_t index = 0; index != postorder_nodes.size(); ++index)
     {
-        leftmost_descendent_label= leftmost_descendents[node_index];
+        leftmost_descendents_[index] = postorder_nodes[index]->get_leftmost_descendent_index();
+    }
 
-        if (!(keyroots_map.count(leftmost_descendent_label)))
+    // 6- fetch the keyroots
+    keyroots_ = std::vector<int>();
+    std::map<int, int> keyroots_map;
+    int lmd;
+    for(size_t index = postorder_nodes.size()-1; node_index != -1; --node_index)
+    {
+        lmd = leftmost_descendents_[node_index];
+
+        if (!(keyroots_map.count(lmd)))
         {
-            keyroots_map[leftmost_descendent_label] = node_index;
+            keyroots_map[lmd] = index;
         }
     }
     for (std::map<int, int>::iterator it = keyroots_map.begin(); it != keyroots_map.end(); ++it)
     {
-        this->keyroots.push_back((*it).second);
+        keyroots_.push_back(it->second);
     }
-
-    std::sort(this->keyroots.begin(), this->keyroots.end());
-
-    // free the nodes
-    for (std::vector<Node*>::iterator it = nodes.begin() ; it != nodes.end(); ++it)
-    {
-        delete (*it);
-    }
-    nodes.clear();
+    std::sort(keyroots_.begin(), keyroots_.end());
 
     return;
 }
 
 
-Tree::Tree(const Tree &other)
+std::string RNATree::to_string() const
 {
-    // copy constructor
-    brackets = std::string(other.brackets);
-    leftmost_descendents = other.leftmost_descendents;
-    keyroots = other.keyroots;
+    return string_repr_;
 }
 
 
-Tree::~Tree() { }
-
-
-std::string Tree::get_brackets() const
+bool RNATree::equality_predicate(RNATree other)
 {
-    return this->brackets;
+    return to_string() == other.to_string();
 }
 
 
-// getters
-
-std::vector<int> Tree::get_leftmost_descendents() const
+bool RNATree::less_than_predicate(RNATree other)
 {
-    return this->leftmost_descendents;
+    return to_string() < other.to_string();
 }
 
-std::vector<int> Tree::get_keyroots() const
-{
-    return this->keyroots;
-}
-
-
-
-// comparison operators
-
-bool operator==(const Tree &tree1, const Tree &tree2)
-{
-    std::string a = tree1.get_brackets();
-    std::string b = tree2.get_brackets();
-    return (a == b);
-}
-
-
-bool operator!=(const Tree &tree1, const Tree &tree2)
-{
-    return !(tree1 == tree2);
-}
-
-bool operator<(const Tree &tree1, const Tree &tree2)
-{
-    return tree1.get_brackets() < tree2.get_brackets();
-
-}
-
-
-// stream operators
-std::ostream& operator<< (std::ostream &out, Tree &tree)
-{
-    out << tree.brackets << std::endl;
-    return out;
-}
-
-
-std::ostream& operator<< (std::ostream &out, Tree* tree)
-{
-    out << *tree;
-    return out;
-}

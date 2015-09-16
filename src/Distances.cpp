@@ -4,54 +4,98 @@
 #define MIN3(A,B,C)     (MIN2(MIN2((A),(B)),(C)))
 
 
-void calculate_tree_distance(Tree A, Tree B, int i, int j,
-                             std::vector< std::vector<int> >& treedists)
-{
-    std::vector<int> Al = A.get_leftmost_descendents();
-    std::vector<int> Bl = B.get_leftmost_descendents();
+
+// ===============================TREE DISTANCES===============================
+
+
+void calculate_tree_distance(Tree first, Tree second,                    // trees
+                             int i, int j,                               // keyroots indices
+                             std::vector< std::vector<int> >& treedists, // tree distance table (to update)
+                             int (*insertion_fun) (char),                // labeled node insertion function
+                             int (*deletion_fun) (char),                 // labeled node deletion function
+                             int (*substitution_fun)(char, char))        // labeled nodes substitution function
+{  // calculate the tree edit distances for two subtrees
+    // =============================INITIALIZATION=============================
+    std::vector<int> FirstLMDS =  first.get_leftmost_descendents();
+    std::vector<int> SecondLMDS = second.get_leftmost_descendents();
     int p,q;
 
-    int m = i - Al[i] + 2;
-    int n = j - Bl[j] + 2;
+    int m = i - FirstLMDS[i]  + 2;
+    int n = j - SecondLMDS[j] + 2;
 
     // create a m x n matrix of zeros
     std::vector< std::vector<int> > forest_distance = std::vector< std::vector<int> >(m);
     for(int x = 0; x != m; ++x)
+    {
         forest_distance[x].resize(n, 0);
+    }
 
-    int ioff = Al[i] - 1;
-    int joff = Bl[j] - 1;
+    // figure out the offset
+    int ioff = FirstLMDS[i] - 1;
+    int joff = SecondLMDS[j] - 1;
 
+    // some data we'll use along the way
+    char label1, label2;
+    int insertion_cost, deletion_cost, substitution_cost;
+
+
+    // ====================DYNAMIC PROGRAMMING TABLE FILLING===================
     // fill deletions (first row)
     for (int x = 1; x != m; ++x)
+    {
         forest_distance[x][0] = forest_distance[x-1][0] + 1;
+    }
+
 
     // fill insertions (first column)
     for (int y = 1; y != n; ++y)
+    {
         forest_distance[0][y] = forest_distance[0][y-1] + 1;
-    // fill the matrix
+    }
+
+
+
+    // fill the rest of the matrix
     for (int x = 1; x != m; ++x)
     {
         for (int y = 1; y != n; ++y)
         {
+            // some situation independent data
+            label1 = first.get_label(x+ioff);
+            label2 = second.get_label(y+joff);
+
+            deletion_cost =  deletion_cost(label1);
+            insertion_cost = insertion_fun(label2);
+
             // case 1
             // x is an ancestor of i and y is an ancestor of j
-            if ( (Al[i] == Al[x+ioff]) && (Bl[j] == Bl[y+joff]) )
+            if ( (FirstLMDS[i]  == FirstLMDS[x+ioff]) &&
+                 (SecondLMDS[j] == SecondLMDS[y+joff]) )
             {
-                forest_distance[x][y] = MIN3( (forest_distance[x-1][y] + 1),  // deletion
-                                              (forest_distance[x][y-1] + 1),  // insertion
-                                              (forest_distance[x-1][y-1]) );  // substitution
+                substitution_cost = label_distance(label1, label2);
+
+                forest_distance[x][y] = MIN3( // deletion
+                                              (forest_distance[x-1][y] + deletion_cost),
+                                              // insertion
+                                              (forest_distance[x][y-1] + insertion_cost),
+                                              // substitution
+                                              (forest_distance[x-1][y-1]+ substitution_cost)
+                                            );
 
                 treedists[x+ioff][y+joff] = forest_distance[x][y];
             }
             // case 2
             else
             {
-                p = Al[x+ioff]-1-ioff;
-                q = Bl[y+joff]-1-joff;
-                forest_distance[x][y] = MIN3((forest_distance[x-1][y] + 1),  // deletion
-                                             (forest_distance[x][y-1] + 1),  // insertion
-                                             (forest_distance[p][q] + treedists[x+ioff][y+joff]));  // substitution
+                p = FirstLMDS[x+ioff] -1-ioff;
+                q = SecondLMDS[y+joff]-1-joff;
+                forest_distance[x][y] = MIN3(  // deletion
+                                               (forest_distance[x-1][y] + deletion_cost),
+                                               // insertion
+                                               (forest_distance[x][y-1] + insertion_cost),
+                                               // substitution
+                                               (forest_distance[p][q] + treedists[x+ioff][y+joff])
+                                            );
             }
         }
     }
@@ -59,30 +103,42 @@ void calculate_tree_distance(Tree A, Tree B, int i, int j,
 }
 
 
-std::vector< std::vector<int> > tree_distance_trees(const Tree first,
-                                                    const Tree second)
-{
-    // unlabeled tree indel distance
-    // create and fill the vector that will hold the tree distances computed
-    size_t sizefirst = (first.get_brackets().size() / 2) + 1; // + 1 for artificial root
-    size_t sizesecond = (second.get_brackets().size() / 2) + 1;
+std::vector< std::vector<int> > tree_edit_distance(const Tree first,
+                                                   const Tree second,
+                                                   int (*insertion_fun) (char),          // labeled node insertion function
+                                                   int (*deletion_fun) (char),           // labeled node deletion function
+                                                   int (*substitution_fun)(char, char))  // labeled nodes substitution function
+{  // return the dynamic programming matrix for the tree edit distance between two whole trees
 
-    // create the matrix holding tree distances, first x second
+    // =============================INITIALIZATION=============================
+
+    size_t sizefirst  =  first.get_all_labels().size();
+    size_t sizesecond = second.get_all_labels().size();
+
+    // create the matrix holding tree distances
     std::vector< std::vector<int> > tree_distances = std::vector< std::vector<int> >(sizefirst);
     for(unsigned int x = 0; x !=sizefirst; ++x)
     {
         tree_distances[x].resize(sizesecond, 0);
     }
 
-    std::vector<int>::iterator index1;
-    std::vector<int>::iterator index2;
-    std::vector<int> keyrootsfirst = first.get_keyroots();
-    std::vector<int> keyrootssecond = second.get_keyroots();
-    for (index1 = keyrootsfirst.begin(); index1 != keyrootsfirst.end(); ++index1)
+
+    // =======================TREE DISTANCES CALCULATIONS======================
+    std::vector<int> keyroots1 = first.get_keyroots();
+    std::vector<int> keyroots2 = second.get_keyroots();
+    int keyroot1, keyroot2;
+    for (size_t i = 0; i != keyroots1.size(); ++i)
     {
-        for(index2 = keyrootssecond.begin(); index2 != keyrootssecond.end(); ++index2)
+        keyroot1 = keyroots1[i];
+        for (size_t j = 0; j != keyroots2.size(); ++j)
         {
-            calculate_tree_distance(first, second, *index1, *index2, tree_distances);
+            keyroot2 = keyroots2[j];
+            calculate_tree_distance(first, second,
+                                    keyroot1, keyroot2,
+                                    tree_distances,
+                                    insertion_fun,
+                                    deletion_fun,
+                                    substitution_fun);
         }
     }
 
@@ -90,10 +146,28 @@ std::vector< std::vector<int> > tree_distance_trees(const Tree first,
 }
 
 
+
+int unit_cost(char _)
+{  // unit cost for deletion and insertion
+    return 1;
+}
+
+int equality_cost(char a, char b)
+{  // if both labels are equal, return 0, otherwise 2
+    int val = 0;
+    if (a != b)
+    {
+        val = 2;
+    }
+    return val;
+}
+
+
 int unit_tree_indel_distance_trees(const Tree first,
                                    const Tree second)
 {
-    return tree_distance_trees(first, second).back().back();
+    return tree_edit_distance(first, second,
+                              unit_cost, unit_cost, equality_cost).back().back();
 }
 
 
@@ -108,6 +182,10 @@ int unit_tree_indel_distance_strings(const std::string first,
     return unit_tree_indel_distance_trees(first_tree,
                                           second_tree);
 }
+
+
+
+// ============================STRING EDIT DISTANCE============================
 
 
 int string_edit_distance(std::string first,
@@ -161,3 +239,4 @@ int string_edit_distance(std::string first,
     }
     return string_dist[length1][length2];
 }
+

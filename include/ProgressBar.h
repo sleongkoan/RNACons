@@ -7,7 +7,8 @@
 #include <assert.h>
 
 class ProgressBar
-{
+{  // simple progress bar
+
 public:
     // constructors and destructor
     ProgressBar(std::string process_name="", size_t bar_length=40);

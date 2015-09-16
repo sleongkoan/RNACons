@@ -1,9 +1,12 @@
 #ifndef READERS_H
 #define READERS_H
 
+
+#include <stdlib.h> // for exit
+
+
 #include <fstream>  // ifstream
 #include <iostream> // file reading
-#include <stdlib.h> // for exit
 #include <string>
 #include <vector>
 

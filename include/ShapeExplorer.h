@@ -1,12 +1,10 @@
 #ifndef SHAPEEXPLORER_H
 #define SHAPEEXPLORER_H
 
-#include "Distances.h"
-#include "OptionParser.h"
-#include "RNAshapes.h"
-#include "Readers.h"
 
-#include <cassert>
+#include <assert.h>
+
+
 #include <string>
 #include <vector>
 #include <map>
@@ -14,6 +12,10 @@
 #include <sstream>
 
 
+#include "Distances.h"
+#include "OptionParser.h"
+#include "RNAshapes.h"
+#include "Readers.h"
 
 
 #endif // SHAPEEXPLORER_H

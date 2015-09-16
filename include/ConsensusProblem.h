@@ -9,16 +9,17 @@
 
 #include "Tree.h"
 
+
 struct Range
-{
+{  // to keep the boundaries of each group of objects
     int low;
     int high;
-}; // to keep the boundaries of each group of objects
+};
 
 
 template <class T>
 class ConsensusProblem
-{
+{  // abstract consensus problem class
 public:
     // constructor and destructor
     ConsensusProblem(std::vector< std::vector<T> > data,
@@ -37,9 +38,6 @@ private:
     std::vector< std::vector<double> > distance_matrix_;
 };
 
-// used to assert that the distance matrix passed
-// is at least symmetric and has zero on the diagonal
-bool distance_is_symmetric(const std::vector< std::vector<double> > & distance_matrix);
-
 
 #endif // CONSENSUSPROBLEM_H
+

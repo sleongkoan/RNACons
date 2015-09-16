@@ -9,10 +9,8 @@ class Solution
 {
 public:
     // constructors and destructors
-    Solution(std::vector<int> genes=std::vector<int>(),
-             double score=std::numeric_limits<double>::infinity());
-    Solution(const Solution& other); // copy constructor
-
+    Solution(std::vector<int> genes=std::vector<int>(), double score=std::numeric_limits<double>::infinity());
+    Solution(const Solution& other);
     ~Solution();
 
     // getters and setters
@@ -24,7 +22,7 @@ public:
 
     // some comparison operators
     bool operator <(const Solution &other) const;
-    bool operator ==(const Solution &other);
+    bool operator ==(const Solution &other) const;
 
     // pretty printer
     friend std::ostream& operator<< (std::ostream &out, Solution &sol);

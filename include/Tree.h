@@ -1,94 +1,131 @@
 #ifndef TREE_H
 #define TREE_H
 
-#include <vector>
-#include <string>
-#include <cstddef>
-#include <iostream>
-
 #include <assert.h>
-#include "RNA2D.h"
+
+#include <algorithm>
+#include <cstddef>
+#include <map>
+#include <string>
+#include <vector>
+
+
+// ====================================NODE====================================
+
 
 class Node
-{
+{  // used for trees
 public:
     // constructor
-    Node(Node* parent=NULL, int label=-1);
+    Node(Node* parent=NULL, char label)
+    {
+        // constructor
+        if (parent)
+        {
+            parent->add_child(this);
+        }
+        parent_ = parent;
+        label_ = label;
+        index_ = -1;
+        children_ = std::vector<Node*>();
+    };
 
     // destructor
-    ~Node();
-
-    // getters and setters
-    Node* get_parent();
-    int get_label();
-    const std::vector<Node*> & get_children();
-
-    void set_parent(Node* parent);
-    void set_label(int label);
-    void add_child(Node* other);
-
-    // helper
-    int get_leftmost_descendent_label();
-
-private:
-    Node* parent;
-    int label;
-    std::vector<Node*> children;
-};
-
-
-class Tree
-{
-public:
-    // constructor
-    Tree(std::string brackets);
-    Tree(const Tree &other);
-
-    // destructor
-    ~Tree();
+    ~Node(){};
 
     // getters
-    std::string get_brackets() const;
-    std::vector<int> get_leftmost_descendents() const;
-    std::vector<int> get_keyroots() const;
+    char get_label() const { return label_; }
+    int get_index()  const { return index_; }
+    Node* get_parent() { return parent_; }
+    const std::vector<Node*> & get_children() { return children_; }
 
-    // comparison operators
-    friend bool operator==(const Tree &tree1, const Tree &tree2);
-    friend bool operator!=(const Tree &tree1, const Tree &tree2);
-    friend bool operator<(const Tree &tree1, const Tree &tree2);
+    // setters
+    void set_parent(Node* parent) { parent_ = parent; }
+    void set_label(char label) { label_ = label; }
+    void set_index(int index)  { index_ = index; }
 
-    // stream operator
-    friend std::ostream& operator<< (std::ostream& out, Tree &tree);
-    friend std::ostream& operator<< (std::ostream& out, Tree* tree);
+    // modifier
+    void add_child(Node* child) { children_.push_back(child); }
+
+    // helper
+    int get_leftmost_descendent_index();
 
 private:
-    std::string brackets;
-    std::vector<int> leftmost_descendents;
-    std::vector<int> keyroots;
+    Node* parent_;
+    char label_;
+    int index_;
+    std::vector<Node*> children_;
 };
 
 
-// computes the postorder enumeration of the nodes
-std::vector<Node*> get_postorder_enumeration(Node* root);
+// ============================ORDERED LABELED TREE============================
 
 
-// used to assert that dot bracket is balanced
-// and contains no illegal symbols
-bool is_valid_dot_bracket(std::string dot_bracket);
+class OrderedLabeledTree
+{  // abstract base class for RNA trees
+public:
+    // ctor & dtor
+    OrderedLabeledTree();
+    OrderedLabeledTree(const OrderedLabeledTree &other);
+    ~OrderedLabeledTree();
+
+    // getters
+    std::vector<int> get_leftmost_descendents() const;
+    std::vector<int> get_keyroots() const;
+    char get_label(int index) const;
+    std::vector<char> get_all_labels() const;
+
+    // friend functions
+    friend bool operator==(const OrderedLabeledTree &first, const OrderedLabeledTree &second);
+    friend bool operator!=(const OrderedLabeledTree &first, const OrderedLabeledTree &second);
+    friend bool operator< (const OrderedLabeledTree &first, const OrderedLabeledTree &second);
+    friend std::ostream& operator<< (std::ostream& out, OrderedLabeledTree tree);
+
+    // virtual member methods related to friend functions
+    virtual std::string to_string()=0;
+    virtual bool equality_predicate(Tree other)=0;
+    virtual bool less_than_predicate(Tree other)=0;
 
 
-// (((..).))) -> ((()))
-std::string only_paired(std::string dot_bracket);
+private:
+    // constructor fields
+    std::string string_repr_;
+    char opening_symbol_;
+    char closing_symbol_;
+    char unpaired_symbol_;
+
+    // tree distance members
+    std::vector <char> node_labels_;  // label comparison
+    std::vector<int> leftmost_descendents_;
+    std::vector<int> keyroots_;
+};
 
 
-// (())..() -> [][]
-std::string db2shape(std::string dotbracket);
+
+// ==================================RNA TREE==================================
 
 
-// converts dot bracket to Nodes, used by Tree constructor
-// don't forget to free it
-// Node* dot_bracket_to_node(std::string  dot_bracket);
+class RNATree: public OrderedLabeledTree
+{ // abstract shape and full 2D structure
+public:
+    // constructors
+    RNATree(std::string string_repr,
+            char opening_symbol,
+            char closing_symbol,
+            char unpaired_symbol);
+    RNATree(RNATree& other);
+    ~RNATree(){};
 
+    // friend methods
+    bool equality_predicate(RNATree other);
+    bool less_than_predicate(RNATree other);
+
+    std::string to_string() const;
+
+private:
+    std::string string_repr_;
+};
 
 
 #endif // TREE_H
+

@@ -1,14 +1,16 @@
 #ifndef SOLVERHEURISTIC_H_
 #define SOLVERHEURISTIC_H_
 
-#include "Solver.h"  // abstract class and useful functions
-
 #include <algorithm>
-
 #include <assert.h>
 
 
-class SolverHeuristic : public Solver{
+#include "Solver.h"  // abstract class and useful functions
+
+
+class SolverHeuristic : public Solver
+{  // hybrid genetic algorithm / steepest descent
+
 public:
     // constructors and destructors
     SolverHeuristic(// generic information
@@ -46,6 +48,5 @@ private:
 };
 
 
-
-
 #endif // SOLVERHEURISTIC_H_
+

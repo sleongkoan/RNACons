@@ -1,24 +1,26 @@
 #ifndef SOLUTIONNODE_H
 #define SOLUTIONNODE_H
 
-#include "Solution.h"
 
 #include <algorithm>
 #include <iostream>
 #include <vector>
 #include <limits>
 
+#include "Solution.h"
+
+
 struct RangeIndex
-{
+{  // modified range holder
     int index;
     int low;
     int high;
 };
 
 
-// special solution type used for exact solver
 class SubSolution
-{
+{  // special solution type used for Branch & Bound
+
 public:
     // constructor and destructor
     SubSolution(std::vector<int> genes,
@@ -52,7 +54,7 @@ private:
     std::vector<int> genes_;
     std::vector<RangeIndex> ranges_;
     double score_;
-
 };
+
 
 #endif
