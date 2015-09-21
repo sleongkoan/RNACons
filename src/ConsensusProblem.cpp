@@ -1,8 +1,5 @@
 #include "../include/ConsensusProblem.h"
 
-using std::vector;
-using std::map;
-
 
 template <class T>
 ConsensusProblem<T>::ConsensusProblem(std::vector< std::vector<T> > data,
@@ -51,13 +48,7 @@ ConsensusProblem<T>::ConsensusProblem(std::vector< std::vector<T> > data,
     {
         condensed_distances.push_back(vector<double>(unique_objects.size(), 0.));
     }
-    /*
-    map < T, map <T, double> > memoized_distances = map < T, map <T, double> >();
-    for (int i = 0; i < objects_.size(); ++i)
-    {
-        memoized_distances[objects_[i]] = map<T, double>();
 
-    }*/
     double distance;
     for (size_t i = 0; i != unique_objects.size() - 1; ++i)
     {
@@ -93,35 +84,9 @@ ConsensusProblem<T>::ConsensusProblem(std::vector< std::vector<T> > data,
     }
 
     // check that the distance used is symmetric
-    assert(distance_is_symmetric(distance_matrix_) && "Distance Matrix is not symmetric");
+    // assert(distance_is_symmetric(distance_matrix_) && "Distance Matrix is not symmetric");
     return;
 }
-
-bool distance_is_symmetric(const std::vector< std::vector<double> > & distance_matrix)
-{
-    // used to assert that a distance matrix does not violate
-    // the first two metric requirements
-    // d(x, x) = 0, d(x, y) >= 0
-    // d(x, y) >= 0
-
-    // but not d(x, y) + d(y, z) >= d(x, z): this one would be costly to check
-    for(size_t i = 0; i < distance_matrix.size(); ++i)
-    {
-      for(size_t j = 0; j < distance_matrix[i].size(); ++j)
-      {
-          if ( (distance_matrix[i][j] < 0)  ||
-               (distance_matrix[i][i] != 0) ||
-               (distance_matrix[i][j] != distance_matrix[j][i]) )
-          {
-              return false;
-          }
-      }
-    }
-    return true;
-}
-
-
-template <class T> ConsensusProblem<T>::~ConsensusProblem() { }
 
 
 
@@ -151,5 +116,5 @@ const std::vector< std::vector<double> > & ConsensusProblem<T>::get_distance_mat
 // definitions for later, from
 // http://stackoverflow.com/questions/8752837/undefined-reference-to-template-class-constructor
 template class ConsensusProblem<std::string>;
-template class ConsensusProblem<Tree>;
+template class ConsensusProblem<RNATree>;
 

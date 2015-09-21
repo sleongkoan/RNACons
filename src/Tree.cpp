@@ -3,6 +3,8 @@
 
 
 // ==================================NODE======================================
+
+
 int Node::get_leftmost_descendent_index()
 { // TODO: there is a better way to find them, but this works ok for now
     Node* position = this;
@@ -15,8 +17,9 @@ int Node::get_leftmost_descendent_index()
 
 
 
-
 // =========================ORDERED LABELED TREE===============================
+
+
 void postorder_helper(Node* node, std::vector<Node*>& res)
 {  // recursive helper to get the postorder enumeration
     if (node)
@@ -39,100 +42,52 @@ std::vector<Node*> get_postorder_enumeration(Node* root)
 }
 
 
-std::vector<int> OrderedLabeledTree::get_leftmost_descendents() const
-{
-    return leftmost_descendents_;
-}
-
-
-std::vector<int> OrderedLabeledTree::get_keyroots() const
-{
-    return keyroots_;
-}
-
-
-char OrderedLabeledTree::get_label(int index) const
-{
-    return node_labels_[index];
-}
-
-
-std::vector<char> get_all_labels() const
-{  // returns the vector of all labels (postorder)
-    return node_labels_;
-}
-
-
-bool operator==(const OrderedLabeledTree &first, const OrderedLabeledTree &second)
-{
-    return first.equality_predicate(second);
-}
-
-
-bool operator!=(const OrderedLabeledTree &first, const OrderedLabeledTree &second)
-{
-    return !(first.equality_predicate(second);
-}
-
-
-bool operator<(const OrderedLabeledTree &first, const OrderedLabeledTree &second)
-{
-    return first.less_than_predicate(second);
-
-}
-
-
-std::ostream& operator<< (std::ostream &out, OrderedLabeledTree tree)
-{
-    out << tree.to_string() << std::endl;
-    return out;
-}
-
-
-// =================================RNA TREE===================================
-RNATree::RNATree(std::string string_repr,
-                 char opening_symbol,
-                 char closing_symbol,
-                 char unpaired_symbol)
-{
-    // 1- assign the string representation
+OrderedLabeledTree::OrderedLabeledTree(std::string string_repr, // representation
+                                       char add_branch_symbol,  // + and down last added
+                                       char unbranch_symbol,    // up
+                                       char add_leaf_symbol)    // +
+{   // main constructor
+    // 1- assign the string representation and remember the symbols
     string_repr_ = string_repr;
+    add_branch_symbol_ = add_branch_symbol;
+    unbranch_symbol_  = unbranch_symbol;
+    add_leaf_symbol_ = add_leaf_symbol;
 
     // 2- create rooted tree
-    Node root = Node(NULL, opening_symbol);
-    Node* position = root;
+    Node root = Node(NULL, add_branch_symbol);
+    Node* position = &root;
     char c;
     for (size_t i = 0; i != string_repr.size(); i++)
     {
         c = string_repr[i];
-        if (c == opening_symbol)       // create new node and position goes down
+        if (c == add_branch_symbol)       // create new node and position goes down
         {
-            Node child = Node(position, opening_symbol);
+            Node child = Node(position, add_branch_symbol);
             position = &(child);
         }
-        else if (c == closing_symbol)  // position goes up
+        else if (c == unbranch_symbol)  // position goes up
         {
             position = position->get_parent();
         }
-        else if (c == unpaired_symbol) // add unpaired node, position stays same
+        else if (c == add_leaf_symbol) // add unpaired node, position stays same
         {
-            Node child = Node(position, unpaired_symbol);
+            Node child = Node(position, add_leaf_symbol);
         }
         else
         {
-            continue;
+            exit(EXIT_FAILURE); // read unknown symbol
         }
     }
 
     // 3- get postorder pointers
-    std::vector<Node*> postorder_nodes = get_postorder_enumeration(root);
+    std::vector<Node*> postorder_nodes = get_postorder_enumeration(&root);
 
     // 4- set the index and fetch labels
-    labels_ = std::vector<char>();
-    for (siz_t index = 0; index != postorder_nodes.size(); ++index)
+    node_labels_ = std::vector<char>();
+    for (size_t index = 0; index != postorder_nodes.size(); ++index)
     {
         postorder_nodes[index]->set_index(index);
-        labels_.push_back(postorder_nodes[index]->get_label());
+        node_labels_.push_back(postorder_nodes[index]->get_label());
     }
 
     // 5- fetch the leftmost descendents
@@ -146,15 +101,16 @@ RNATree::RNATree(std::string string_repr,
     keyroots_ = std::vector<int>();
     std::map<int, int> keyroots_map;
     int lmd;
-    for(size_t index = postorder_nodes.size()-1; node_index != -1; --node_index)
+    for(int node_index = postorder_nodes.size()-1; node_index != -1; --node_index)
     {
         lmd = leftmost_descendents_[node_index];
 
         if (!(keyroots_map.count(lmd)))
         {
-            keyroots_map[lmd] = index;
+            keyroots_map[lmd] = node_index;
         }
     }
+
     for (std::map<int, int>::iterator it = keyroots_map.begin(); it != keyroots_map.end(); ++it)
     {
         keyroots_.push_back(it->second);
@@ -165,19 +121,78 @@ RNATree::RNATree(std::string string_repr,
 }
 
 
-std::string RNATree::to_string() const
+
+bool operator==(const OrderedLabeledTree &tree1, const OrderedLabeledTree &tree2)
+{   // only equality on representation and instance...
+    if ((tree1.add_branch_symbol_ == tree2.add_branch_symbol_) &&
+        (tree1.unbranch_symbol_ == tree2.unbranch_symbol_) &&
+        (tree1.add_leaf_symbol_ == tree2.add_leaf_symbol_) )
+    {
+        return (tree1.string_repr_ == tree2.string_repr_);
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+bool operator!=(const OrderedLabeledTree &tree1, const OrderedLabeledTree &tree2)
+{
+    return !(tree1 == tree2);
+}
+
+
+bool operator<(const OrderedLabeledTree &tree1, const OrderedLabeledTree &tree2)
+{
+    assert((tree1.add_branch_symbol_ == tree2.add_branch_symbol_) &&
+           (tree1.unbranch_symbol_ == tree2.unbranch_symbol_) &&
+           (tree1.add_leaf_symbol_ == tree2.add_leaf_symbol_) );
+    return (tree1.string_repr_ < tree2.string_repr_);
+}
+
+
+std::ostream& operator<< (std::ostream &out, OrderedLabeledTree tree)
+{
+    out << tree.string_repr_ << std::endl;
+    return out;
+}
+
+
+
+
+
+
+OrderedLabeledTree::OrderedLabeledTree(const OrderedLabeledTree &other)
+{   // copy constructor
+
+    // ordered tree fields
+    nodes_labels_ = other.get_all_labels();
+    leftmost_descendents_ = other.get_leftmost_descendents();
+    keyroots_ = other.get_keyroots();
+
+    // RNA tree fields
+    string_repr_ = other.to_string();
+    add_branch_symbol_ = other.get_add_branch_symbol();
+    unbranch_symbol_  = other.get_unbranch_symbol() ;
+    add_leaf_symbol_ = other.get_add_leaf_symbol();
+    return;
+}
+
+
+std::string OrderedLabeledTree::to_string() const
 {
     return string_repr_;
 }
 
 
-bool RNATree::equality_predicate(RNATree other)
+bool OrderedLabeledTree::equality_predicate(OrderedLabeledTree other) const
 {
     return to_string() == other.to_string();
 }
 
 
-bool RNATree::less_than_predicate(RNATree other)
+bool OrderedLabeledTree::less_than_predicate(OrderedLabeledTree other) const
 {
     return to_string() < other.to_string();
 }

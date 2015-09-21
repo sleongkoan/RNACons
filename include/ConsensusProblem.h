@@ -24,7 +24,7 @@ public:
     // constructor and destructor
     ConsensusProblem(std::vector< std::vector<T> > data,
                      int (*distance_function)(T a, T b));
-    ~ConsensusProblem();
+    ~ConsensusProblem(){ }
 
     // getters and setters
     const std::vector<T> & get_objects();

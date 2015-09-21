@@ -9,18 +9,18 @@
 
 
 // unit tree indel distance on strings (dot brackets)
-int unit_tree_indel_distance_strings(const std::string first,
-                                     const std::string second);
+int unit_tree_indel_distance_strings(const std::string string1,
+                                     const std::string string2);
 
 
 // unit tree indel distance on trees
-int unit_tree_indel_distance_trees(const Tree first,
-                                   const Tree second);
+int unit_tree_indel_distance_trees(const OrderedLabeledTree tree1,
+                                   const OrderedLabeledTree tree2);
 
 
 // string edit distance on ... strings
-int string_edit_distance(std::string first,
-                         std::string second);
+int string_edit_distance(std::string string1,
+                         std::string string2);
 
 #endif
 

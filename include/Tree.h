@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
@@ -14,10 +15,10 @@
 
 
 class Node
-{  // used for trees
+{   // used for trees
 public:
     // constructor
-    Node(Node* parent=NULL, char label)
+    Node(Node* parent, char label)
     {
         // constructor
         if (parent)
@@ -62,69 +63,43 @@ private:
 
 
 class OrderedLabeledTree
-{  // abstract base class for RNA trees
+{   // abstract base class for RNA trees
+
 public:
     // ctor & dtor
-    OrderedLabeledTree();
-    OrderedLabeledTree(const OrderedLabeledTree &other);
+    OrderedLabeledTree(std::string string_repr, // representation
+                       char add_branch_symbol,  // + and down last added
+                       char unbranch_symbol,    // up
+                       char add_leaf_symbol);   // +
     ~OrderedLabeledTree();
 
-    // getters
-    std::vector<int> get_leftmost_descendents() const;
-    std::vector<int> get_keyroots() const;
-    char get_label(int index) const;
-    std::vector<char> get_all_labels() const;
+    // accessors
+    std::vector<int> &  get_leftmost_descendents() { return leftmost_descendents_; 
+    std::vector<int> &  get_keyroots() { return keyroots_; }
+    std::vector<char> & get_labels() { return postorder_labels_; }
+    std::string get_string() { return string_repr_; }
+    char get_add_branch_symbol() { return add_branch_symbol_; }
+    char get_unbranch_symbol()  { return unbranch_symbol_; }
+    char get_add_leaf_symbol() { return add_leaf_symbol_; }
 
-    // friend functions
-    friend bool operator==(const OrderedLabeledTree &first, const OrderedLabeledTree &second);
-    friend bool operator!=(const OrderedLabeledTree &first, const OrderedLabeledTree &second);
-    friend bool operator< (const OrderedLabeledTree &first, const OrderedLabeledTree &second);
-    friend std::ostream& operator<< (std::ostream& out, OrderedLabeledTree tree);
+        // friend functions
+    friend bool operator==(const OrderedLabeledTree &tree1, const OrderedLabeledTree &tree2);
+    friend bool operator!=(const OrderedLabeledTree &tree1, const OrderedLabeledTree &tree2);
+    friend bool operator< (const OrderedLabeledTree &tree1, const OrderedLabeledTree &tree2);
+    friend std::ostream& operator<< (std::ostream& out, const OrderedLabeledTree& tree);
 
-    // virtual member methods related to friend functions
-    virtual std::string to_string()=0;
-    virtual bool equality_predicate(Tree other)=0;
-    virtual bool less_than_predicate(Tree other)=0;
-
-
-private:
-    // constructor fields
-    std::string string_repr_;
-    char opening_symbol_;
-    char closing_symbol_;
-    char unpaired_symbol_;
-
+protected:
     // tree distance members
-    std::vector <char> node_labels_;  // label comparison
+    std::vector<char> postorder_labels_;
     std::vector<int> leftmost_descendents_;
     std::vector<int> keyroots_;
-};
-
-
-
-// ==================================RNA TREE==================================
-
-
-class RNATree: public OrderedLabeledTree
-{ // abstract shape and full 2D structure
-public:
-    // constructors
-    RNATree(std::string string_repr,
-            char opening_symbol,
-            char closing_symbol,
-            char unpaired_symbol);
-    RNATree(RNATree& other);
-    ~RNATree(){};
-
-    // friend methods
-    bool equality_predicate(RNATree other);
-    bool less_than_predicate(RNATree other);
-
-    std::string to_string() const;
-
-private:
     std::string string_repr_;
+    char add_branch_symbol_;
+    char unbranch_symbol_;
+    char add_leaf_symbol_;
 };
+
+
 
 
 #endif // TREE_H

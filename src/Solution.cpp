@@ -48,7 +48,7 @@ bool Solution::operator<(const Solution &other) const
 }
 
 
-bool Solution::operator==(const Solution &other)
+bool Solution::operator==(const Solution &other) const
 {
     return genes_ == other.genes_;
 }

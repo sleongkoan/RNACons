@@ -2,52 +2,48 @@
 #include "../include/MCCONS.h"
 
 
-std::vector< std::vector<Tree> > get_tree_lists(std::vector< std::vector<std::string> > dot_brackets_vectors)
-{
-    // for efficiency reasons, might want to use a Set, but a vector will do for now
-    std::vector< std::vector<Tree> > result = std::vector< std::vector<Tree> >();
+struct pairs_sort_predicate
+{  // sorting predicate for pairs of size_t, double by double
+    bool operator()(const std::pair<int,double> &left,
+                    const std::pair<int,double> &right) {
+        return left.second < right.second;
+    }
+};
+
+
+std::vector< std::vector<RNATree> > strings_to_trees(std::vector< std::vector<std::string> > dot_brackets_vectors)
+{   // get the list of trees from the dot bracket strings
+
+    std::vector< std::vector<RNATree> > trees = std::vector< std::vector<RNATree> >();
 
     for (size_t i = 0; i < dot_brackets_vectors.size(); ++i)
     {
         // initialize a vector of trees to add later
         std::vector<std::string> current_unique_brackets = std::vector<std::string>();
-        std::vector<Tree> current_unique_trees = std::vector<Tree>();
+        std::vector<RNATree> current_unique_trees = std::vector<RNATree>();
 
         for(size_t j = 0; j < dot_brackets_vectors[i].size(); ++j)
         {
             // calculate the bracket
             std::string bracket = only_paired(dot_brackets_vectors[i][j]);
 
-            // check if it has already been added to the current inner vector
-            bool found = false;
-            for (size_t k = 0; k < current_unique_brackets.size(); ++k)
+            // check if it has already been processed
+            if (std::find(current_unique_brackets.begin(), current_unique_brackets.end(), bracket) == current_unique_brackets.end())
             {
-                if (current_unique_brackets[k] == bracket)
-                {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found)
-            {
-                // create the new bracket and tree and add it to the current vector
                 current_unique_brackets.push_back(bracket);
-                current_unique_trees.push_back(Tree(bracket));
+                current_unique_trees.push_back(RNATree(bracket, '(', ')', '.'));
             }
         }
-        // add to the result
-        result.push_back(current_unique_trees);
+        // add to the trees
+        trees.push_back(current_unique_trees);
     }
-
-    return result;
+    return trees;
 }
 
 
 std::vector< std::vector<std::string> > filter_dot_brackets(std::vector< std::vector<std::string> > dot_brackets_vectors,
                                                             std::vector<std::string> brackets)
-{
-    // remove dot_brackets with the wrong base tree topology
+{  // remove dot_brackets with the wrong base tree topology
     std::vector< std::vector<std::string> > result = std::vector< std::vector<std::string> >();
     for(unsigned int i = 0; i < dot_brackets_vectors.size(); ++i)
     {
@@ -68,26 +64,19 @@ std::vector< std::vector<std::string> > filter_dot_brackets(std::vector< std::ve
 
 
 
-// sorting predicate for pairs of size_t, double by double
-struct pairs_sort_predicate {
-    bool operator()(const std::pair<int,double> &left,
-                    const std::pair<int,double> &right) {
-        return left.second < right.second;
-    }
-};
 
 
 void MCCONS(std::string path,
             Solver* tree_solver,
             Solver* dot_bracket_solver)
-{
+{   // given a solver and a problem instance, apply the MC-Cons algorithm
 
     // PHASE 1: TREE CONSENSUS
 
     // data acquisition
     std::vector<std::vector<std::string> > dot_brackets = read_marna_file(path);
-    std::vector<std::vector<Tree> > trees = get_tree_lists(dot_brackets);
-    ConsensusProblem<Tree> tree_problem = ConsensusProblem<Tree>(trees, *unit_tree_indel_distance_trees);
+    std::vector<std::vector<RNATree> > trees = strings_to_trees(dot_brackets);
+    ConsensusProblem<RNATree> tree_problem = ConsensusProblem<RNATree>(trees, *unit_tree_indel_distance_trees);
     int num_comparisons = dot_brackets.size() * (dot_brackets.size() - 1);  // n (n -1)
 
     // PHASE 1 SOLVING
@@ -201,3 +190,4 @@ void MCCONS(std::string path,
 
     return;
 }
+
