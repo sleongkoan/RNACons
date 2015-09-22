@@ -1,3 +1,4 @@
+package mccons;
 
 public interface CostFunction<T1, T2> {
 

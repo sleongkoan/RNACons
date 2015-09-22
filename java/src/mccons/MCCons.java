@@ -1,3 +1,4 @@
+package mccons;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class MCCons {
         // PHASE 1 SOLVING
         boolean verbose = firstSolver.isVerbose();
         if (verbose) {
-            System.err.println("Phase 1: Base Pair Tree Consensus (1)");
+            System.err.println("Phase 1: Base mccons.Pair Tree Consensus (1)");
         }
 
         ArrayList < Solution > treeConsensus = firstSolver.solve(treeProblem.getDistanceMatrix(),

@@ -1,3 +1,4 @@
+package mccons;
 
 public interface DistanceFunction<T1, T2, T3> {
 
@@ -197,6 +198,7 @@ final class TreeEditDistance implements DistanceFunction<OrderedRootedLabeledTre
                 new unitCostChar(),
                 new equalCharDistance());
 
+        /*
         // print the dynamic programming table
         System.out.println("dynamic programming table result");
         for (int[] v : dynamicProgrammingTable) {
@@ -205,6 +207,7 @@ final class TreeEditDistance implements DistanceFunction<OrderedRootedLabeledTre
             }
             System.out.println();
         }
+        */
         return new Double(dynamicProgrammingTable[dynamicProgrammingTable.length - 1][dynamicProgrammingTable[0].length - 1]);
     }
 

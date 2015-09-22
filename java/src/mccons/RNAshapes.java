@@ -1,3 +1,5 @@
+package mccons;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 

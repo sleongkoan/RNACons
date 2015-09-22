@@ -1,3 +1,5 @@
+package mccons;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.PriorityQueue;
@@ -104,7 +106,7 @@ public class SolverExact extends Solver {
 
             // create the new solution, score it and add it if its worth it
             SubSolution new_solution = new SubSolution(new_genes, Double.POSITIVE_INFINITY, new_ranges);
-            Solver.assignPairwiseDistanceScore(new_solution, distanceMatrix);
+            assignPairwiseDistanceScore(new_solution, distanceMatrix);
 
             if (new_solution.getScore() <= cutoff) {
                 search_space.add(new_solution);

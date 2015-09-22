@@ -1,3 +1,5 @@
+package mccons;
+
 import java.util.ArrayList;
 
 public abstract class Solver {
@@ -154,7 +156,7 @@ public abstract class Solver {
      * @param ranges list of (begin, end) indices, for each gene choices
      * @param size size of the output list
      * @param stream pseudo random number generator stream
-     * @return list of Solution randomly generated
+     * @return list of mccons.Solution randomly generated
      */
     public static ArrayList<Solution> initializeRandomSolutions(ArrayList<Pair<Integer, Integer>> ranges, int size, RngStream stream)
     {

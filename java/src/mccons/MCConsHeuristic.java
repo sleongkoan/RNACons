@@ -1,22 +1,21 @@
+package mccons;
+
 import com.martiansoftware.jsap.FlaggedOption;
-import com.martiansoftware.jsap.JSAP;
+import com.martiansoftware.jsap.*;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
+import com.martiansoftware.jsap.stringparsers.IntegerStringParser;
 
 
 public final class MCConsHeuristic {
 
     public static void main(String[] args) throws Exception {
-        JSAP parser = new JSAP("MC-Cons Consensus Optimizer Using A Heuristic Approach");
+        JSAP parser = new JSAP();
 
         // I/O settings
         FlaggedOption input = new FlaggedOption("input", JSAP.STRING_PARSER, null, true,
                 'i', "input", "input file path");
         parser.registerParameter(input);
-
-        FlaggedOption output = new FlaggedOption("output", JSAP.STRING_PARSER, "stdout", false,
-                'o', "output", "output file destination (default is stdout)");
-        parser.registerParameter(output);
 
 
         // verbosity
@@ -160,6 +159,8 @@ public final class MCConsHeuristic {
 
         // execute MC-Cons
         MCCons.MCCONS(config.getString("input"), tree_solver, dot_bracket_solver);
+
+
     }
 }
 

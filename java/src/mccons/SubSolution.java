@@ -1,3 +1,5 @@
+package mccons;
+
 import java.util.ArrayList;
 
 public class SubSolution extends Solution{

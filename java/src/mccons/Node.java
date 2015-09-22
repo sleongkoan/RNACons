@@ -1,7 +1,9 @@
+package mccons;
+
 import java.util.ArrayList;
 
 /**
- * Node representation used for most trees in here
+ * mccons.Node representation used for most trees in here
  */
 public class Node {
 

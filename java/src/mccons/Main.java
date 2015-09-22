@@ -1,3 +1,11 @@
+
+/*
+package mccons;
+
+import mccons.OrderedRootedLabeledTree;
+import mccons.RNAshapes;
+import mccons.TreeEditDistance;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -12,7 +20,7 @@ public class Main {
         /*
         System.out.println("tree building tests");
         String db3 = "(((())()((()))))";
-        OrderedRootedLabeledTree t3 = new OrderedRootedLabeledTree(db3, '(', ')', '.');
+        mccons.OrderedRootedLabeledTree t3 = new mccons.OrderedRootedLabeledTree(db3, '(', ')', '.');
         int[] kr = t3.getKeyroots();
         System.out.println(System.lineSeparator() + "keyroots");
         for (int k : kr)
@@ -25,20 +33,26 @@ public class Main {
         {
             System.out.print(l + " ");
         }
-        */
+
         System.out.println(System.lineSeparator() + "printing trees");
         System.out.println(db1 + " == " + t1.toString());
         System.out.println(db2 + " == " + t2.toString());
 
-        // RNAshapes
-        System.out.println(System.lineSeparator() + "RNAshapes");
+        // mccons.RNAshapes
+        System.out.println(System.lineSeparator() + "mccons.RNAshapes");
         System.out.println(db2);
         System.out.println(RNAshapes.RNAshapes(db2, 1));
         System.out.println(RNAshapes.RNAshapes(db2, 3));
         System.out.println(RNAshapes.RNAshapes(db2, 5));
 
         // Tree distance
-        System.out.println(new TreeEditDistance().distance(t1, t2));
-        //System.out.println(new StringEditDistance().distance(db1, db2));
+        String db3 = "(((...)).(.))".replace(".", "");
+        OrderedRootedLabeledTree t3 = new OrderedRootedLabeledTree(db3, '(', ')', '.');
+
+        TreeEditDistance t = new TreeEditDistance();
+
+        System.out.println(t.distance(t1, t3));
+        //System.out.println(new mccons.StringEditDistance().distance(db1, db2));
     }
 }
+*/

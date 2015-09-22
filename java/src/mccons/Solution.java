@@ -1,3 +1,5 @@
+package mccons;
+
 import java.util.ArrayList;
 
 
@@ -55,12 +57,6 @@ public class Solution implements Comparable<Solution> {
         }
         stringRepresentation += " : " + getScore() + "]" + System.lineSeparator();
         return stringRepresentation;
-    }
-
-
-    public boolean equals(Solution other)
-    {
-        return (toString().equals(other.toString()));
     }
 
 

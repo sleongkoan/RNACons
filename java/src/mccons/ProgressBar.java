@@ -1,3 +1,4 @@
+package mccons;
 
 public class ProgressBar {
     private String processName;
