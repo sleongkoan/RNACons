@@ -1,29 +1,19 @@
 import java.util.ArrayList;
 
 public class SubSolution extends Solution{
+    
 
-    private class RangeIndex
-    {
-        public int index;
-        public int begin;
-        public int end;
-        public RangeIndex(int index_, int begin_, int end_)
-        {
-            index = index_;
-            begin = begin_;
-            end = end_;
-        }
-    }
+    private ArrayList<Pair<Integer, Integer>> ranges;
 
-    private ArrayList<RangeIndex> ranges;
 
     public SubSolution(ArrayList<Integer> genes_,
                        double score_,
-                       ArrayList<RangeIndex> ranges_)
+                       ArrayList<Pair<Integer, Integer>> ranges_)
     {
         super(genes_, score_);
         ranges = ranges_;
     }
+
 
     public SubSolution(SubSolution other)
     {
@@ -32,31 +22,34 @@ public class SubSolution extends Solution{
                 new ArrayList<>(other.getRanges()));
     }
 
-    public ArrayList<RangeIndex> getRanges() {
+
+    public ArrayList<Pair<Integer, Integer>> getRanges() {
         return ranges;
     }
+
 
     public String toString()
     {
         // add the genes
-        String stringRepresentation = "genes ";
+        StringBuilder builder = new StringBuilder();
+        builder.append("genes ");
         for (Integer i : getGenes())
         {
-            stringRepresentation += i + " ";
+            builder.append(i + " ");
         }
-        stringRepresentation += System.lineSeparator();
+        builder.append(System.lineSeparator());
 
         // add the score
-        stringRepresentation += "score " + getScore() + System.lineSeparator();
+        builder.append("score " + getScore() + System.lineSeparator());
 
         // add the remaining ranges
-        stringRepresentation += "ranges" + System.lineSeparator();
-        for( RangeIndex r : getRanges())
+        builder.append("ranges" + System.lineSeparator());
+        for( Pair<Integer, Integer> r : getRanges())
         {
-            stringRepresentation += "[ " + r.index + " " + r.begin + " .. " + r.end + " ]";
-            stringRepresentation += System.lineSeparator();
+            builder.append("[ " + r.getFirst() + " .. " + r.getSecond() + " ]");
+            builder.append(System.lineSeparator());
         }
-        return stringRepresentation;
+        return builder.toString();
     }
 
 
@@ -65,3 +58,4 @@ public class SubSolution extends Solution{
         return new Solution(getGenes(), getScore());
     }
 }
+

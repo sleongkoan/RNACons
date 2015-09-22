@@ -8,7 +8,6 @@ public interface DistanceFunction<T1, T2, T3> {
 final class equalCharDistance implements DistanceFunction<Character, Character, Integer> {
 
     public Integer distance(Character first, Character second) {
-        System.out.println(first + " ==? " + second + " = " + (first.compareTo(second)==0));
         if (first.compareTo(second) == 0) {
             return 0;
         } else {
@@ -18,10 +17,10 @@ final class equalCharDistance implements DistanceFunction<Character, Character, 
 }
 
 
-final class StringEditDistance implements DistanceFunction<String, String, Integer> {
+final class StringEditDistance implements DistanceFunction<String, String, Double> {
 
-    public Integer distance(String string1, String string2) {
-        return string_edit_distance(string1, string2);
+    public Double distance(String string1, String string2) {
+        return new Double(string_edit_distance(string1, string2));
 
     }
 
@@ -68,13 +67,13 @@ final class StringEditDistance implements DistanceFunction<String, String, Integ
 }
 
 
-final class TreeDistance implements DistanceFunction<OrderedRootedLabeledTree, OrderedRootedLabeledTree, Integer> {
+final class TreeEditDistance implements DistanceFunction<OrderedRootedLabeledTree, OrderedRootedLabeledTree, Double> {
 
 
 // ===============================TREE DISTANCES===============================
 
 
-    void treeToTreeDistance(OrderedRootedLabeledTree tree1,
+    public static void treeToTreeDistance(OrderedRootedLabeledTree tree1,
                             OrderedRootedLabeledTree tree2, // trees
                             int i, int j,             // keyroots indices
                             int[][] treedists,        // table to modify
@@ -128,7 +127,6 @@ final class TreeDistance implements DistanceFunction<OrderedRootedLabeledTree, O
                 if ((FirstLMDS[i] == FirstLMDS[x + iOffset]) &&
                         (SecondLMDS[j] == SecondLMDS[y + jOffset])) {
                     substitution_cost = substitution_fun.distance(label1, label2);
-                    System.out.println("substitution cost " + substitution_cost);
                     forestDistance[x][y] = Math.min(Math.min(
                                     // deletion
                                     (forestDistance[x - 1][y] + deletion_cost),
@@ -139,7 +137,6 @@ final class TreeDistance implements DistanceFunction<OrderedRootedLabeledTree, O
                     );
 
                     treedists[x + iOffset][y + jOffset] = forestDistance[x][y];
-                    System.out.println(forestDistance[x][y]);
                 }
                 // case 2
                 else {
@@ -159,7 +156,7 @@ final class TreeDistance implements DistanceFunction<OrderedRootedLabeledTree, O
     }
 
 
-    int[][] treeEditDistance(OrderedRootedLabeledTree tree1,
+    public static int[][] treeEditDistance(OrderedRootedLabeledTree tree1,
                              OrderedRootedLabeledTree tree2, // trees
                              CostFunction<Character, Integer> insertion_fun,  // insertion
                              CostFunction<Character, Integer> deletion_fun,   // deletion
@@ -193,8 +190,8 @@ final class TreeDistance implements DistanceFunction<OrderedRootedLabeledTree, O
         return tree_distances;
     }
 
-    public Integer distance(OrderedRootedLabeledTree tree1,
-                            OrderedRootedLabeledTree tree2) {
+    public Double distance(OrderedRootedLabeledTree tree1,
+                           OrderedRootedLabeledTree tree2) {
         int[][] dynamicProgrammingTable = treeEditDistance(tree1, tree2,
                 new unitCostChar(),
                 new unitCostChar(),
@@ -208,7 +205,7 @@ final class TreeDistance implements DistanceFunction<OrderedRootedLabeledTree, O
             }
             System.out.println();
         }
-        return dynamicProgrammingTable[dynamicProgrammingTable.length - 1][dynamicProgrammingTable[0].length - 1];
+        return new Double(dynamicProgrammingTable[dynamicProgrammingTable.length - 1][dynamicProgrammingTable[0].length - 1]);
     }
 
 

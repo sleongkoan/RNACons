@@ -1,13 +1,17 @@
-import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
-public final class RNAShapes {
 
+public final class RNAshapes {
 
-    public static boolean remove_stem(Node node)
+    /**
+     * remove the stems
+     * @param node
+     * @return
+     */
+    public static boolean remove_stem(Node node, char nestingSymbol)
     {   // to be used in a BFS traversal only
-        if ( (node.getLabel() == 'P') && (node.getChildren().size() == 1) )
+        if ( (node.getLabel() == nestingSymbol) && (node.getChildren().size() == 1) )
         {
             node.setChildren(node.getChildren().get(0).getChildren());
             return true;
@@ -19,7 +23,18 @@ public final class RNAShapes {
     }
 
 
-    public static void remove_stems(Node tree)
+    private static String charArrayListToString(ArrayList<Character> input)
+    {
+        StringBuilder builder = new StringBuilder(input.size());
+        for (Character c  : input)
+        {
+            builder.append(c);
+        }
+        return builder.toString();
+    }
+
+
+    public static void remove_stems(Node tree, char nestingSymbol)
     {
         ArrayDeque<Node> Q = new ArrayDeque<>();
         Q.addLast(tree);
@@ -32,13 +47,13 @@ public final class RNAShapes {
             current_node = Q.pollFirst();
 
             // apply stem removing operation and check status
-            modified = remove_stem(current_node);
+            modified = remove_stem(current_node, nestingSymbol);
             if (modified)
             {
                 // requeue immediately
                 Q.addFirst(current_node);
             }
-            else if (current_node.getLabel() == 'P')
+            else if (current_node.getLabel() == nestingSymbol)
             {
                 for (int i = 0; i != current_node.getChildren().size(); ++i)
                 {
@@ -77,7 +92,7 @@ public final class RNAShapes {
         }
         step2.add(step1.get(step1.size() - 1));
 
-        return step2.toString();
+        return charArrayListToString(step2);
     }
 
     public static String RNAshapes(String dot_bracket, int level)
@@ -86,6 +101,7 @@ public final class RNAShapes {
 
         // preprocess the dotbracket and convert it to tree representation
         String processed = preprocess(dot_bracket);
+
         OrderedRootedLabeledTree tree = new OrderedRootedLabeledTree(processed, '(', ')', '.');
         ArrayList<Node> subTrees = tree.getRoot().getChildren();
 
@@ -95,9 +111,9 @@ public final class RNAShapes {
         // must remove nodes with single children (stems without branching)
         for (Node subRoot : subTrees)
         {
-            remove_stems(subRoot);
+            remove_stems(subRoot, '(');
         }
-        String level1 = tree.toString();
+        String level1 = tree.toString().replace("(", "[").replace(")", "]").replace(".", "_");
         if (level == 1)
         {
             return level1;
@@ -119,7 +135,7 @@ public final class RNAShapes {
         ArrayList<Node> trees2 = tree2.getRoot().getChildren();
         for (Node n : trees2)
         {
-            remove_stems(n);
+            remove_stems(n, '[');
         }
         return tree2.toString();
     }

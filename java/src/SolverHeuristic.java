@@ -2,54 +2,60 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 class SolverHeuristic extends Solver {
-    // solver settings
+    // misc parameters
     private boolean verbose;
+    private double tolerance;
+    private long[] seeds;
 
     // GA settings
     private int populationSize;
     private int numGenerations;
-    private int improvementDepth;
     private int eliteSize;
-    private double distanceThreshold;
+
+    private double improvementProbability;
+    private int improvementDepth;
+
     private double crossoverProbability;
     private double crossoverMixingRatio;
+
     private double mutationProbability;
     private double mutationStrength;
-    private double improvementProbability;
-    private long[] seeds;
 
 
-    SolverHeuristic(boolean verbose_,
+
+
+
+    SolverHeuristic(// misc parameters
+                    boolean verbose_,
+                    double tolerance_,
+                    long[] seeds_,
+
                     // GA settings
                     int populationSize_,
                     int numGenerations_,
-                    int improvementDepth_,
                     int eliteSize_,
-                    double distanceThreshold_,
+                    double improvementProbability_,
+                    int improvementDepth_,
                     double crossoverProbability_,
                     double crossoverMixingRatio_,
                     double mutationProbability_,
-                    double mutationStrength_,
-                    double improvementProbability_,
-                    long[] seeds_) {
-        assert (distanceThreshold_ >= 0);
+                    double mutationStrength_) {
+        assert (tolerance_ >= 0);
         assert (seeds.length == 6);
 
         verbose = verbose_;
-
+        tolerance = tolerance_;
+        seeds = seeds_;
         populationSize = populationSize_;
         numGenerations = numGenerations_;
-        improvementDepth = improvementDepth_;
         eliteSize = eliteSize_;
-        distanceThreshold = distanceThreshold_;
+        improvementProbability = improvementProbability_;
+        improvementDepth = improvementDepth_;
         crossoverProbability = crossoverProbability_;
         crossoverMixingRatio = crossoverMixingRatio_;
         mutationProbability = mutationProbability_;
         mutationStrength = mutationStrength_;
-        improvementDepth = improvementDepth_;
-        improvementProbability = improvementProbability_;
 
-        seeds = seeds_;
     }
 
     @Override
@@ -174,7 +180,7 @@ class SolverHeuristic extends Solver {
         Solution parent1;
         Solution parent2;
         double current_best_score = Double.POSITIVE_INFINITY;
-        double scaled_threshold = distanceThreshold * ranges.size() * (ranges.size() - 1);
+        double scaled_threshold = tolerance * ranges.size() * (ranges.size() - 1);
 
 
         // start the progress meter

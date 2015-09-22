@@ -20,7 +20,7 @@ public final class Readers {
     }
 
 
-    ArrayList<ArrayList<String>> readMarnaFile(String file) throws IOException {
+    public static ArrayList<ArrayList<String>> readMarnaFile(String file) throws IOException {
         // read marna file format with suboptimal structures
         // we only take suboptimal structures as data, rest is ignored
         ArrayList<ArrayList<String>> data = new ArrayList<>();
