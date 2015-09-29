@@ -14,10 +14,9 @@ public class OrderedRootedLabeledTree {
 
     private char[] postOrderLabels;
     private int[] leftmostDescendants;
-    private int[] keyroots;
+    private int[] keyRoots;
 
     private Node root;
-    private String stringRepresentation;
     private char nestingSymbol;
     private char closingSymbol;
     private char addNodeSymbol;
@@ -40,7 +39,6 @@ public class OrderedRootedLabeledTree {
         assert (isValidTree(stringRepresentation_, nestingSymbol_, closingSymbol_, addNodeSymbol_));
 
         // 1- assign the string representation and remember the symbols
-        stringRepresentation = stringRepresentation_;
         nestingSymbol = nestingSymbol_;
         closingSymbol = closingSymbol_;
         addNodeSymbol = addNodeSymbol_;
@@ -49,7 +47,7 @@ public class OrderedRootedLabeledTree {
         root = new Node(null, nestingSymbol);
         Node position = root;
 
-        for (char c : stringRepresentation.toCharArray()) {
+        for (char c : stringRepresentation_.toCharArray()) {
             if (c == nestingSymbol)       // create new node and position goes down
             {
                 position = new Node(position, nestingSymbol);
@@ -81,7 +79,7 @@ public class OrderedRootedLabeledTree {
             leftmostDescendants[index] = postorderNodes.get(index).getLeftmostDescendantIndex();
         }
 
-        // 6- fetch the keyroots
+        // 6- fetch the keyRoots
         Hashtable<Integer, Integer> nodeToLeftmostDescendant = new Hashtable<>();
         Integer lmd;
         for (int node_index = postorderNodes.size() - 1; node_index != -1; --node_index) {
@@ -92,14 +90,14 @@ public class OrderedRootedLabeledTree {
             }
         }
 
-        keyroots = new int[nodeToLeftmostDescendant.size()];
+        keyRoots = new int[nodeToLeftmostDescendant.size()];
         Enumeration<Integer> keyrootsEnum = nodeToLeftmostDescendant.elements();
         int index = 0;
         while (keyrootsEnum.hasMoreElements()) {
-            keyroots[index] = keyrootsEnum.nextElement();
+            keyRoots[index] = keyrootsEnum.nextElement();
             index += 1;
         }
-        java.util.Arrays.sort(keyroots);
+        java.util.Arrays.sort(keyRoots);
     }
 
 
@@ -109,10 +107,7 @@ public class OrderedRootedLabeledTree {
      * @param other Ordered Labeled Tree to copy
      */
     public OrderedRootedLabeledTree(OrderedRootedLabeledTree other) {
-        this(other.getStringRepresentation(),
-                other.getNestingSymbol(),
-                other.getClosingSymbol(),
-                other.getAddNodeSymbol());
+        this(other.toString(), other.getNestingSymbol(), other.getClosingSymbol(), other.getAddNodeSymbol());
     }
 
 
@@ -213,10 +208,10 @@ public class OrderedRootedLabeledTree {
     /**
      * getter
      *
-     * @return the keyroots of the tree
+     * @return the keyRoots of the tree
      */
-    public int[] getKeyroots() {
-        return keyroots;
+    public int[] getKeyRoots() {
+        return keyRoots;
     }
 
 
@@ -254,15 +249,6 @@ public class OrderedRootedLabeledTree {
     }
 
 
-
-    /**
-     * getter
-     *
-     * @return the string representation of the tree
-     */
-    public String getStringRepresentation() {
-        return stringRepresentation;
-    }
 
     public char getNestingSymbol() {
         return nestingSymbol;

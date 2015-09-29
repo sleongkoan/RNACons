@@ -4,10 +4,9 @@ import mccons.repr.ConsensusProblem;
 import mccons.repr.OrderedRootedLabeledTree;
 import mccons.repr.cost.CostFunction;
 import mccons.repr.cost.DistanceFunction;
+import mccons.rna.RNAshapes;
 import mccons.util.Readers;
-import mccons.repr.cost.StringEditDistance;
 import mccons.repr.cost.TreeEditDistance;
-import mccons.util.ProgressBar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,17 +15,10 @@ import java.util.HashSet;
 public class MCCons {
 
 
-    static class UnitCost implements CostFunction<Character, Double> {
+     static class UnitCost implements CostFunction<Character, Double> {
+
         public Double get(Character elem) {
-            double cost = 0;
-            if (elem.compareTo('(') == 0) {
-                cost = 1;
-            } else if (elem.compareTo('.') == 0) {
-                cost = 0;
-            } else {
-                System.exit(1);
-            }
-            return cost;
+            return 1.;
         }
     }
 
@@ -35,12 +27,11 @@ public class MCCons {
         public Double get(Character a, Character b) {
             Double dist;
             if (a.compareTo(b) == 0) {
-                dist = 1.;
-            } else if (a.compareTo('.') == 0) {
                 dist = 0.;
             } else {
                 dist = 2.;
             }
+
             return dist;
         }
     }
@@ -75,9 +66,11 @@ public class MCCons {
 
             for (String string : list) {
                 // check if it has already been processed
-                if (!uniqueStrings.contains(string)) {
-                    uniqueStrings.add(string);
-                    uniqueTrees.add(new OrderedRootedLabeledTree(string, '(', ')', '.'));
+                String shape = RNAshapes.dotBracketToAbstractShape(string, 3);
+                System.out.println(string + "\t" + shape);
+                if (!uniqueStrings.contains(shape)) {
+                    uniqueStrings.add(shape);
+                    uniqueTrees.add(new OrderedRootedLabeledTree(shape, '[', ']', '_'));
                 }
             }
             // add to the trees
@@ -104,7 +97,6 @@ public class MCCons {
             for (OrderedRootedLabeledTree t : consensus) {
                 System.err.println(t);
             }
-
         }
     }
 }

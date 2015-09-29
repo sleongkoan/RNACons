@@ -127,8 +127,8 @@ public class TreeEditDistance implements DistanceFunction<OrderedRootedLabeledTr
         double[][] treeDistances = new double[sizeTree1][sizeTree2];
 
 
-        int[] keyRoots1 = tree1.getKeyroots();
-        int[] keyRoots2 = tree2.getKeyroots();
+        int[] keyRoots1 = tree1.getKeyRoots();
+        int[] keyRoots2 = tree2.getKeyRoots();
         int keyRoot1, keyRoot2;
         for (int i = 0; i != keyRoots1.length; ++i) {
             keyRoot1 = keyRoots1[i];

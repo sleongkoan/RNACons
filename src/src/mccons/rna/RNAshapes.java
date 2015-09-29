@@ -100,7 +100,7 @@ public final class RNAshapes {
         return charArrayListToString(step2);
     }
 
-    public static String RNAshapes(String dot_bracket, int level)
+    public static String dotBracketToAbstractShape(String dot_bracket, int level)
     {
         assert(level == 1 || level == 3 || level==5);
 
