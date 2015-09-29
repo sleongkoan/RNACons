@@ -14,84 +14,74 @@ public final class MCConsHeuristic {
         JSAP parser = new JSAP();
 
         // I/O settings
-        FlaggedOption input = new FlaggedOption("input", JSAP.STRING_PARSER, null, true,
-                'i', "input", "input file path");
-        parser.registerParameter(input);
-
+        parser.registerParameter(new FlaggedOption("input", JSAP.STRING_PARSER, null, true,
+                'i', "input", "input file path"));
 
         // verbosity
-        Switch verbose = new Switch("verbose", 'v', "verbose", "verbosity of the solver");
-        parser.registerParameter(verbose);
+        parser.registerParameter(new Switch("verbose", 'v', "verbose", "verbosity of the solver"));
 
         // suboptimality tolerance
-        FlaggedOption tolerance = new FlaggedOption("tolerance", JSAP.DOUBLE_PARSER, "0.", false,
-                't', "tolerance", "Permitted gap between kept solution and best solution, normalized");
-        parser.registerParameter(tolerance);
+        parser.registerParameter(new FlaggedOption("tolerance", JSAP.DOUBLE_PARSER, "0.", false,
+                't', "tolerance", "Permitted gap between kept solution and best solution, normalized"));
 
         // random number generator seeds
-        FlaggedOption seed0 = new FlaggedOption("seed0", JSAP.LONG_PARSER, "42", false,
-                JSAP.NO_SHORTFLAG, "seed0", "First seed of the random stream");
-        parser.registerParameter(seed0);
-        FlaggedOption seed1 = new FlaggedOption("seed1", JSAP.LONG_PARSER, "42", false,
-                JSAP.NO_SHORTFLAG, "seed1", "Second seed of the random stream");
-        parser.registerParameter(seed1);
-        FlaggedOption seed2 = new FlaggedOption("seed2", JSAP.LONG_PARSER, "42", false,
-                JSAP.NO_SHORTFLAG, "seed2", "Third seed of the random stream");
-        parser.registerParameter(seed2);
-        FlaggedOption seed3 = new FlaggedOption("seed3", JSAP.LONG_PARSER, "42", false,
-                JSAP.NO_SHORTFLAG, "seed3", "Fourth seed of the random stream");
-        parser.registerParameter(seed3);
-        FlaggedOption seed4 = new FlaggedOption("seed4", JSAP.LONG_PARSER, "42", false,
-                JSAP.NO_SHORTFLAG, "seed4", "Fifth seed of the random stream");
-        parser.registerParameter(seed4);
-        FlaggedOption seed5 = new FlaggedOption("seed5", JSAP.LONG_PARSER, "42", false,
-                JSAP.NO_SHORTFLAG, "seed5", "Sixth seed of the random stream");
-        parser.registerParameter(seed5);
+        parser.registerParameter(new FlaggedOption("seed0", JSAP.LONG_PARSER, "42", false,
+                JSAP.NO_SHORTFLAG, "seed0", "First seed of the random stream"));
 
+        parser.registerParameter(new FlaggedOption("seed1", JSAP.LONG_PARSER, "42", false,
+                JSAP.NO_SHORTFLAG, "seed1", "Second seed of the random stream"));
+
+        parser.registerParameter(new FlaggedOption("seed2", JSAP.LONG_PARSER, "42", false,
+                JSAP.NO_SHORTFLAG, "seed2", "Third seed of the random stream"));
+
+        parser.registerParameter(new FlaggedOption("seed3", JSAP.LONG_PARSER, "42", false,
+                JSAP.NO_SHORTFLAG, "seed3", "Fourth seed of the random stream"));
+
+        parser.registerParameter(new FlaggedOption("seed4", JSAP.LONG_PARSER, "42", false,
+                JSAP.NO_SHORTFLAG, "seed4", "Fifth seed of the random stream"));
+
+        parser.registerParameter(new FlaggedOption("seed5", JSAP.LONG_PARSER, "42", false,
+                JSAP.NO_SHORTFLAG, "seed5", "Sixth seed of the random stream"));
 
         // heuristic parameters
-        FlaggedOption popSize = new FlaggedOption("popSize", JSAP.INTEGER_PARSER, "150", false,
-                'p', "popSize", "Genetic algorithm population size");
-        parser.registerParameter(popSize);
+        parser.registerParameter(new FlaggedOption("popSize", JSAP.INTEGER_PARSER, "500", false,
+                'p', "popSize", "Genetic algorithm population size"));
 
-        FlaggedOption numGenerations = new FlaggedOption("numGenerations", JSAP.INTEGER_PARSER, "150", false,
-                'n', "numGenerations", "Number of generations to evaluate");
-        parser.registerParameter(numGenerations);
 
-        FlaggedOption eliteSize = new FlaggedOption("eliteSize", JSAP.INTEGER_PARSER, "30", false,
-                JSAP.NO_SHORTFLAG, "eliteSize", "Size of the elite in the genetic algorithm");
-        parser.registerParameter(eliteSize);
+        parser.registerParameter(new FlaggedOption("numGenerations", JSAP.INTEGER_PARSER, "500", false,
+                'n', "numGenerations", "Number of generations to evaluate"));
 
-        FlaggedOption improvementProbability = new FlaggedOption("improvementProbability", JSAP.DOUBLE_PARSER, "0.05",
+
+        parser.registerParameter(new FlaggedOption("eliteSize", JSAP.INTEGER_PARSER, "30", false,
+                JSAP.NO_SHORTFLAG, "eliteSize", "Size of the elite in the genetic algorithm"));
+
+
+        parser.registerParameter(new FlaggedOption("improvementProbability", JSAP.DOUBLE_PARSER, "0.05",
                 false, JSAP.NO_SHORTFLAG, "improvementProbability",
-                "Probability of applying steepest descent on a solution");
-        parser.registerParameter(improvementProbability);
+                "Probability of applying steepest descent on a solution"));
 
-        FlaggedOption improvementDepth = new FlaggedOption("improvementDepth", JSAP.INTEGER_PARSER, "2",
+
+        parser.registerParameter(new FlaggedOption("improvementDepth", JSAP.INTEGER_PARSER, "2",
                 false, JSAP.NO_SHORTFLAG, "improvementDepth",
-                "Number of iterations applied each time the steepest descent is called");
-        parser.registerParameter(improvementDepth);
+                "Number of iterations applied each time the steepest descent is called"));
 
-        FlaggedOption crossoverProbability = new FlaggedOption("crossoverProbability", JSAP.DOUBLE_PARSER, "0.5",
+
+        parser.registerParameter(new FlaggedOption("crossoverProbability", JSAP.DOUBLE_PARSER, "0.5",
                 false, JSAP.NO_SHORTFLAG, "crossoverProbability",
-                "Probability of applying uniform crossover on a child solution");
-        parser.registerParameter(crossoverProbability);
+                "Probability of applying uniform crossover on a child solution"));
 
-        FlaggedOption crossoverMixingRatio = new FlaggedOption("crossoverMixingRatio", JSAP.DOUBLE_PARSER, "0.5",
+        parser.registerParameter(new FlaggedOption("crossoverMixingRatio", JSAP.DOUBLE_PARSER, "0.5",
                 false, JSAP.NO_SHORTFLAG, "crossoverMixingRatio",
-                "Mixing ratio used for uniform crossover between two parent solutions");
-        parser.registerParameter(crossoverMixingRatio);
+                "Mixing ratio used for uniform crossover between two parent solutions"));
 
 
-        FlaggedOption mutationProbability = new FlaggedOption("mutationProbability", JSAP.DOUBLE_PARSER, "0.05",
+        parser.registerParameter(new FlaggedOption("mutationProbability", JSAP.DOUBLE_PARSER, "0.05",
                 false, JSAP.NO_SHORTFLAG, "mutationProbability",
-                "Probability of applying mutation on a child solution");
-        parser.registerParameter(mutationProbability);
+                "Probability of applying mutation on a child solution"));
 
-        FlaggedOption mutationStrength = new FlaggedOption("mutationStrength", JSAP.DOUBLE_PARSER, "0.3",
+        parser.registerParameter(new FlaggedOption("mutationStrength", JSAP.DOUBLE_PARSER, "0.3",
                 false, JSAP.NO_SHORTFLAG, "mutationStrength",
-                "Probability that a gene is mutated");
-        parser.registerParameter(mutationStrength);
+                "Probability that a gene is mutated"));
 
 
         // parse the arguments

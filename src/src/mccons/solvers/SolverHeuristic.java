@@ -6,6 +6,7 @@ import java.util.Collections;
 import mccons.util.Pair;
 import mccons.util.ProgressBar;
 import mccons.util.RngStream;
+import mccons.util.Util;
 
 
 public class SolverHeuristic extends Solver {
@@ -27,9 +28,6 @@ public class SolverHeuristic extends Solver {
 
     private double mutationProbability;
     private double mutationStrength;
-
-
-
 
 
     public SolverHeuristic(// misc parameters
@@ -75,7 +73,7 @@ public class SolverHeuristic extends Solver {
      *
      * @param parent1 first parent solution
      * @param parent2 second parent solution
-     * @param stream pseudo-random generator stream
+     * @param stream  pseudo-random generator stream
      * @return a crossover between both parents :P
      */
     public static Solution uniformCrossover(Solution parent1, Solution parent2, double mixingRatio, RngStream stream) {
@@ -132,27 +130,27 @@ public class SolverHeuristic extends Solver {
     /**
      * @param population
      * @param numToSelect
-     * @param prng
+     * @param stream
      * @return
      */
-    ArrayList<Solution> binary_tournament_selection(ArrayList<Solution> population,
-                                                    int numToSelect,
-                                                    RngStream prng) {
+    ArrayList<Solution> binaryTournamentSelection(ArrayList<Solution> population,
+                                                  int numToSelect,
+                                                  RngStream stream) {
         // classical binary tournament selection
         assert (numToSelect > 0);
         Pair<Integer, Integer> indices;
         ArrayList<Solution> selected = new ArrayList<>();
-        int pop_size = population.size() - 1;
+        int popSize = population.size() - 1;
 
-        double score1, score2;
         for (int index = 0; index != numToSelect; ++index) {
-            indices = select2(0, pop_size, prng);
-            score1 = population.get(indices.getFirst()).getScore();
-            score2 = population.get(indices.getSecond()).getScore();
-            if (score1 < score2) {
-                selected.add(new Solution(population.get(indices.getFirst())));
+            indices = select2(0, popSize, stream);
+            Solution first = population.get(indices.getFirst());
+            Solution second = population.get(indices.getSecond());
+
+            if (first.compareTo(second) < 0) {
+                selected.add(new Solution(first));
             } else {
-                selected.add(new Solution(population.get(indices.getSecond())));
+                selected.add(new Solution(second));
             }
         }
         return selected;
@@ -174,7 +172,7 @@ public class SolverHeuristic extends Solver {
         assert (eliteSize >= 0 && eliteSize < populationSize);
         assert (0. <= crossoverProbability && crossoverProbability <= 1.);
         assert (0. <= crossoverMixingRatio && crossoverMixingRatio <= 1.);
-        assert (0. <= mutationProbability  && mutationProbability <= 1.);
+        assert (0. <= mutationProbability && mutationProbability <= 1.);
 
         // seed the pseudorandom generator (MRG32k3a from L'Ecuyer)
         RngStream prng = new RngStream();
@@ -182,13 +180,9 @@ public class SolverHeuristic extends Solver {
 
         // some declarations for later
         ArrayList<ArrayList<Solution>> best_solutions = new ArrayList<>();
-        ArrayList<Solution> current_best_solutions;
-        ArrayList<Solution> children, parents, elite;
-        Solution parent1;
-        Solution parent2;
-        double current_best_score = Double.POSITIVE_INFINITY;
-        double scaled_threshold = tolerance * ranges.size() * (ranges.size() - 1);
-
+        double currentBestScore = Double.POSITIVE_INFINITY;
+        double bestScoreEver = Double.POSITIVE_INFINITY;
+        double scaledThreshold = tolerance * ranges.size() * (ranges.size() - 1);
 
         // start the progress meter
         ProgressBar bar = new ProgressBar("", 40);
@@ -209,25 +203,31 @@ public class SolverHeuristic extends Solver {
                 assignPairwiseDistanceScore(solution, distanceMatrix);
             }
             Collections.sort(population);
+            assert Util.isSorted(population);
 
             // remember the best solutions of the current generation
-            current_best_solutions = new ArrayList<>();
-            current_best_score = population.get(0).getScore(); // because it is sorted
+            ArrayList<Solution> currentBestSolutions = new ArrayList<>();
+            currentBestScore = population.get(0).getScore(); // because it is sorted
+
+            if (currentBestScore < bestScoreEver) {
+                bestScoreEver = currentBestScore;
+            }
+
             for (Solution solution : population) {
-                if (solution.getScore() <= current_best_score + scaled_threshold) {
+                if (solution.getScore() <= currentBestScore + scaledThreshold) {
                     // if not elite, put it there
-                    if (!current_best_solutions.contains(solution)) {
-                        current_best_solutions.add(new Solution(solution));
+                    if (!currentBestSolutions.contains(solution)) {
+                        currentBestSolutions.add(new Solution(solution));
                     }
                 } else {
                     break;
                 }
             }
 
-            best_solutions.add(current_best_solutions);
+            best_solutions.add(currentBestSolutions);
 
             // elitist selection with only unique individuals, no repetition
-            elite = new ArrayList<>();
+            ArrayList<Solution> elite = new ArrayList<>();
 
             for (Solution solution : population) {
                 if (elite.size() >= eliteSize) {
@@ -240,26 +240,22 @@ public class SolverHeuristic extends Solver {
             }
 
             // selection process
-            parents = binary_tournament_selection(population, ((populationSize - elite.size()) * 2), prng);
-            children = new ArrayList<>();
+            ArrayList<Solution> parents = binaryTournamentSelection(population, ((populationSize - elite.size()) * 2), prng);
+            ArrayList<Solution> children = new ArrayList<>();
             for (int i = 0; i != populationSize - eliteSize; ++i) {
-                parent1 = parents.get(i * 2);
-                parent2 = parents.get((i * 2) + 1);
+                Solution parent1 = parents.get(i * 2);
+                Solution parent2 = parents.get((i * 2) + 1);
                 Solution child;
 
                 // crossover
-                if (prng.randU01() < crossoverProbability)
-                {
+                if (prng.randU01() < crossoverProbability) {
                     child = uniformCrossover(parent1, parent2, crossoverMixingRatio, prng);
-                }
-                else
-                {
+                } else {
                     child = new Solution(parent1);
                 }
 
                 // mutation
-                if (prng.randU01() < mutationProbability)
-                {
+                if (prng.randU01() < mutationProbability) {
                     uniformMutate(child, ranges, mutationStrength, prng);
                 }
 
@@ -286,17 +282,19 @@ public class SolverHeuristic extends Solver {
             bar.clean();
 
 
+        System.out.println("best score seen = " + bestScoreEver);
         // keep all the unique best solutions up to a specified suboptimal threshold
-        ArrayList<Solution> suitable_solutions = new ArrayList<>();
-        double scoreThreshold = current_best_score + scaled_threshold;
+        ArrayList<Solution> suitableSolutions = new ArrayList<>();
+        double scoreThreshold = bestScoreEver + scaledThreshold;
+
         for (ArrayList<Solution> bestSolutions : best_solutions) {
             for (Solution solution : bestSolutions) {
-                if ((solution.getScore() < scoreThreshold) &&
-                        (!suitable_solutions.contains(solution))){
-                    suitable_solutions.add(new Solution(solution));
+                if ((solution.getScore() <= scoreThreshold) &&
+                        (!suitableSolutions.contains(solution))) {
+                    suitableSolutions.add(new Solution(solution));
                 }
             }
         }
-        return suitable_solutions;
+        return suitableSolutions;
     }
 }

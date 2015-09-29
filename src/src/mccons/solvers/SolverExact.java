@@ -1,5 +1,8 @@
 package mccons.solvers;
 
+import mccons.util.Pair;
+import mccons.util.WidthComparator;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.PriorityQueue;
@@ -23,7 +26,7 @@ public class SolverExact extends Solver {
 
 
     /**
-     * find closest elements in other range and the distance
+     * find closest elements in other range and the get
      * @param self_index
      * @param range
      * @param distanceMatrix
@@ -46,7 +49,7 @@ public class SolverExact extends Solver {
 
 
     /**
-     * using the distance matrix, find closest neighbors for
+     * using the get matrix, find closest neighbors for
      * each object, in each other groups (range)
      * @param ranges
      * @param distanceMatrix
@@ -58,7 +61,7 @@ public class SolverExact extends Solver {
         // matrix is (distanceMatrix.size() x ranges.size())
         double[][] elem_range_dm = new double[distanceMatrix.length][ranges.size()];
 
-        // for each elem, for each range, find the closest distance between the two
+        // for each elem, for each range, find the closest get between the two
         for (int elem_index = 0; elem_index != distanceMatrix.length; ++elem_index) {
             for (int range_index = 0; range_index != ranges.size(); ++range_index) {
                 elem_range_dm[elem_index][range_index] =

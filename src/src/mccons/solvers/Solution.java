@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Solution implements Comparable<Solution> {
 
     private ArrayList<Integer> genes;
-    private double score;
+    private Double score;
 
     public void setGene(int index, int newValue) {
         genes.set(index, newValue);
@@ -39,7 +39,7 @@ public class Solution implements Comparable<Solution> {
         this.score = score;
     }
 
-    public double getScore() {
+    public Double getScore() {
 
         return score;
     }
@@ -62,8 +62,7 @@ public class Solution implements Comparable<Solution> {
 
     public int compareTo(Solution other)
     {
-        assert (other != null);
-        return toString().compareTo(other.toString());
+        return getScore().compareTo(other.getScore());
     }
 }
 

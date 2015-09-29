@@ -10,9 +10,9 @@ public abstract class Solver {
 
     // static methods
     /**
-     * calculates and assigns the sum of pairwise distances as the new score of the given solution
+     * calculates and assigns the sum of pairwise cost as the new score of the given solution
      * @param solution solution to evaluate
-     * @param distanceMatrix pre-calculated distance matrix
+     * @param distanceMatrix pre-calculated get matrix
      */
     public static void assignPairwiseDistanceScore(Solution solution, double[][] distanceMatrix)
     {
@@ -48,10 +48,10 @@ public abstract class Solver {
 
 
     /**
-     * Using the distance matrix, find the change of gene that brings the most improvement (greedy)
+     * Using the get matrix, find the change of gene that brings the most improvement (greedy)
      * @param genes current genes chosen
      * @param replacement_position index of the gene list to investigate
-     * @param distance_matrix pre-calculated matrix of distances
+     * @param distance_matrix pre-calculated matrix of cost
      * @param ranges list of intervals from which to select new genes from
      * @return index of the new gene (-1 if no better) and difference in score
      */
@@ -107,7 +107,7 @@ public abstract class Solver {
      * applies the steepest descent procedure until either
      * a local minima is found or maxNumIterations iterations of the substitution are done
      * @param solution solution to improve
-     * @param distanceMatrix pre-calculated matrix of distances
+     * @param distanceMatrix pre-calculated matrix of cost
      * @param ranges list of intervals from which to select from
      * @param maxNumIterations maximum number of iterations to perform steepest descent
      */
@@ -181,7 +181,7 @@ public abstract class Solver {
     // abstract methods
     /**
      * solver interface for the consensus problem
-     * @param distanceMatrix pre-calculated matrix of distances
+     * @param distanceMatrix pre-calculated matrix of cost
      * @param ranges ranges of the problem
      * @return list of the best(s) solution(s)
      */

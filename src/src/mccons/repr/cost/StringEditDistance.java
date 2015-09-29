@@ -1,15 +1,15 @@
-package mccons.repr.distances;
+package mccons.repr.cost;
 
 public final class StringEditDistance implements DistanceFunction<String, String, Double> {
 
-    public Double distance(String string1, String string2) {
+    public Double get(String string1, String string2) {
         return new Double(string_edit_distance(string1, string2));
 
     }
 
     private int string_edit_distance(String string1,
                                      String string2) {
-        // string edit distance
+        // string edit get
         int length1 = string1.length();
         int length2 = string2.length();
         char[] chars1 = string1.toCharArray();

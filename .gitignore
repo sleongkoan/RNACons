@@ -86,3 +86,7 @@ hs_err_pid*
 *.idea/
 java/.idea/
 *.iml
+
+
+# compiled
+src/compiled/
