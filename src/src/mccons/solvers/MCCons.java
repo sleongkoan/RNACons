@@ -67,7 +67,6 @@ public class MCCons {
             for (String string : list) {
                 // check if it has already been processed
                 String shape = RNAshapes.dotBracketToAbstractShape(string, 3);
-                System.out.println(string + "\t" + shape);
                 if (!uniqueStrings.contains(shape)) {
                     uniqueStrings.add(shape);
                     uniqueTrees.add(new OrderedRootedLabeledTree(shape, '[', ']', '_'));
@@ -84,7 +83,7 @@ public class MCCons {
         // PHASE 1 SOLVING
         boolean verbose = firstSolver.isVerbose();
         if (verbose) {
-            System.err.println("Phase 1: Base mccons.Pair Tree Consensus (1)");
+            System.err.println("Phase 1: Base Pair Tree Consensus (1)");
         }
 
         ArrayList<Solution> treeConsensus = firstSolver.solve(treeProblem.getDistanceMatrix(),

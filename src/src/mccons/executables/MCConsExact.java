@@ -1,4 +1,4 @@
-package mccons.cmdline;
+package mccons.executables;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
