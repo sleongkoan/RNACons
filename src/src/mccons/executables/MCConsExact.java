@@ -55,6 +55,7 @@ public final class MCConsExact {
         MCCons.MCCONS(config.getString("input"), solver, solver);
 
 
+
     }
 }
 

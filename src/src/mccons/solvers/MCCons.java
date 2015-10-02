@@ -10,9 +10,10 @@ import mccons.repr.cost.TreeEditDistance;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
+
 
 public class MCCons {
+
 
 
      static class UnitCost implements CostFunction<Character, Double> {
@@ -23,18 +24,62 @@ public class MCCons {
     }
 
 
+    // https://github.com/timtadh/zhang-shasha/blob/master/zss/compare.py
+    // the cost strdist(a, b) -> 0 if equal(a, b) else 1
     static class SubstitutionCost implements DistanceFunction<Character, Character, Double> {
         public Double get(Character a, Character b) {
             Double dist;
             if (a.compareTo(b) == 0) {
                 dist = 0.;
             } else {
-                dist = 2.;
+                dist = 1.;
             }
 
             return dist;
         }
     }
+
+
+    static class shapeAndSkeletonDist implements DistanceFunction<String, String, Double> {
+        public int shapeLevel;
+        public double mult1, mult2, mult3;
+
+        shapeAndSkeletonDist(int shapeLevel_, double mult1_, double mult2_, double mult3_)
+        {
+            assert(shapeLevel_ == 1 || shapeLevel_ == 3 || shapeLevel_ ==5);
+            shapeLevel = shapeLevel_;
+            mult1 = mult1_;
+            mult2 = mult2_;
+            mult3 = mult3_;
+        }
+
+        public Double get(String dotBracket1, String dotBracket2)
+        {
+            OrderedRootedLabeledTree tree1 = new OrderedRootedLabeledTree(dotBracket1, '(', ')' ,'?');
+            OrderedRootedLabeledTree tree2 = new OrderedRootedLabeledTree(dotBracket2, '(', ')' ,'?');
+
+            OrderedRootedLabeledTree completeTree1 = new OrderedRootedLabeledTree(dotBracket1, '(', ')', '.');
+            OrderedRootedLabeledTree completeTree2 = new OrderedRootedLabeledTree(dotBracket2, '(', ')', '.');
+
+            String shape1 = RNAshapes.dotBracketToAbstractShape(dotBracket1, shapeLevel);
+            String shape2 = RNAshapes.dotBracketToAbstractShape(dotBracket2, shapeLevel);
+
+            OrderedRootedLabeledTree shapeTree1 = new OrderedRootedLabeledTree(shape1, '[', ']', '_');
+            OrderedRootedLabeledTree shapeTree2 = new OrderedRootedLabeledTree(shape2, '[', ']', '_');
+
+            UnitCost indel = new UnitCost();
+            SubstitutionCost sub = new SubstitutionCost();
+            TreeEditDistance dist = new TreeEditDistance(indel, indel, sub);
+
+            // first distance
+            Double wholeDistance = dist.get(completeTree1, completeTree2);
+            Double skeletonDistance = dist.get(tree1, tree2);
+            Double shapeDistance = dist.get(shapeTree1, shapeTree2);
+
+            return ( mult1 * skeletonDistance) + ( mult2 * shapeDistance ) + ( mult3 * wholeDistance);
+        }
+    }
+
 
 
     /**
@@ -55,8 +100,12 @@ public class MCCons {
         SubstitutionCost sub = new SubstitutionCost();
         TreeEditDistance treeDist = new TreeEditDistance(indel, indel, sub);
 
+        shapeAndSkeletonDist compoundDist = new shapeAndSkeletonDist(1, 0.1, 1., 0.1);
+
         // data acquisition
         ArrayList<ArrayList<String>> dotBrackets = Readers.readMarnaFile(path);
+
+        /*
         ArrayList<ArrayList<OrderedRootedLabeledTree>> trees = new ArrayList<>();
 
         for (ArrayList<String> list : dotBrackets) {
@@ -66,7 +115,7 @@ public class MCCons {
 
             for (String string : list) {
                 // check if it has already been processed
-                String shape = RNAshapes.dotBracketToAbstractShape(string, 3);
+                String shape = RNAshapes.dotBracketToAbstractShape(string, 1);
                 if (!uniqueStrings.contains(shape)) {
                     uniqueStrings.add(shape);
                     uniqueTrees.add(new OrderedRootedLabeledTree(shape, '[', ']', '_'));
@@ -75,8 +124,9 @@ public class MCCons {
             // add to the trees
             trees.add(uniqueTrees);
         }
+        */
 
-        ConsensusProblem<OrderedRootedLabeledTree> treeProblem = new ConsensusProblem<>(trees, treeDist);
+        ConsensusProblem<String> treeProblem = new ConsensusProblem<>(dotBrackets, compoundDist);
         int num_comparisons = dotBrackets.size() * (dotBrackets.size() - 1);  // n (n -1)
 
 
@@ -91,9 +141,9 @@ public class MCCons {
 
         for (Solution solution : treeConsensus) {
             System.err.println("consensus with score " + solution.getScore());
-            ArrayList<OrderedRootedLabeledTree> consensus = treeProblem.getObjects(solution.getGenes());
+            ArrayList<String> consensus = treeProblem.getObjects(solution.getGenes());
 
-            for (OrderedRootedLabeledTree t : consensus) {
+            for (String t : consensus) {
                 System.err.println(t);
             }
         }

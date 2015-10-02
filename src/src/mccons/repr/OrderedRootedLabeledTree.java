@@ -57,9 +57,6 @@ public class OrderedRootedLabeledTree {
             } else if (c == addNodeSymbol) // add unpaired node, position stays same
             {
                 new Node(position, addNodeSymbol);
-            } else {
-                System.out.println("illegal symbol " + c);
-                throw new IllegalArgumentException("Illegal symbol used in the string representation");
             }
         }
 
