@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.1415926-2.5-0.9999.3 (TeX Live 2013/Debian) (format=xelatex 2015.10.6)  6 OCT 2015 22:54
+This is XeTeX, Version 3.1415926-2.5-0.9999.3 (TeX Live 2013/Debian) (format=xelatex 2015.10.6)  7 OCT 2015 12:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1505,9 +1505,9 @@ File: figs/np-complete.jpg Graphic file (type QTm)
  <use  "figs/np-complete.jpg" > [11
 
 ]
-File: figs/genetic_algorithm.jpg Graphic file (type QTm)
+File: figs/ai.jpg Graphic file (type QTm)
 
-<use  "figs/genetic_algorithm.jpg" > [12
+<use  "figs/ai.jpg" > [12
 
 ]
 File: figs/ires.jpg Graphic file (type QTm)
@@ -1516,17 +1516,17 @@ File: figs/ires.jpg Graphic file (type QTm)
 ] [14
 
 ]
-Underfull \hbox (badness 6461) in paragraph at lines 149--149
+Underfull \hbox (badness 6461) in paragraph at lines 152--152
  [][][][][][]\EU1/DejaVuSans(0)/bx/n/24.88 future work[][] 
  []
 
 
-Overfull \hbox (56.90549pt too wide) in paragraph at lines 149--149
+Overfull \hbox (56.90549pt too wide) in paragraph at lines 152--152
 [][] 
  []
 
 
-Overfull \vbox (18.6pt too high) detected at line 149
+Overfull \vbox (18.6pt too high) detected at line 152
  []
 
 [15
@@ -1547,18 +1547,18 @@ File: figs/beer.jpg Graphic file (type QTm)
 \tf@snm=\write8
 \openout8 = `presentation.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 317.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 317.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 320.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 320.
  (./presentation.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 317.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 317.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 317.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 320.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 320.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 320.
  ) 
 Here is how much of TeX's memory you used:
- 32416 strings out of 495658
- 630731 string characters out of 6187951
+ 32426 strings out of 495658
+ 630923 string characters out of 6187951
  668868 words of memory out of 5000000
- 35037 multiletter control sequences out of 15000+600000
+ 35047 multiletter control sequences out of 15000+600000
  4829 words of font info for 45 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  52i,12n,60p,10446b,798s stack positions out of 5000i,500n,10000p,200000b,80000s
