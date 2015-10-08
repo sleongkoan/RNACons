@@ -4,7 +4,7 @@
 \setbeamertemplate{caption}{\raggedright\insertcaption\par}
 
 \usepackage{graphicx}
-\title{MC-Cons}
+\title{MC-Cons 2.0}
 \author{Gabriel Parent}
 
 
@@ -16,7 +16,7 @@
 \maketitle
 
 
-\section{background}
+\section{introduction}
 
 \begin{frame}
 	\frametitle{I work with 2D structures}
@@ -27,7 +27,14 @@
 	\end{figure} 
 \end{frame}
 
-
+\begin{frame}
+	\frametitle{RNA families}
+	\begin{figure}
+	\centering
+	\includegraphics[scale=0.3]{figs/rfam}
+	%\caption{many good potential structures}
+	\end{figure}
+\end{frame}
 
 \begin{frame}
 	\frametitle{one RNA has many structures}
@@ -40,23 +47,17 @@
 
 
 \begin{frame}
-	\frametitle{MC-Fold predicts structures}
-	\begin{figure}
-	\centering
-	\includegraphics[scale=0.3]{figs/subopts}
-	%\caption{many good potential structures}
-	\end{figure}
+	\frametitle{softwares predict structure}
+
+	\begin{itemize}
+		\item MC-Fold
+		\item mfold
+		\item dozens of others
+	\end{itemize}
 \end{frame}
 
 
-\begin{frame}
-	\frametitle{there are RNA families}
-	\begin{figure}
-	\centering
-	\includegraphics[scale=0.3]{figs/subopts}
-	%\caption{many good potential structures}
-	\end{figure}
-\end{frame}
+
 
 
 
@@ -64,10 +65,10 @@
 \section{MC-Cons}
 
 \begin{frame}
-	\frametitle{what we want}
+	\frametitle{RNA consensus}
 	\begin{figure}
 	\centering
-	\includegraphics[scale=0.9]{figs/problem_setting}
+	\includegraphics[scale=0.8]{figs/problem_setting}
 	%\caption{}
 	\end{figure}
 \end{frame}
@@ -101,33 +102,34 @@
 	%\caption{}
 	\end{figure}
 	\begin{itemize}
-		\item very
-		\item 
+		\item result is the solution to max-clique
+		\item exponential growth on input size
 	\end{itemize}
 	
 \end{frame}
 
 
 \begin{frame}
-	\frametitle{good enough}
+	\frametitle{AI}
 		\begin{figure}
 	\includegraphics[scale=0.1]{figs/ai}
 	%\caption{}
 	\end{figure}
 	\begin{itemize}
-		\item genetic algorithm
-		\item optional local search (steepest descent)
+		\item hybrid genetic algorithm
+		\item local search
 	\end{itemize}
 	
 \end{frame}
 
 
+\section{results}
 
 \begin{frame}
-	\frametitle{example: IREs}
+	\frametitle{toy example: IREs}
 	\begin{figure}
 	\centering
-	\includegraphics[scale=0.2]{figs/ires}
+	\includegraphics[scale=0.23]{figs/iresCons}
 	%\caption{sometimes it works well!}
 	\end{figure}
 	
@@ -137,11 +139,11 @@
 
 \begin{frame}
 	\frametitle{example: microRNAs}
-%	\begin{figure}
-%	\centering
-%	\includegraphics[scale=0.22]{figs/ires}
-%	%\caption{}
-%	\end{figure}
+	\begin{figure}
+	\centering
+	\includegraphics[scale=0.145]{figs/miRNACons}
+	%\caption{}
+	\end{figure}
 	
 \end{frame}
 
@@ -152,16 +154,21 @@
 % take home message
 \begin{frame}
 	\frametitle{summary}
+		\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{figs/problem_setting}
+	%\caption{}
+	\end{figure}
+
 \end{frame}
 
 \begin{frame}
 	\frametitle{future work}
 	\begin{itemize}
-		\item multi-objective
 		\item improved distance functions
-		\item parallelism
-		\item user feedback
-	\end{itemize}
+		\item multi-objective optimization
+		\item relevance feedback
+		\end{itemize}
 \end{frame}
 
 

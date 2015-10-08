@@ -54,14 +54,28 @@ def compute_weighted_distances(consensus,
     return new_matrix
 
 
-def get_dendrogram(distance_matrix, leaf_label_func, cluster_method="average"):
+def get_dendrogram(Z, labels):
+    """returns the order in which the consensus should be presented"""
+    # perform the hierarchical clustering
+    return scipy.cluster.hierarchy.dendrogram(Z,  orientation="right", labels=labels, leaf_font_size=8)
+
+
+def get_order_linkage(distance_matrix, cluster_method="average"):
     """returns the order in which the consensus should be presented"""
     # perform the hierarchical clustering
     mat_ut = distance_matrix[np.triu_indices(distance_matrix.shape[0], 1)]
     Z = scipy.cluster.hierarchy.linkage(mat_ut, method=cluster_method)
 
-    return scipy.cluster.hierarchy.dendrogram(Z, leaf_label_func=leaf_label_func, orientation="left")
-
+    # convert the linkage information to a dendogram ordering
+    # http://stackoverflow.com/questions/12572436/calculate-ordering-of-dendrogram-leaves
+    n = len(Z) + 1
+    cache = dict()
+    for k in range(len(Z)):
+        c1, c2 = int(Z[k][0]), int(Z[k][1])
+        c1 = [c1] if c1 < n else cache.pop(c1)
+        c2 = [c2] if c2 < n else cache.pop(c2)
+        cache[n+k] = c1 + c2
+    return (cache[2*len(Z)], Z)
 
 #def len_digit(integer):
     #"""calculates the number of digits in an integer number"""
@@ -167,11 +181,12 @@ if __name__ == '__main__':
 
 
     FIGURE = plt.figure(figsize=(ARGS.x_size, ARGS.y_size))
-    LABELS = [CONSENSUS.subopts[k] for k in range(len(CONSENSUS.subopts))]
-    def getLab(i):
-        return LABELS[i]
-    DENDROGRAM = get_dendrogram(DISTANCE_MATRIX, leaf_label_func=getLab)
-    plt.xticks(rotation=90)
+    LABELS = [k for k in range(len(CONSENSUS.subopts))]
+    ORDER, LINKAGE = get_order_linkage(DISTANCE_MATRIX)
+    for i in ORDER:
+        print CONSENSUS.subopts[i]
+    DENDROGRAM = get_dendrogram(LINKAGE, LABELS)
+  #  plt.xticks(rotation=90)
     no_spine = {'left': True, 'bottom': True, 'right': True, 'top': True}
     sns.despine(**no_spine);
     plt.savefig(ARGS.output_path)
