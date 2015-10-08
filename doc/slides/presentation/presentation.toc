@@ -1,5 +1,0 @@
-\beamer@endinputifotherversion {3.24pt}
-\beamer@sectionintoc {1}{background}{3}{0}{1}
-\beamer@sectionintoc {2}{RNA consensus}{7}{0}{2}
-\beamer@sectionintoc {3}{MC-Cons}{9}{0}{3}
-\beamer@sectionintoc {4}{future work}{15}{0}{4}
