@@ -48,20 +48,20 @@ public final class MCConsHeuristic {
                 'p', "popSize", "Genetic algorithm population size"));
 
 
-        parser.registerParameter(new FlaggedOption("numGenerations", JSAP.INTEGER_PARSER, "500", false,
+        parser.registerParameter(new FlaggedOption("numGenerations", JSAP.INTEGER_PARSER, "1000", false,
                 'n', "numGenerations", "Number of generations to evaluate"));
 
 
-        parser.registerParameter(new FlaggedOption("eliteSize", JSAP.INTEGER_PARSER, "30", false,
+        parser.registerParameter(new FlaggedOption("eliteSize", JSAP.INTEGER_PARSER, "50", false,
                 JSAP.NO_SHORTFLAG, "eliteSize", "Size of the elite in the genetic algorithm"));
 
 
-        parser.registerParameter(new FlaggedOption("improvementProbability", JSAP.DOUBLE_PARSER, "0.05",
+        parser.registerParameter(new FlaggedOption("improvementProbability", JSAP.DOUBLE_PARSER, "0.03",
                 false, JSAP.NO_SHORTFLAG, "improvementProbability",
                 "Probability of applying steepest descent on a solution"));
 
 
-        parser.registerParameter(new FlaggedOption("improvementDepth", JSAP.INTEGER_PARSER, "2",
+        parser.registerParameter(new FlaggedOption("improvementDepth", JSAP.INTEGER_PARSER, "4",
                 false, JSAP.NO_SHORTFLAG, "improvementDepth",
                 "Number of iterations applied each time the steepest descent is called"));
 
@@ -70,7 +70,7 @@ public final class MCConsHeuristic {
                 false, JSAP.NO_SHORTFLAG, "crossoverProbability",
                 "Probability of applying uniform crossover on a child solution"));
 
-        parser.registerParameter(new FlaggedOption("crossoverMixingRatio", JSAP.DOUBLE_PARSER, "0.5",
+        parser.registerParameter(new FlaggedOption("crossoverMixingRatio", JSAP.DOUBLE_PARSER, "0.1",
                 false, JSAP.NO_SHORTFLAG, "crossoverMixingRatio",
                 "Mixing ratio used for uniform crossover between two parent solutions"));
 
@@ -79,7 +79,7 @@ public final class MCConsHeuristic {
                 false, JSAP.NO_SHORTFLAG, "mutationProbability",
                 "Probability of applying mutation on a child solution"));
 
-        parser.registerParameter(new FlaggedOption("mutationStrength", JSAP.DOUBLE_PARSER, "0.3",
+        parser.registerParameter(new FlaggedOption("mutationStrength", JSAP.DOUBLE_PARSER, "0.2",
                 false, JSAP.NO_SHORTFLAG, "mutationStrength",
                 "Probability that a gene is mutated"));
 

@@ -22,25 +22,17 @@
 	\frametitle{I work with 2D structures}
 	\begin{figure}[!htb]
 	\centering
-	\includegraphics[scale=0.3]{figs/representations}
+	\includegraphics[scale=0.39]{figs/representations}
 	%\caption{there are lots of ways to represent structure}
 	\end{figure} 
 \end{frame}
 
-\begin{frame}
-	\frametitle{RNA families}
-	\begin{figure}
-	\centering
-	\includegraphics[scale=0.3]{figs/rfam}
-	%\caption{many good potential structures}
-	\end{figure}
-\end{frame}
 
 \begin{frame}
 	\frametitle{one RNA has many structures}
 	\begin{figure}
 	\centering
-	\includegraphics[scale=1]{figs/dynamics}
+	\includegraphics[scale=1.4]{figs/dynamics}
 	%\caption{a single RNA molecule is present in many states}
 	\end{figure}
 \end{frame}
@@ -50,9 +42,31 @@
 	\frametitle{softwares predict structure}
 
 	\begin{itemize}
-		\item MC-Fold
-		\item mfold
-		\item dozens of others
+		\item MC-Fold (Parisien, Major, Nature, 2008)
+		\item Mfold (Zuker, NAR, 2003)
+		\item many others
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{RNA families}
+	\begin{figure}
+	\centering
+	\includegraphics[scale=0.43]{figs/rfam}
+	%\caption{many good potential structures}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}
+
+	\frametitle{what has been done}
+	
+	\begin{itemize}
+		\item MC-Cons (Parisien, Major, Nature 2008)
+		\item uses fold then align strategy (Gardner, Giegerich, BMC Bioinfo, 2003)
+		\item good only for small and similar structures
 	\end{itemize}
 \end{frame}
 
@@ -61,14 +75,13 @@
 
 
 
-
-\section{MC-Cons}
+\section{MC-Cons 2.0}
 
 \begin{frame}
 	\frametitle{RNA consensus}
 	\begin{figure}
 	\centering
-	\includegraphics[scale=0.8]{figs/problem_setting}
+	\includegraphics[scale=0.81]{figs/problem_setting}
 	%\caption{}
 	\end{figure}
 \end{frame}
@@ -81,7 +94,7 @@
 
 	\begin{figure}
 		\centering
-		\includegraphics[scale=1.2]{figs/consensus}
+		\includegraphics[scale=1.6]{figs/consensus}
 	\end{figure}
 	
 %	\begin{itemize}
@@ -110,13 +123,13 @@
 
 
 \begin{frame}
-	\frametitle{AI}
+	\frametitle{heuristic approach}
 		\begin{figure}
-	\includegraphics[scale=0.1]{figs/ai}
+	\includegraphics[scale=0.23]{figs/workflow}
 	%\caption{}
 	\end{figure}
 	\begin{itemize}
-		\item hybrid genetic algorithm
+		\item genetic algorithm (Barricelli, Methodos, 1954)
 		\item local search
 	\end{itemize}
 	
@@ -126,10 +139,10 @@
 \section{results}
 
 \begin{frame}
-	\frametitle{toy example: IREs}
+	\frametitle{Iron Response Elements}
 	\begin{figure}
 	\centering
-	\includegraphics[scale=0.23]{figs/iresCons}
+	\includegraphics[scale=0.25]{figs/iresCons}
 	%\caption{sometimes it works well!}
 	\end{figure}
 	
@@ -138,10 +151,10 @@
 
 
 \begin{frame}
-	\frametitle{example: microRNAs}
+	\frametitle{microRNAs}
 	\begin{figure}
 	\centering
-	\includegraphics[scale=0.145]{figs/miRNACons}
+	\includegraphics[scale=0.21]{figs/miRNACons}
 	%\caption{}
 	\end{figure}
 	
@@ -154,20 +167,22 @@
 % take home message
 \begin{frame}
 	\frametitle{summary}
-		\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{figs/problem_setting}
-	%\caption{}
-	\end{figure}
+	
+	\begin{itemize}
+		\item MC-Cons was slow, now its fast enough.
+		\item Useful for exploration of RNA families with computational tools.
+		\item It is easily extensible.
+		\item Still some tweaking to do with the workflow.
+	\end{itemize}
 
 \end{frame}
 
 \begin{frame}
 	\frametitle{future work}
 	\begin{itemize}
-		\item improved distance functions
-		\item multi-objective optimization
-		\item relevance feedback
+		\item Devise and implement better distance functions
+		\item Multi-objective optimization to explore those distance functions (NSGA2)
+		\item Implement relevance feedback to score consensus
 		\end{itemize}
 \end{frame}
 

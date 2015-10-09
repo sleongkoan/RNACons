@@ -4,6 +4,7 @@ import mccons.repr.ConsensusProblem;
 import mccons.repr.OrderedRootedLabeledTree;
 import mccons.repr.cost.CostFunction;
 import mccons.repr.cost.DistanceFunction;
+import mccons.repr.cost.StringEditDistance;
 import mccons.rna.RNAshapes;
 import mccons.util.Readers;
 import mccons.repr.cost.TreeEditDistance;
@@ -44,13 +45,13 @@ public class MCCons {
         public int shapeLevel;
         public double mult1, mult2, mult3;
 
-        shapeAndSkeletonDist(int shapeLevel_, double mult1_, double mult2_, double mult3_)
+        shapeAndSkeletonDist(double mult1_, double mult2_)
         {
-            assert(shapeLevel_ == 1 || shapeLevel_ == 3 || shapeLevel_ ==5);
-            shapeLevel = shapeLevel_;
+            //assert(shapeLevel_ == 1 || shapeLevel_ == 3 || shapeLevel_ ==5);
+            //shapeLevel = shapeLevel_;
             mult1 = mult1_;
             mult2 = mult2_;
-            mult3 = mult3_;
+            //mult3 = mult3_;
         }
 
         public Double get(String dotBracket1, String dotBracket2)
@@ -58,6 +59,7 @@ public class MCCons {
             OrderedRootedLabeledTree tree1 = new OrderedRootedLabeledTree(dotBracket1, '(', ')' ,'?');
             OrderedRootedLabeledTree tree2 = new OrderedRootedLabeledTree(dotBracket2, '(', ')' ,'?');
 
+            /*
             OrderedRootedLabeledTree completeTree1 = new OrderedRootedLabeledTree(dotBracket1, '(', ')', '.');
             OrderedRootedLabeledTree completeTree2 = new OrderedRootedLabeledTree(dotBracket2, '(', ')', '.');
 
@@ -66,17 +68,20 @@ public class MCCons {
 
             OrderedRootedLabeledTree shapeTree1 = new OrderedRootedLabeledTree(shape1, '[', ']', '_');
             OrderedRootedLabeledTree shapeTree2 = new OrderedRootedLabeledTree(shape2, '[', ']', '_');
-
+*/
             UnitCost indel = new UnitCost();
             SubstitutionCost sub = new SubstitutionCost();
+
             TreeEditDistance dist = new TreeEditDistance(indel, indel, sub);
+            StringEditDistance stringDist = new StringEditDistance();
 
             // first distance
-            Double wholeDistance = dist.get(completeTree1, completeTree2);
+           // Double wholeDistance = dist.get(completeTree1, completeTree2);
             Double skeletonDistance = dist.get(tree1, tree2);
-            Double shapeDistance = dist.get(shapeTree1, shapeTree2);
+            //Double shapeDistance = dist.get(shapeTree1, shapeTree2);
+            Double stringDistance = stringDist.get(dotBracket1, dotBracket2);
 
-            return ( mult1 * skeletonDistance) + ( mult2 * shapeDistance ) + ( mult3 * wholeDistance);
+            return ( mult1 * skeletonDistance) + (mult2 * stringDistance);
         }
     }
 
@@ -100,7 +105,7 @@ public class MCCons {
         SubstitutionCost sub = new SubstitutionCost();
         TreeEditDistance treeDist = new TreeEditDistance(indel, indel, sub);
 
-        shapeAndSkeletonDist compoundDist = new shapeAndSkeletonDist(1, 0.1, 1., 0.1);
+        shapeAndSkeletonDist compoundDist = new shapeAndSkeletonDist(10., 2.);
 
         // data acquisition
         ArrayList<ArrayList<String>> dotBrackets = Readers.readMarnaFile(path);
