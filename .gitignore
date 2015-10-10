@@ -1,33 +1,3 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-bin/
-
 # damn texmaker files
 *.aux
 *.loa
@@ -50,8 +20,9 @@ bin/
 
 
 # article pdf and other generated files (for now)
-article/article.pdf
 *.eps
+*.jpg
+*.xcf
 *.pyc
 
 # jars
@@ -59,22 +30,18 @@ article/article.pdf
 
 # svg and pdf intermediates
 *.pdf
-#!doc/article/refs/centrality/*.pdf
-!doc/article/refs/*
-#doc/slides/*.pdf
-*.pdf_tex
-*.svg
+!refs/*.pdf
 
 # temporary files
 tmp/
 
 
-*.class
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# Package Files #
+# Package Files
+*.class
 *.jar
 *.war
 *.ear
@@ -84,7 +51,6 @@ hs_err_pid*
 
 # intellij stuff
 *.idea/
-java/.idea/
 *.iml
 
 
