@@ -1,5 +1,6 @@
 package mccons.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class Util {
@@ -13,5 +14,36 @@ public final class Util {
             }
         }
         return sorted;
+    }
+
+    public static String dotBracketToRTED(String dotBracket)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (char c: dotBracket.toCharArray())
+        {
+            if (c == '(')
+            {
+                builder.append("{ p");
+            }
+            else if (c == '.')
+            {
+                builder.append(" u ");
+            }
+            else
+            {
+                builder.append(" } ");
+            }
+        }
+        return builder.toString().replace(" ", "");
+    }
+
+
+    public static<T> ArrayList<T> getSlice(ArrayList<T> array, int begin, int end) {
+        ArrayList<T> slice = new ArrayList<>();
+        for (int i = begin; i != end; ++i)
+        {
+            slice.add(array.get(i));
+        }
+        return slice;
     }
 }

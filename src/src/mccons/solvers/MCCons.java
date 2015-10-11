@@ -1,13 +1,9 @@
 package mccons.solvers;
 
-import mccons.repr.ConsensusProblem;
-import mccons.repr.OrderedRootedLabeledTree;
-import mccons.repr.cost.CostFunction;
-import mccons.repr.cost.DistanceFunction;
-import mccons.repr.cost.StringEditDistance;
-import mccons.rna.RNAshapes;
+import mccons.distances.DistanceFunction;
+import mccons.distances.StringEditDistance;
+import mccons.distances.TreeEditDistance;
 import mccons.util.Readers;
-import mccons.repr.cost.TreeEditDistance;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,30 +11,6 @@ import java.util.ArrayList;
 
 public class MCCons {
 
-
-
-     static class UnitCost implements CostFunction<Character, Double> {
-
-        public Double get(Character elem) {
-            return 1.;
-        }
-    }
-
-
-    // https://github.com/timtadh/zhang-shasha/blob/master/zss/compare.py
-    // the cost strdist(a, b) -> 0 if equal(a, b) else 1
-    static class SubstitutionCost implements DistanceFunction<Character, Character, Double> {
-        public Double get(Character a, Character b) {
-            Double dist;
-            if (a.compareTo(b) == 0) {
-                dist = 0.;
-            } else {
-                dist = 1.;
-            }
-
-            return dist;
-        }
-    }
 
 
     static class shapeAndSkeletonDist implements DistanceFunction<String, String, Double> {
@@ -56,9 +28,6 @@ public class MCCons {
 
         public Double get(String dotBracket1, String dotBracket2)
         {
-            OrderedRootedLabeledTree tree1 = new OrderedRootedLabeledTree(dotBracket1, '(', ')' ,'?');
-            OrderedRootedLabeledTree tree2 = new OrderedRootedLabeledTree(dotBracket2, '(', ')' ,'?');
-
             /*
             OrderedRootedLabeledTree completeTree1 = new OrderedRootedLabeledTree(dotBracket1, '(', ')', '.');
             OrderedRootedLabeledTree completeTree2 = new OrderedRootedLabeledTree(dotBracket2, '(', ')', '.');
@@ -69,15 +38,13 @@ public class MCCons {
             OrderedRootedLabeledTree shapeTree1 = new OrderedRootedLabeledTree(shape1, '[', ']', '_');
             OrderedRootedLabeledTree shapeTree2 = new OrderedRootedLabeledTree(shape2, '[', ']', '_');
 */
-            UnitCost indel = new UnitCost();
-            SubstitutionCost sub = new SubstitutionCost();
 
-            TreeEditDistance dist = new TreeEditDistance(indel, indel, sub);
+            TreeEditDistance dist = new TreeEditDistance(1, 1, 1);
             StringEditDistance stringDist = new StringEditDistance();
 
             // first distance
            // Double wholeDistance = dist.get(completeTree1, completeTree2);
-            Double skeletonDistance = dist.get(tree1, tree2);
+            Double skeletonDistance = dist.get(dotBracket1, dotBracket2);
             //Double shapeDistance = dist.get(shapeTree1, shapeTree2);
             Double stringDistance = stringDist.get(dotBracket1, dotBracket2);
 
@@ -100,10 +67,6 @@ public class MCCons {
 
         // PHASE 1: TREE CONSENSUS
 
-        // get functions
-        UnitCost indel = new UnitCost();
-        SubstitutionCost sub = new SubstitutionCost();
-        TreeEditDistance treeDist = new TreeEditDistance(indel, indel, sub);
 
         shapeAndSkeletonDist compoundDist = new shapeAndSkeletonDist(10., 2.);
 
@@ -145,11 +108,11 @@ public class MCCons {
                 treeProblem.getRanges());
 
         for (Solution solution : treeConsensus) {
-            System.err.println("consensus with score " + solution.getScore());
+            System.out.println(solution.getScore());
             ArrayList<String> consensus = treeProblem.getObjects(solution.getGenes());
 
             for (String t : consensus) {
-                System.err.println(t);
+                System.out.println(t);
             }
         }
     }

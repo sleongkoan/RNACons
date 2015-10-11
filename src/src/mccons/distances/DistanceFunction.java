@@ -1,4 +1,4 @@
-package mccons.repr.cost;
+package mccons.distances;
 
 public interface DistanceFunction<T1, T2, T3> {
 

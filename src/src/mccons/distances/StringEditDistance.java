@@ -1,4 +1,4 @@
-package mccons.repr.cost;
+package mccons.distances;
 
 public final class StringEditDistance implements DistanceFunction<String, String, Double> {
 
@@ -26,8 +26,8 @@ public final class StringEditDistance implements DistanceFunction<String, String
             stringDist[0][j] = j;
         }
 
-        int minDist, dist;
         // fill the whole table
+        int minDist, dist;
         for (int i = 0; i < length1; ++i) {
             for (int j = 0; j < length2; ++j) {
                 if (chars1[i] == chars2[j]) {

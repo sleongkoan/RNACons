@@ -1,6 +1,6 @@
-package mccons.repr;
+package mccons.solvers;
 
-import mccons.repr.cost.DistanceFunction;
+import mccons.distances.DistanceFunction;
 import mccons.util.Pair;
 
 import java.util.ArrayList;

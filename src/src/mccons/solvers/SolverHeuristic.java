@@ -1,7 +1,6 @@
 package mccons.solvers;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 import mccons.util.Pair;
 import mccons.util.ProgressBar;
@@ -10,18 +9,16 @@ import mccons.util.Util;
 
 
 public class SolverHeuristic extends Solver {
-    // misc parameters
+
+    // Generic solver parameters parameters
     private boolean verbose;
     private double tolerance;
     private long[] seeds;
 
-    // GA settings
+    // Genetic algorithm settings
     private int populationSize;
     private int numGenerations;
-    private int eliteSize;
-
-    private double improvementProbability;
-    private int improvementDepth;
+    private double eliteRatio;
 
     private double crossoverProbability;
     private double crossoverMixingRatio;
@@ -29,39 +26,29 @@ public class SolverHeuristic extends Solver {
     private double mutationProbability;
     private double mutationStrength;
 
+    // Local search settings
+    private double improvementProbability;
+    private int improvementDepth;
 
-    public SolverHeuristic(// misc parameters
-                           boolean verbose_,
-                           double tolerance_,
-                           long[] seeds_,
-
-                           // GA settings
-                           int populationSize_,
-                           int numGenerations_,
-                           int eliteSize_,
-                           double improvementProbability_,
-                           int improvementDepth_,
-                           double crossoverProbability_,
-                           double crossoverMixingRatio_,
-                           double mutationProbability_,
-                           double mutationStrength_) {
-        assert (tolerance_ >= 0);
-        assert (seeds.length == 6);
-
-        verbose = verbose_;
-        tolerance = tolerance_;
-        seeds = seeds_;
-        populationSize = populationSize_;
-        numGenerations = numGenerations_;
-        eliteSize = eliteSize_;
-        improvementProbability = improvementProbability_;
-        improvementDepth = improvementDepth_;
-        crossoverProbability = crossoverProbability_;
-        crossoverMixingRatio = crossoverMixingRatio_;
-        mutationProbability = mutationProbability_;
-        mutationStrength = mutationStrength_;
-
+    public SolverHeuristic(boolean verbose, double tolerance, long[] seeds,
+                           int populationSize, int numGenerations, double eliteRatio,
+                           double crossoverProbability, double crossoverMixingRatio,
+                           double mutationProbability, double mutationStrength,
+                           double improvementProbability, int improvementDepth) {
+        this.verbose = verbose;
+        this.tolerance = tolerance;
+        this.seeds = seeds;
+        this.populationSize = populationSize;
+        this.numGenerations = numGenerations;
+        this.eliteRatio = eliteRatio;
+        this.crossoverProbability = crossoverProbability;
+        this.crossoverMixingRatio = crossoverMixingRatio;
+        this.mutationProbability = mutationProbability;
+        this.mutationStrength = mutationStrength;
+        this.improvementProbability = improvementProbability;
+        this.improvementDepth = improvementDepth;
     }
+
 
     @Override
     public boolean isVerbose() {
@@ -91,21 +78,21 @@ public class SolverHeuristic extends Solver {
 
 
     /**
-     * @param sol
-     * @param ranges
-     * @param mutation_probability
-     * @param stream
-     * @return
+     * @param solution solution to mutate
+     * @param ranges (begin, end) indices of each sets of objects
+     * @param mutationProbability probability for the mutation of a gene
+     * @param stream pseud-random number generator
+     * @return mutated solution
      */
-    public Solution uniformMutate(Solution sol,
+    public Solution uniformMutate(Solution solution,
                                   ArrayList<Pair<Integer, Integer>> ranges,
-                                  double mutation_probability,
+                                  double mutationProbability,
                                   RngStream stream) {
         // mutate the solution by simply swapping with a probability
-        ArrayList<Integer> mutated_genes = sol.getGenes();
+        ArrayList<Integer> mutated_genes = solution.getGenes();
         int gene_size = mutated_genes.size();
         for (int index = 0; index != gene_size; ++index) {
-            if (stream.randU01() < mutation_probability) {
+            if (stream.randU01() < mutationProbability) {
                 // exchange for a random gene within the same range
                 mutated_genes.set(index, stream.randInt(ranges.get(index).getFirst(), ranges.get(index).getSecond() - 1));
             }
@@ -123,15 +110,17 @@ public class SolverHeuristic extends Solver {
         while (first == second) {
             second = stream.randInt(low, high - 1);
         }
-        return new Pair(first, second);
+        return new Pair<>(first, second);
     }
 
 
     /**
-     * @param population
-     * @param numToSelect
-     * @param stream
-     * @return
+     * select parents for the next generation, using a binary tournament selection
+     *
+     * @param population population over which the selection is applied
+     * @param numToSelect number of individuals to select from the tournament
+     * @param stream pseudo-random number generator
+     * @return list of solutions selected as parents for the next generation
      */
     ArrayList<Solution> binaryTournamentSelection(ArrayList<Solution> population,
                                                   int numToSelect,
@@ -161,34 +150,32 @@ public class SolverHeuristic extends Solver {
      * solve the consensus problem
      * using an hybrid strategy (genetic algorithm + steepest descent)
      *
-     * @param distanceMatrix
-     * @param ranges
-     * @return
+     * @param distanceMatrix matrix of distances between all objects
+     * @param ranges (begin, end) indices to tell sets of objects apart
+     * @return list of solutions to the consensus problem
      */
     public ArrayList<Solution> solve(double[][] distanceMatrix,
                                      ArrayList<Pair<Integer, Integer>> ranges) {
         assert (populationSize > 0);
         assert (numGenerations > 0);
-        assert (eliteSize >= 0 && eliteSize < populationSize);
+        assert (eliteRatio >= 0 && eliteRatio <= 1.0);
         assert (0. <= crossoverProbability && crossoverProbability <= 1.);
         assert (0. <= crossoverMixingRatio && crossoverMixingRatio <= 1.);
         assert (0. <= mutationProbability && mutationProbability <= 1.);
 
-        // seed the pseudorandom generator (MRG32k3a from L'Ecuyer)
-        RngStream prng = new RngStream();
-        prng.setSeed(seeds);
+        // seed the pseudo-random generator
+        RngStream stream = new RngStream();
+        stream.setSeed(seeds);
 
         // some declarations for later
-        ArrayList<ArrayList<Solution>> best_solutions = new ArrayList<>();
-        double currentBestScore = Double.POSITIVE_INFINITY;
-        double bestScoreEver = Double.POSITIVE_INFINITY;
-        double scaledThreshold = tolerance * ranges.size() * (ranges.size() - 1);
+        ArrayList<Solution> hallOfFame = new ArrayList<>();
+        int eliteSize = (int) Math.floor(eliteRatio * populationSize);
 
         // start the progress meter
         ProgressBar bar = new ProgressBar("", 40);
 
         // initialize the population
-        ArrayList<Solution> population = initializeRandomSolutions(ranges, populationSize, prng);
+        ArrayList<Solution> population = initializeRandomSolutions(ranges, populationSize, stream);
 
         // main loop
         for (int generation_index = 0; generation_index != numGenerations; ++generation_index) {
@@ -205,42 +192,31 @@ public class SolverHeuristic extends Solver {
             Collections.sort(population);
             assert Util.isSorted(population);
 
-            // remember the best solutions of the current generation
-            ArrayList<Solution> currentBestSolutions = new ArrayList<>();
-            currentBestScore = population.get(0).getScore(); // because it is sorted
 
-            if (currentBestScore < bestScoreEver) {
-                bestScoreEver = currentBestScore;
-            }
-
-            for (Solution solution : population) {
-                if (solution.getScore() <= currentBestScore + scaledThreshold) {
-                    // if not elite, put it there
-                    if (!currentBestSolutions.contains(solution)) {
-                        currentBestSolutions.add(new Solution(solution));
-                    }
-                } else {
-                    break;
+            // update the hall of fame
+            for (Solution solution : population)
+            {
+                if(! hallOfFame.contains(solution))
+                {
+                    hallOfFame.add(new Solution(solution));
                 }
             }
+            Collections.sort(hallOfFame);
+            hallOfFame = Util.getSlice(hallOfFame, 0, populationSize);
 
-            best_solutions.add(currentBestSolutions);
 
             // elitist selection with only unique individuals, no repetition
             ArrayList<Solution> elite = new ArrayList<>();
-
             for (Solution solution : population) {
                 if (elite.size() >= eliteSize) {
                     break;
-                } else {
-                    if (!elite.contains(solution)) {
-                        elite.add(new Solution(solution));
-                    }
+                } else if (!elite.contains(solution)) {
+                    elite.add(new Solution(solution));
                 }
             }
 
             // selection process
-            ArrayList<Solution> parents = binaryTournamentSelection(population, ((populationSize - elite.size()) * 2), prng);
+            ArrayList<Solution> parents = binaryTournamentSelection(population, ((populationSize - elite.size()) * 2), stream);
             ArrayList<Solution> children = new ArrayList<>();
             for (int i = 0; i != populationSize - eliteSize; ++i) {
                 Solution parent1 = parents.get(i * 2);
@@ -248,20 +224,19 @@ public class SolverHeuristic extends Solver {
                 Solution child;
 
                 // crossover
-                if (prng.randU01() < crossoverProbability) {
-                    child = uniformCrossover(parent1, parent2, crossoverMixingRatio, prng);
+                if (stream.randU01() < crossoverProbability) {
+                    child = uniformCrossover(parent1, parent2, crossoverMixingRatio, stream);
                 } else {
                     child = new Solution(parent1);
                 }
 
                 // mutation
-                if (prng.randU01() < mutationProbability) {
-                    uniformMutate(child, ranges, mutationStrength, prng);
+                if (stream.randU01() < mutationProbability) {
+                    uniformMutate(child, ranges, mutationStrength, stream);
                 }
 
-
                 // improvement
-                if (prng.randU01() < improvementProbability)
+                if (stream.randU01() < improvementProbability)
                     steepestDescent(child, distanceMatrix, ranges, improvementDepth);
 
                 // children is complete
@@ -282,19 +257,17 @@ public class SolverHeuristic extends Solver {
             bar.clean();
 
 
-        System.out.println("best score seen = " + bestScoreEver);
         // keep all the unique best solutions up to a specified suboptimal threshold
         ArrayList<Solution> suitableSolutions = new ArrayList<>();
-        double scoreThreshold = bestScoreEver + scaledThreshold;
+        double scaledThreshold = tolerance * ranges.size() * (ranges.size() - 1);
+        double scoreThreshold = hallOfFame.get(0).getScore() + scaledThreshold;
 
-        for (ArrayList<Solution> bestSolutions : best_solutions) {
-            for (Solution solution : bestSolutions) {
-                if ((solution.getScore() <= scoreThreshold) &&
-                        (!suitableSolutions.contains(solution))) {
+        for (Solution solution : hallOfFame) {
+            if ((solution.getScore() <= scoreThreshold) && (!suitableSolutions.contains(solution))) {
                     suitableSolutions.add(new Solution(solution));
                 }
             }
-        }
         return suitableSolutions;
     }
 }
+

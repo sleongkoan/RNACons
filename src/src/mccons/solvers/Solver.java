@@ -5,6 +5,100 @@ import mccons.util.RngStream;
 
 import java.util.ArrayList;
 
+
+
+class Solution implements Comparable<Solution> {
+
+    private ArrayList<Integer> genes;
+    private Double score;
+
+    public void setGene(int index, int newValue) {
+        genes.set(index, newValue);
+    }
+
+    /**
+     * Constructor
+     * @param genes_ index of the chosen genes in a table
+     * @param score_ score of the current solution configuration (based on genes)
+     */
+    public Solution(ArrayList<Integer> genes_,
+                    double score_)
+    {
+        genes = genes_;
+        score = score_;
+    }
+
+
+    /**
+     * Copy constructor
+     * @param other solution to copy
+     */
+    public Solution(Solution other) {
+        this(other.getGenes(), other.getScore());
+    }
+
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
+    public Double getScore() {
+
+        return score;
+    }
+
+    public ArrayList<Integer> getGenes() {
+        return new ArrayList<>(genes);
+    }
+
+    public String toString()
+    {
+        String stringRepresentation = "[";
+        for (int i =0 ; i != getGenes().size(); ++i)
+        {
+            stringRepresentation += getGenes().get(i) + " ";
+        }
+        stringRepresentation += " : " + getScore() + "]" + System.lineSeparator();
+        return stringRepresentation;
+    }
+
+
+    @Override
+    public int compareTo(Solution other)
+    {
+        return getScore().compareTo(other.getScore());
+    }
+
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        // basic checks
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        // solution comparison
+        final Solution other = (Solution) obj;
+        if (score.compareTo(other.getScore()) == 0)
+        {
+            return genes.equals(other.genes);
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+
+
+
+
+
 public abstract class Solver {
 
 

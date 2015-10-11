@@ -1,8 +1,5 @@
 package mccons.rna;
 
-import mccons.repr.Node;
-import mccons.repr.OrderedRootedLabeledTree;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
@@ -107,7 +104,7 @@ public final class RNAshapes {
         // preprocess the dotbracket and convert it to tree representation
         String processed = preprocess(dot_bracket);
 
-        OrderedRootedLabeledTree tree = new OrderedRootedLabeledTree(processed, '(', ')', '.');
+        OrderedRootedTree tree = new OrderedRootedTree(processed, '(', ')', '.');
         ArrayList<Node> subTrees = tree.getRoot().getChildren();
 
 
@@ -135,7 +132,7 @@ public final class RNAshapes {
 
         //-------------------------------------------level 5
         // same as for level 1 except it is applied on the level 3 String
-        OrderedRootedLabeledTree tree2 = new OrderedRootedLabeledTree(level3, '[', ']', '_');
+        OrderedRootedTree tree2 = new OrderedRootedTree(level3, '[', ']', '_');
 
         ArrayList<Node> trees2 = tree2.getRoot().getChildren();
         for (Node n : trees2)

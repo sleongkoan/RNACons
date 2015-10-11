@@ -44,19 +44,19 @@ public final class MCConsHeuristic {
                 JSAP.NO_SHORTFLAG, "seed5", "Sixth seed of the random stream"));
 
         // heuristic parameters
-        parser.registerParameter(new FlaggedOption("popSize", JSAP.INTEGER_PARSER, "500", false,
+        parser.registerParameter(new FlaggedOption("popSize", JSAP.INTEGER_PARSER, "250", false,
                 'p', "popSize", "Genetic algorithm population size"));
 
 
-        parser.registerParameter(new FlaggedOption("numGenerations", JSAP.INTEGER_PARSER, "1000", false,
+        parser.registerParameter(new FlaggedOption("numGenerations", JSAP.INTEGER_PARSER, "250", false,
                 'n', "numGenerations", "Number of generations to evaluate"));
 
 
-        parser.registerParameter(new FlaggedOption("eliteSize", JSAP.INTEGER_PARSER, "50", false,
-                JSAP.NO_SHORTFLAG, "eliteSize", "Size of the elite in the genetic algorithm"));
+        parser.registerParameter(new FlaggedOption("eliteRatio", JSAP.DOUBLE_PARSER, "0.1", false,
+                JSAP.NO_SHORTFLAG, "eliteRatio", "Size of the elite as percentage of population size"));
 
 
-        parser.registerParameter(new FlaggedOption("improvementProbability", JSAP.DOUBLE_PARSER, "0.03",
+        parser.registerParameter(new FlaggedOption("improvementProbability", JSAP.DOUBLE_PARSER, "0.1",
                 false, JSAP.NO_SHORTFLAG, "improvementProbability",
                 "Probability of applying steepest descent on a solution"));
 
@@ -111,45 +111,40 @@ public final class MCConsHeuristic {
                 config.getLong("seed3"), config.getLong("seed4"), config.getLong("seed5")};
 
 
-        SolverHeuristic tree_solver = new SolverHeuristic(
+        SolverHeuristic solver1 = new SolverHeuristic(
                 config.getBoolean("verbose"),
                 config.getDouble("tolerance"),
                 SEEDS,
 
                 config.getInt("popSize"),
                 config.getInt("numGenerations"),
-                config.getInt("eliteSize"),
-
-                config.getDouble("improvementProbability"),
-                config.getInt("improvementDepth"),
+                config.getDouble("eliteRatio"),
 
                 config.getDouble("crossoverProbability"),
                 config.getDouble("crossoverMixingRatio"),
-
                 config.getDouble("mutationProbability"),
-                config.getDouble("mutationStrength"));
+                config.getDouble("mutationStrength"),
+                config.getDouble("improvementProbability"),
+                config.getInt("improvementDepth"));
 
-
-        SolverHeuristic dot_bracket_solver = new SolverHeuristic(
+        SolverHeuristic solver2 = new SolverHeuristic(
                 config.getBoolean("verbose"),
-                0.,
+                0,
                 SEEDS,
 
                 config.getInt("popSize"),
                 config.getInt("numGenerations"),
-                config.getInt("eliteSize"),
-
-                config.getDouble("improvementProbability"),
-                config.getInt("improvementDepth"),
+                config.getDouble("eliteRatio"),
 
                 config.getDouble("crossoverProbability"),
                 config.getDouble("crossoverMixingRatio"),
-
                 config.getDouble("mutationProbability"),
-                config.getDouble("mutationStrength"));
+                config.getDouble("mutationStrength"),
+                config.getDouble("improvementProbability"),
+                config.getInt("improvementDepth"));
 
         // execute MC-Cons
-        MCCons.MCCONS(config.getString("input"), tree_solver, dot_bracket_solver);
+        MCCons.MCCONS(config.getString("input"), solver1, solver2);
 
 
     }
