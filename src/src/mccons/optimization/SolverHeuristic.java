@@ -1,4 +1,4 @@
-package mccons.solvers;
+package mccons.optimization;
 
 import java.util.*;
 
@@ -6,6 +6,16 @@ import mccons.util.Pair;
 import mccons.util.ProgressBar;
 import mccons.util.RngStream;
 import mccons.util.Util;
+
+
+class ReverseSolutionComp implements Comparator<Solution>
+{
+
+    @Override
+    public int compare(Solution first, Solution second) {
+        return -1 * first.compareTo(second);
+    }
+}
 
 
 public class SolverHeuristic extends Solver {
@@ -168,7 +178,7 @@ public class SolverHeuristic extends Solver {
         stream.setSeed(seeds);
 
         // some declarations for later
-        ArrayList<Solution> hallOfFame = new ArrayList<>();
+        PriorityQueue hallOfFame = new PriorityQueue<>(populationSize, new ReverseSolutionComp());
         int eliteSize = (int) Math.floor(eliteRatio * populationSize);
 
         // start the progress meter
@@ -200,9 +210,11 @@ public class SolverHeuristic extends Solver {
                 {
                     hallOfFame.add(new Solution(solution));
                 }
+                if (hallOfFame.size() > populationSize)
+                {
+                    hallOfFame.poll();
+                }
             }
-            Collections.sort(hallOfFame);
-            hallOfFame = Util.getSlice(hallOfFame, 0, populationSize);
 
 
             // elitist selection with only unique individuals, no repetition
@@ -260,9 +272,14 @@ public class SolverHeuristic extends Solver {
         // keep all the unique best solutions up to a specified suboptimal threshold
         ArrayList<Solution> suitableSolutions = new ArrayList<>();
         double scaledThreshold = tolerance * ranges.size() * (ranges.size() - 1);
-        double scoreThreshold = hallOfFame.get(0).getScore() + scaledThreshold;
-
-        for (Solution solution : hallOfFame) {
+        ArrayList<Solution> hallOfFameList = new ArrayList();
+        while (hallOfFame.size() > 0)
+        {
+            hallOfFameList.add((Solution) hallOfFame.poll());
+        }
+        Collections.sort(hallOfFameList);
+        double scoreThreshold = hallOfFameList.get(0).getScore() + scaledThreshold;
+        for (Solution solution : hallOfFameList) {
             if ((solution.getScore() <= scoreThreshold) && (!suitableSolutions.contains(solution))) {
                     suitableSolutions.add(new Solution(solution));
                 }

@@ -1,4 +1,4 @@
-package mccons.solvers;
+package mccons.optimization;
 
 import mccons.util.Pair;
 import mccons.util.WidthComparator;

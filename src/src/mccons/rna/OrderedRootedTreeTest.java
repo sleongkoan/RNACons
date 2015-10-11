@@ -16,9 +16,7 @@ public class OrderedRootedTreeTest extends TestCase {
                                     char nestingSymbol_, char closingSymbol_, char addNodeSymbol_)
     {
         int counter = 0;
-        char[] charRepresentation = stringRepresentation_.toCharArray();
-
-        for (char c : charRepresentation)
+        for (char c : stringRepresentation_.toCharArray())
         {
             if (c == nestingSymbol_)               // stack
             {
@@ -39,5 +37,6 @@ public class OrderedRootedTreeTest extends TestCase {
         }
         return counter == 0;
     }
+
 
 }

@@ -4,8 +4,8 @@ import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
-import mccons.solvers.MCCons;
-import mccons.solvers.SolverHeuristic;
+import mccons.optimization.MCCons;
+import mccons.optimization.SolverHeuristic;
 
 
 public final class MCConsHeuristic {

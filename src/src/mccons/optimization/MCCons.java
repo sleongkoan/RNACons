@@ -1,4 +1,4 @@
-package mccons.solvers;
+package mccons.optimization;
 
 import mccons.distances.DistanceFunction;
 import mccons.distances.StringEditDistance;
