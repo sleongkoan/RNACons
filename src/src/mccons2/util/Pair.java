@@ -1,6 +1,4 @@
-package mccons.util;
-
-import java.util.Comparator;
+package mccons2.util;
 
 public class Pair<T1, T2>{
 

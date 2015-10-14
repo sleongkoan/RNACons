@@ -1,4 +1,4 @@
-package mccons.rna;
+package mccons2.rna;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ public final class RNAshapes {
      * @param node
      * @return
      */
-    public static boolean remove_stem(Node node, char nestingSymbol)
+    private static boolean removeStem(Node node, char nestingSymbol)
     {   // to be used in a BFS traversal only
         if ( (node.getLabel() == nestingSymbol) && (node.getChildren().size() == 1) )
         {
@@ -36,7 +36,7 @@ public final class RNAshapes {
     }
 
 
-    public static void remove_stems(Node tree, char nestingSymbol)
+    public static void removeAllStems(Node tree, char nestingSymbol)
     {
         ArrayDeque<Node> Q = new ArrayDeque<>();
         Q.addLast(tree);
@@ -49,7 +49,7 @@ public final class RNAshapes {
             current_node = Q.pollFirst();
 
             // apply stem removing operation and check status
-            modified = remove_stem(current_node, nestingSymbol);
+            modified = removeStem(current_node, nestingSymbol);
             if (modified)
             {
                 // requeue immediately
@@ -66,7 +66,7 @@ public final class RNAshapes {
     }
 
 
-    public static String preprocess(String dot_bracket)
+    public static String preProcessDotBracket(String dot_bracket)
     {
         ArrayList<Character> step1 = new ArrayList<>();
         char[] chars = dot_bracket.toCharArray();
@@ -101,8 +101,8 @@ public final class RNAshapes {
     {
         assert(level == 1 || level == 3 || level==5);
 
-        // preprocess the dotbracket and convert it to tree representation
-        String processed = preprocess(dot_bracket);
+        // preProcessDotBracket the dotbracket and convert it to tree representation
+        String processed = preProcessDotBracket(dot_bracket);
 
         OrderedRootedTree tree = new OrderedRootedTree(processed, '(', ')', '.');
         ArrayList<Node> subTrees = tree.getRoot().getChildren();
@@ -113,7 +113,7 @@ public final class RNAshapes {
         // must remove nodes with single children (stems without branching)
         for (Node subRoot : subTrees)
         {
-            remove_stems(subRoot, '(');
+            removeAllStems(subRoot, '(');
         }
         String level1 = tree.toString().replace("(", "[").replace(")", "]").replace(".", "_");
         if (level == 1)
@@ -137,7 +137,7 @@ public final class RNAshapes {
         ArrayList<Node> trees2 = tree2.getRoot().getChildren();
         for (Node n : trees2)
         {
-            remove_stems(n, '[');
+            removeAllStems(n, '[');
         }
         return tree2.toString();
     }

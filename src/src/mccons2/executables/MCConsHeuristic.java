@@ -1,11 +1,11 @@
-package mccons.executables;
+package mccons2.executables;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
-import mccons.optimization.MCCons;
-import mccons.optimization.SolverHeuristic;
+import mccons2.optimization.MCCons;
+import mccons2.optimization.SolverHeuristic;
 
 
 public final class MCConsHeuristic {

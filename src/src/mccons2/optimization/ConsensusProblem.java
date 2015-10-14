@@ -1,7 +1,7 @@
-package mccons.optimization;
+package mccons2.optimization;
 
-import mccons.distances.DistanceFunction;
-import mccons.util.Pair;
+import mccons2.distances.DistanceFunction;
+import mccons2.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Hashtable;

@@ -1,7 +1,7 @@
-package mccons.util;
+package mccons2.util;
 
 /**
- * Title:          mccons.RngStream.java
+ * Title:          RngStream.java
  * Description:    Multiple Streams and Substreams of Random Numbers
  * Copyright:      Pierre L'Ecuyer, University of Montreal
  * Notice:         This code can be used freely for personal, academic,
@@ -382,7 +382,7 @@ public class RngStream {
 
 
     public void writeState ()   {
-        System.out.print ("The current state of the mccons.RngStream");
+        System.out.print ("The current state of the RngStream");
         if (descriptor != null && !descriptor.isEmpty())
             System.out.print (" " + descriptor);
         System.out.print (":\n   Cg = { ");
@@ -393,7 +393,7 @@ public class RngStream {
 
 
     public void writeStateFull ()  {
-        System.out.print ("The mccons.RngStream");
+        System.out.print ("The RngStream");
         if (descriptor != null && !descriptor.isEmpty())
             System.out.print (" " + descriptor);
         System.out.println (":\n   anti = " + (anti ? "true" : "false"));

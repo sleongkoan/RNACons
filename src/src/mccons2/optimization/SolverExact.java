@@ -1,7 +1,7 @@
-package mccons.optimization;
+package mccons2.optimization;
 
-import mccons.util.Pair;
-import mccons.util.WidthComparator;
+import mccons2.util.Pair;
+import mccons2.util.WidthComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;

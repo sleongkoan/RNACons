@@ -1,10 +1,10 @@
-package mccons.rna;
+package mccons2.rna;
 
 import java.util.ArrayList;
 
 
 /**
- * mccons.Node representation used for most trees in here
+ * mccons2.Node representation used for most trees in here
  */
 class Node {
 
@@ -103,17 +103,21 @@ public class OrderedRootedTree {
         // create rooted tree (with artificial root)
         artificialRoot = new Node(null, nestingSymbol);
         Node position = artificialRoot;
-
+        int index = 0;
         for (char c : stringRepresentation_.toCharArray()) {
             if (c == nestingSymbol)       // create new node and position goes down
             {
                 position = new Node(position, nestingSymbol);
+                position.setIndex(index);
+                index += 1;
             } else if (c == closingSymbol)  // position goes up
             {
                 position = position.getParent();
             } else if (c == addNodeSymbol) // add unpaired node, position stays same
             {
                 new Node(position, addNodeSymbol);
+                position.setIndex(index);
+                index += 1;
             }
         }
     }

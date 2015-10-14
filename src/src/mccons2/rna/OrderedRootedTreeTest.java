@@ -1,4 +1,4 @@
-package mccons.rna;
+package mccons2.rna;
 
 import junit.framework.TestCase;
 

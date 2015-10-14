@@ -1,4 +1,4 @@
-package mccons.util;
+package mccons2.util;
 
 import java.util.Comparator;
 

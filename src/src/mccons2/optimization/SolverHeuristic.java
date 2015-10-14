@@ -1,15 +1,17 @@
-package mccons.optimization;
+package mccons2.optimization;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
-import mccons.util.Pair;
-import mccons.util.ProgressBar;
-import mccons.util.RngStream;
-import mccons.util.Util;
+import mccons2.util.Pair;
+import mccons2.util.ProgressBar;
+import mccons2.util.RngStream;
+import mccons2.util.Util;
 
 
-class ReverseSolutionComp implements Comparator<Solution>
-{
+class ReverseSolutionComp implements Comparator<Solution> {
 
     @Override
     public int compare(Solution first, Solution second) {
@@ -22,23 +24,23 @@ public class SolverHeuristic extends Solver {
 
     // Generic solver parameters parameters
     private boolean verbose;
-    private double tolerance;
-    private long[] seeds;
+    private final double tolerance;
+    private final long[] seeds;
 
     // Genetic algorithm settings
-    private int populationSize;
-    private int numGenerations;
-    private double eliteRatio;
+    private final int populationSize;
+    private final int numGenerations;
+    private final double eliteRatio;
 
-    private double crossoverProbability;
-    private double crossoverMixingRatio;
+    private final double crossoverProbability;
+    private final double crossoverMixingRatio;
 
-    private double mutationProbability;
-    private double mutationStrength;
+    private final double mutationProbability;
+    private final double mutationStrength;
 
     // Local search settings
-    private double improvementProbability;
-    private int improvementDepth;
+    private final double improvementProbability;
+    private final int improvementDepth;
 
     public SolverHeuristic(boolean verbose, double tolerance, long[] seeds,
                            int populationSize, int numGenerations, double eliteRatio,
@@ -88,10 +90,10 @@ public class SolverHeuristic extends Solver {
 
 
     /**
-     * @param solution solution to mutate
-     * @param ranges (begin, end) indices of each sets of objects
+     * @param solution            solution to mutate
+     * @param ranges              (begin, end) indices of each sets of objects
      * @param mutationProbability probability for the mutation of a gene
-     * @param stream pseud-random number generator
+     * @param stream              pseud-random number generator
      * @return mutated solution
      */
     public Solution uniformMutate(Solution solution,
@@ -127,9 +129,9 @@ public class SolverHeuristic extends Solver {
     /**
      * select parents for the next generation, using a binary tournament selection
      *
-     * @param population population over which the selection is applied
+     * @param population  population over which the selection is applied
      * @param numToSelect number of individuals to select from the tournament
-     * @param stream pseudo-random number generator
+     * @param stream      pseudo-random number generator
      * @return list of solutions selected as parents for the next generation
      */
     ArrayList<Solution> binaryTournamentSelection(ArrayList<Solution> population,
@@ -161,7 +163,7 @@ public class SolverHeuristic extends Solver {
      * using an hybrid strategy (genetic algorithm + steepest descent)
      *
      * @param distanceMatrix matrix of distances between all objects
-     * @param ranges (begin, end) indices to tell sets of objects apart
+     * @param ranges         (begin, end) indices to tell sets of objects apart
      * @return list of solutions to the consensus problem
      */
     public ArrayList<Solution> solve(double[][] distanceMatrix,
@@ -204,14 +206,11 @@ public class SolverHeuristic extends Solver {
 
 
             // update the hall of fame
-            for (Solution solution : population)
-            {
-                if(! hallOfFame.contains(solution))
-                {
+            for (Solution solution : population) {
+                if (!hallOfFame.contains(solution)) {
                     hallOfFame.add(new Solution(solution));
                 }
-                if (hallOfFame.size() > populationSize)
-                {
+                if (hallOfFame.size() > populationSize) {
                     hallOfFame.poll();
                 }
             }
@@ -273,17 +272,16 @@ public class SolverHeuristic extends Solver {
         ArrayList<Solution> suitableSolutions = new ArrayList<>();
         double scaledThreshold = tolerance * ranges.size() * (ranges.size() - 1);
         ArrayList<Solution> hallOfFameList = new ArrayList();
-        while (hallOfFame.size() > 0)
-        {
+        while (hallOfFame.size() > 0) {
             hallOfFameList.add((Solution) hallOfFame.poll());
         }
         Collections.sort(hallOfFameList);
         double scoreThreshold = hallOfFameList.get(0).getScore() + scaledThreshold;
         for (Solution solution : hallOfFameList) {
             if ((solution.getScore() <= scoreThreshold) && (!suitableSolutions.contains(solution))) {
-                    suitableSolutions.add(new Solution(solution));
-                }
+                suitableSolutions.add(new Solution(solution));
             }
+        }
         return suitableSolutions;
     }
 }

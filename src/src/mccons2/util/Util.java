@@ -1,7 +1,6 @@
-package mccons.util;
+package mccons2.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public final class Util {
 
@@ -38,7 +37,7 @@ public final class Util {
     }
 
 
-    public static<T> ArrayList<T> getSlice(ArrayList<T> array, int begin, int end) {
+    public static <T> ArrayList<T> getSlice(ArrayList<T> array, int begin, int end) {
         ArrayList<T> slice = new ArrayList<>();
         for (int i = begin; i != end; ++i)
         {
@@ -46,4 +45,5 @@ public final class Util {
         }
         return slice;
     }
+
 }

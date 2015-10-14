@@ -1,7 +1,7 @@
-package mccons.distances;
+package mccons2.distances;
 
 import distance.RTED_InfoTree_Opt;
-import mccons.util.Util;
+import mccons2.util.Util;
 import util.LblTree;
 
 public class TreeEditDistance implements DistanceFunction<String, String, Double>{

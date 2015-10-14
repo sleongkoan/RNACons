@@ -1,4 +1,4 @@
-package mccons.util;
+package mccons2.util;
 
 public class ProgressBar {
     private String processName;

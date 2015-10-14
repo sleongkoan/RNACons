@@ -1,12 +1,13 @@
-package mccons.optimization;
+package mccons2.optimization;
 
-import mccons.distances.DistanceFunction;
-import mccons.distances.StringEditDistance;
-import mccons.distances.TreeEditDistance;
-import mccons.util.Readers;
+import mccons2.distances.DistanceFunction;
+import mccons2.distances.StringEditDistance;
+import mccons2.distances.TreeEditDistance;
+import mccons2.util.Readers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class MCCons {
@@ -107,12 +108,22 @@ public class MCCons {
         ArrayList<Solution> treeConsensus = firstSolver.solve(treeProblem.getDistanceMatrix(),
                 treeProblem.getRanges());
 
-        for (Solution solution : treeConsensus) {
-            System.out.println(solution.getScore());
-            ArrayList<String> consensus = treeProblem.getObjects(solution.getGenes());
 
-            for (String t : consensus) {
-                System.out.println(t);
+        ArrayList<ArrayList<String>> uniqueSolutions = new ArrayList<>();
+        int i = 0;
+        for (Solution solution : treeConsensus) {
+            ArrayList<String> consensus = treeProblem.getObjects(solution.getGenes());
+            Collections.sort(consensus);
+            if (!uniqueSolutions.contains(consensus))
+            {
+                uniqueSolutions.add(consensus);
+                System.out.println("> " + i + " " +solution.getScore());
+                for (String dotBracket : consensus)
+                {
+                    System.out.println(dotBracket);
+                }
+                System.out.println();
+                i += 1;
             }
         }
     }
