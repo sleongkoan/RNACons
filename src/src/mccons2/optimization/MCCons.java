@@ -3,11 +3,14 @@ package mccons2.optimization;
 import mccons2.distances.DistanceFunction;
 import mccons2.distances.StringEditDistance;
 import mccons2.distances.TreeEditDistance;
+import mccons2.rna.GranularBasePairTree;
 import mccons2.util.Readers;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Hashtable;
 
 
 public class MCCons {
@@ -73,29 +76,30 @@ public class MCCons {
 
         // data acquisition
         ArrayList<ArrayList<String>> dotBrackets = Readers.readMarnaFile(path);
+        Hashtable<String, String> reverseMapping = new Hashtable<>();
 
-        /*
-        ArrayList<ArrayList<OrderedRootedLabeledTree>> trees = new ArrayList<>();
+        ArrayList<ArrayList<String>> converted = new ArrayList<>();
 
         for (ArrayList<String> list : dotBrackets) {
             // initialize a vector of trees to add later
             HashSet<String> uniqueStrings = new HashSet<>();
-            ArrayList<OrderedRootedLabeledTree> uniqueTrees = new ArrayList<>();
-
-            for (String string : list) {
+            for (String dotBracket : list) {
                 // check if it has already been processed
-                String shape = RNAshapes.dotBracketToAbstractShape(string, 1);
-                if (!uniqueStrings.contains(shape)) {
-                    uniqueStrings.add(shape);
-                    uniqueTrees.add(new OrderedRootedLabeledTree(shape, '[', ']', '_'));
-                }
+                String conv = new GranularBasePairTree(dotBracket, 3).toString();
+                uniqueStrings.add(conv);
+                System.out.println(dotBracket + " = " + conv);
             }
-            // add to the trees
-            trees.add(uniqueTrees);
+            // add to the converted objects
+            ArrayList<String> uniques = new ArrayList<>();
+            for (String string : uniqueStrings)
+            {
+                uniques.add(string);
+            }
+            converted.add(uniques);
         }
-        */
 
-        ConsensusProblem<String> treeProblem = new ConsensusProblem<>(dotBrackets, compoundDist);
+
+        ConsensusProblem<String> treeProblem = new ConsensusProblem<>(converted, compoundDist);
         int num_comparisons = dotBrackets.size() * (dotBrackets.size() - 1);  // n (n -1)
 
 

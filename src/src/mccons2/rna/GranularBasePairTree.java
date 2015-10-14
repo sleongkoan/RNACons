@@ -10,7 +10,7 @@ import java.util.LinkedList;
 public class GranularBasePairTree extends OrderedRootedTree{
     private int granularity;
 
-    GranularBasePairTree(String stringRepresentation, int divider)
+    public GranularBasePairTree(String stringRepresentation, int divider)
     {
         super(stringRepresentation, '(', ')', '?');
         assert(divider > 0);
@@ -33,7 +33,7 @@ public class GranularBasePairTree extends OrderedRootedTree{
         // find the nodes who begin a stem
         while (searchSpace.size() > 0) {
             Node currentNode = searchSpace.poll();
-            if (startsStem(currentNode)) {
+            if (startsStem(currentNode, getRoot())) {
 
                 stemStarters.add(currentNode);
             }
@@ -72,28 +72,16 @@ public class GranularBasePairTree extends OrderedRootedTree{
     }
 
 
-    private void reduceStemSize(Node node, int newStemSize)
-    {
-        assert(startsStem(node));
-        ArrayList<Node> lastChildren = lastNodeOfStem(node).getChildren();
-        Node position = node;
-        for (int i = 0; i != newStemSize; ++i)
-        {
-            position = position.getChildren().get(0);
-        }
-
-    }
-
     /**
      * verifies if a node starts a stem. to do so it must either have a single children or none
      * and it must have a parent that is a junction or no parent at all
      * @param node position in the tree
      * @return if the node starts a stem or not
      */
-    private boolean startsStem(Node node)
+    private boolean startsStem(Node node, Node artificialRoot)
     {
         boolean property1 = (node.getChildren().size() == 1 || node.getChildren().size() ==0);
-        boolean property2 = (node.getParent() == null || node.getParent().getChildren().size() > 1);
+        boolean property2 = (node.getParent() == artificialRoot || node.getParent().getChildren().size() > 1);
         return (property1 && property2);
     }
 

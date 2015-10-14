@@ -20,5 +20,13 @@ public class GranularBasePairTreeTest extends TestCase {
 
         tree = new GranularBasePairTree("(.)....((((....))))", 3);
         assertEquals("()(())", tree.toString());
+
+        tree = new GranularBasePairTree("(.)..(.)..()", 3);
+        assertEquals("()()()", tree.toString());
+
+        tree = new GranularBasePairTree("(.)..(.)..()", 30);
+        assertEquals("()()()", tree.toString());
+
+
     }
 }
