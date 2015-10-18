@@ -28,7 +28,7 @@ public final class Util {
             {
                 builder.append(" u ");
             }
-            else
+            else if (c == ')')
             {
                 builder.append(" } ");
             }

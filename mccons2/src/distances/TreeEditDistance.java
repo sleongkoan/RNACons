@@ -1,5 +1,6 @@
 package distances;
 
+import convenience.RTED;
 import distance.RTED_InfoTree_Opt;
 import util.Util;
 import util.LblTree;
@@ -14,8 +15,10 @@ public class TreeEditDistance implements DistanceFunction<String, String, Double
         this.costRen = costRen;
     }
 
-    public Double get(String tree1, String tree2) {
-        RTED_InfoTree_Opt rted = new RTED_InfoTree_Opt(costIns, costDel, costRen);
-        return rted.nonNormalizedTreeDist(LblTree.fromString(Util.dotBracketToRTED(tree1)), LblTree.fromString(Util.dotBracketToRTED(tree2)));
+    public Double get(String dotBracket1, String dotBracket2) {
+        // add artificial root
+        String tree1 = "(" + dotBracket1 + ")";
+        String tree2 = "(" + dotBracket2 + ")";
+        return RTED.computeDistance(Util.dotBracketToRTED(tree1), Util.dotBracketToRTED(tree2));
     }
 }

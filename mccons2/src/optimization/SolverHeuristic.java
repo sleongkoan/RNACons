@@ -202,7 +202,7 @@ public class SolverHeuristic extends Solver {
                 assignPairwiseDistanceScore(solution, distanceMatrix);
             }
             Collections.sort(population);
-            assert Util.isSorted(population);
+            assert(Util.isSorted(population));
 
 
             // update the hall of fame

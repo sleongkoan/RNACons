@@ -20,7 +20,7 @@ public final class MCConsHeuristic {
         // verbosity
         parser.registerParameter(new Switch("verbose", 'v', "verbose", "verbosity of the solver"));
 
-        // suboptimality tolerance
+        // suboptimal tolerance
         parser.registerParameter(new FlaggedOption("tolerance", JSAP.DOUBLE_PARSER, "0.", false,
                 't', "tolerance", "Permitted gap between kept solution and best solution, normalized"));
 

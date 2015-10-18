@@ -5,6 +5,7 @@ import distances.StringEditDistance;
 import distances.TreeEditDistance;
 import rna.GranularBasePairTree;
 import util.Readers;
+import util.Util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,7 +73,6 @@ public class MCCons {
         // PHASE 1: TREE CONSENSUS
 
 
-        shapeAndSkeletonDist compoundDist = new shapeAndSkeletonDist(10., 2.);
 
         // data acquisition
         ArrayList<ArrayList<String>> dotBrackets = Readers.readMarnaFile(path);
@@ -87,7 +87,7 @@ public class MCCons {
                 // check if it has already been processed
                 String conv = new GranularBasePairTree(dotBracket, 3).toString();
                 uniqueStrings.add(conv);
-                System.out.println(dotBracket + " = " + conv);
+                //System.out.println(dotBracket + " = " + conv);
             }
             // add to the converted objects
             ArrayList<String> uniques = new ArrayList<>();
@@ -99,6 +99,7 @@ public class MCCons {
         }
 
 
+        shapeAndSkeletonDist compoundDist = new shapeAndSkeletonDist(1., 0.);
         ConsensusProblem<String> treeProblem = new ConsensusProblem<>(converted, compoundDist);
         int num_comparisons = dotBrackets.size() * (dotBrackets.size() - 1);  // n (n -1)
 
@@ -120,7 +121,8 @@ public class MCCons {
             if (!uniqueSolutions.contains(consensus))
             {
                 uniqueSolutions.add(consensus);
-                System.out.println("> " + i + " " +solution.getScore());
+
+                System.out.println("> solution " + i + " : " +solution.getScore());
                 for (String dotBracket : consensus)
                 {
                     System.out.println(dotBracket);
