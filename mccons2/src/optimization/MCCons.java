@@ -4,6 +4,9 @@ import distances.DistanceFunction;
 import distances.StringEditDistance;
 import distances.TreeEditDistance;
 import rna.GranularBasePairTree;
+import rna.GranularRepr;
+import rna.RNAConverter;
+import util.ProgressBar;
 import util.Readers;
 
 import java.io.IOException;
@@ -62,59 +65,58 @@ public class MCCons {
      * @param secondSolver solver for the dot bracket problems
      */
     public static void MCCONS(String path,
-                              optimization.Solver firstSolver,
+                              Solver firstSolver,
                               Solver secondSolver) throws IOException {
 
-        // PHASE 1: TREE CONSENSUS
+        // #################### PHASE 1: COARSE EXPLORATION ####################
 
+        // using compressed representation of RNA, find similar objects
+        // within this reduced search space (obviously the representation
+        // should be as many-to-one as possible and yet be representative)
 
         // data acquisition
-        ArrayList<ArrayList<String>> dotBrackets = Readers.readMarnaFile(path);
-        Hashtable<String, String> reverseMapping = new Hashtable<>();
+        ArrayList<ArrayList<String>> input1 = Readers.readMarnaFile(path);
+
+        // representation and distance functions
+        shapeAndSkeletonDist distance1 = new shapeAndSkeletonDist(1., 0.);
+        shapeAndSkeletonDist distance2 = new shapeAndSkeletonDist(1, 1);
+        GranularRepr converter = new GranularRepr(3);
 
         ArrayList<ArrayList<String>> converted = new ArrayList<>();
-
-        for (ArrayList<String> list : dotBrackets) {
-            // initialize a vector of trees to add later
-            HashSet<String> uniqueStrings = new HashSet<>();
+        for (ArrayList<String> list : input1) {
+            HashSet<String> uniques = new HashSet<>();
             for (String dotBracket : list) {
-                // check if it has already been processed
-                String conv = new GranularBasePairTree(dotBracket, 3).toString();
-                uniqueStrings.add(conv);
-                //System.out.println(dotBracket + " = " + conv);
+                uniques.add(converter.call(dotBracket));
             }
             // add to the converted objects
-            ArrayList<String> uniques = new ArrayList<>();
-            for (String string : uniqueStrings) {
-                uniques.add(string);
+            ArrayList<String> uniquesList = new ArrayList<>();
+            for (String string : uniques) {
+                uniquesList.add(string);
             }
-            converted.add(uniques);
+            converted.add(uniquesList);
         }
 
+        // create the problem instance (which also performs distance matrix calculations)
+        ConsensusProblem<String> problem1 = new ConsensusProblem<>(converted, distance1);
 
-        shapeAndSkeletonDist compoundDist = new shapeAndSkeletonDist(1., 0.);
-        ConsensusProblem<String> treeProblem = new ConsensusProblem<>(converted, compoundDist);
-        int num_comparisons = dotBrackets.size() * (dotBrackets.size() - 1);  // n (n -1)
-
-
-        // PHASE 1 SOLVING
+        // actually solve
         boolean verbose = firstSolver.isVerbose();
         if (verbose) {
-            System.err.println("Phase 1: Base Pair Tree Consensus (1)");
+            System.err.println("Phase 1");
         }
+        ArrayList<Solution> consensus1 = firstSolver.solve(problem1.getDistanceMatrix(), problem1.getRanges());
 
-        ArrayList<Solution> treeConsensus = firstSolver.solve(treeProblem.getDistanceMatrix(), treeProblem.getRanges());
-
-
-        ArrayList<ArrayList<String>> uniqueSolutions = new ArrayList<>();
+        // keep only unique solutions
+        double numComparisons = input1.size() * (input1.size() - 1);  // n (n -1)
+        ArrayList<ArrayList<String>> uniqueSolutions1 = new ArrayList<>();
         int i = 0;
-        for (Solution solution : treeConsensus) {
-            ArrayList<String> consensus = treeProblem.getObjects(solution.getGenes());
+        for (Solution solution : consensus1) {
+            ArrayList<String> consensus = problem1.getObjects(solution.getGenes());
             Collections.sort(consensus);
-            if (!uniqueSolutions.contains(consensus)) {
-                uniqueSolutions.add(consensus);
+            if (!uniqueSolutions1.contains(consensus)) {
+                uniqueSolutions1.add(consensus);
 
-                System.out.println("> solution " + i + " : " + solution.getScore());
+                System.out.println("> solution " + i + " : " + solution.getScore() / numComparisons);
                 for (String dotBracket : consensus) {
                     System.out.println(dotBracket);
                 }
@@ -122,55 +124,50 @@ public class MCCons {
                 i += 1;
             }
         }
-    }
-}
 
 
-        // sort the tree consensus by score (lower is better)
-
-/*
-        System.out.println("phase 1.5");
-
-        // PHASE 1.5: FILTERING
-        ArrayList<ArrayList<ArrayList<String>>> filteredData = new ArrayList<>();
+        // ####################### PHASE 1.5: FILTERING #######################
+        ArrayList<ArrayList<ArrayList<String>>> input2 = new ArrayList<>();
 
         // get the brackets
-        for (Solution solution : treeConsensus) {
-            ArrayList<String> brackets = new ArrayList<>();
-            for (Integer gene : solution.getGenes()) {
-                brackets.add(treeProblem.getObjects().get(gene).toString());
+        for (ArrayList<String> solution : uniqueSolutions1) {
+            ArrayList<ArrayList<String>> correspondingObjects = new ArrayList<>();
+            for (String conv : solution) {
+                correspondingObjects.add(new ArrayList<>(converter.getReverseMapping().get(conv)));
             }
-
-            // filter and add to the problem 2 data
-            ArrayList<ArrayList<String>> filtered_brackets = filter_dot_brackets(dotBrackets, brackets);
-            filteredData.add(filtered_brackets);
+            input2.add(correspondingObjects);
         }
-        ArrayList<ConsensusProblem<String>> dot_bracket_problems = new ArrayList<>();
+
+
+        ArrayList<ConsensusProblem<String>> problems2 = new ArrayList<>();
 
         // instantiate the problems
-        for (int i = 0; i != filteredData.size(); ++i) {
-            dot_bracket_problems.add(new ConsensusProblem<>(filteredData.get(i), new StringEditDistance()));
+        for (ArrayList<ArrayList<String>> input : input2) {
+
+            problems2.add(new ConsensusProblem<>(input, distance2));
         }
 
 
-        System.out.println("phase 2");
-        // PHASE 2: STRING CONSENSUS
+        // #################### PHASE 2: REFINEMENT ####################
+        // for each coarse consensus, refine by solving consensus
+        // from selected objects
         if (verbose) {
             // update on the number of optimal trees found
             System.err.println(System.lineSeparator() + "Phase 2: String Edit Distance on Vienna Dot Bracket (" +
-                    dot_bracket_problems.size() + ")");
+                    problems2.size() + ")");
         }
+
         // if too many output, make the solver silent and add a progress
         // bar over all tree consensus instead of individually
-        if ((treeConsensus.size() > 10)) {
+        if ((consensus1.size() > 10)) {
             verbose = false;
         }
-        ArrayList<ArrayList<Solution>> dotBracketConsensus = new ArrayList<>();
+
+        ArrayList<ArrayList<Solution>> consensus2 = new ArrayList<>();
         ProgressBar progress = new ProgressBar("", 40);
-        for (int i = 0; i != filteredData.size(); ++i) {
-            dotBracketConsensus.add(secondSolver.solve(dot_bracket_problems.get(i).getDistanceMatrix(),
-                    dot_bracket_problems.get(i).getRanges()));
-            progress.update((float) i / treeConsensus.size());
+        for (i = 0; i != input2.size(); ++i) {
+            consensus2.add(secondSolver.solve(problems2.get(i).getDistanceMatrix(), problems2.get(i).getRanges()));
+            progress.update((float) i / consensus1.size());
         }
         progress.clean();
 
@@ -178,44 +175,73 @@ public class MCCons {
             System.err.println();
         }
 
-        // printing the results to stdout
-        // print the best dotbracket consensus for each tree consensus
-        double tree_score, best_dot_bracket_score;
-        int sol_index = 0;
-        int treeProblemIndex = 0;
-        for (ArrayList<Solution> solutions : dotBracketConsensus) {
+
+        // ################## STEP 3: OUTPUT SOLUTIONS ##################
+        double score1;
+        double bestScore2 = Double.POSITIVE_INFINITY;
+        ArrayList<ArrayList<String>> uniqueSolutions2 = new ArrayList<>();
+        i = 0;
+        for (ArrayList<Solution> solutions : consensus2) {
+            for (Solution solution : solutions) {
+                ArrayList<String> consensus = problems2.get(i).getObjects(solution.getGenes());
+                Collections.sort(consensus);
+                if (!uniqueSolutions2.contains(consensus)) {
+                    uniqueSolutions2.add(consensus);
+
+                }
+
+                if (solution.getScore() < bestScore2) {
+                    bestScore2 = solution.getScore();
+                }
+            }
+        }
+    }
+}
+        /*
+        for ()
+                    System.out.println("> solution " + i + " : " + solution.getScore() / numComparisons);
+                    for (String dotBracket : consensus) {
+                        System.out.println(dotBracket);
+                    }
+                }
+
+            }
+            i += 1;
+        }
+
+        for (ArrayList<Solution> solutions : consensus2) {
             // figure out what the best scores are within each tree consensus
-            tree_score = treeConsensus.get(treeProblemIndex).getScore() / num_comparisons;
-            best_dot_bracket_score = Double.POSITIVE_INFINITY;
+            score1 = consensus1.get(problem2Index).getScore() / num_comparisons;
+            bestScore2 = Double.POSITIVE_INFINITY;
 
             for (Solution solution : solutions) {
-                if (solution.getScore() < best_dot_bracket_score) {
-                    best_dot_bracket_score = solution.getScore();
+                if (solution.getScore() < bestScore2) {
+                    bestScore2 = solution.getScore();
                 }
             }
 
             for (Solution solution : solutions) {
-                if (solution.getScore() == best_dot_bracket_score) {
+                if (solution.getScore() == bestScore2) {
                     // output it
-                    double normalizedScore = best_dot_bracket_score / num_comparisons;
+                    double normalizedScore = bestScore2 / num_comparisons;
                     StringBuilder builder = new StringBuilder();
                     builder.append("> ");
-                    builder.append(sol_index);       // index
+                    builder.append(solutionIndex);       // index
                     builder.append(" ");
-                    builder.append(tree_score);      // first score
+                    builder.append(score1);      // first score
                     builder.append(" ");
                     builder.append(normalizedScore); // normalized second score
                     builder.append(System.lineSeparator());
                     for (Integer gene : solution.getGenes()) {
-                        String object = dot_bracket_problems.get(treeProblemIndex).getObjects().get(gene);
+                        String object = problems2.get(problem2Index).getObjects().get(gene);
                         builder.append(object);
                         builder.append(System.lineSeparator());
                     }
                     System.out.println(builder.toString());
-                    sol_index += 1;
+                    solutionIndex += 1;
                 }
             }
-            treeProblemIndex += 1;
+            problem2Index += 1;
         }
     }
 }

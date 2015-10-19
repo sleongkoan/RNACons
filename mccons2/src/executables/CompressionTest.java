@@ -5,14 +5,17 @@ import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
-import rna.GranularBasePairTree;
 import rna.GranularRepr;
 import rna.RNAConverter;
 import rna.RNAShapeRepr;
+import rna.StringRepr;
 import util.Readers;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Hashtable;
 
 /**
  * used for testing the compression induced by different representations of RNA secondary structure
@@ -55,7 +58,6 @@ public class CompressionTest {
         }
 
 
-
         ArrayList<ArrayList<String>> dotBrackets = Readers.readMarnaFile(config.getString("input"));
 
         // group them all together and keep only uniques
@@ -70,17 +72,18 @@ public class CompressionTest {
 
 
         ArrayList<RNAConverter> converters = new ArrayList<>();
-        converters.add(new RNAShapeRepr("shapes 1", 1));
-        converters.add(new RNAShapeRepr("shapes 3", 3));
-        converters.add(new RNAShapeRepr("shapes 5", 5));
-        converters.add(new GranularRepr("granular 1 (equivalent to brackets)", 1));
-        converters.add(new GranularRepr("granular 2", 2));
-        converters.add(new GranularRepr("granular 3", 3));
-        converters.add(new GranularRepr("granular 5", 5));
-        converters.add(new GranularRepr("granular 8", 9));
-        converters.add(new GranularRepr("granular 13", 13));
-        converters.add(new GranularRepr("granular 21", 21));
-        converters.add(new GranularRepr("granular 34", 44));
+        converters.add(new StringRepr());
+        converters.add(new RNAShapeRepr(1));
+        converters.add(new RNAShapeRepr(3));
+        converters.add(new RNAShapeRepr(5));
+        converters.add(new GranularRepr(1));
+        converters.add(new GranularRepr(2));
+        converters.add(new GranularRepr(3));
+        converters.add(new GranularRepr(5));
+        converters.add(new GranularRepr(9));
+        converters.add(new GranularRepr(13));
+        converters.add(new GranularRepr(21));
+        converters.add(new GranularRepr(44));
 
 
         // call them all
@@ -131,14 +134,15 @@ public class CompressionTest {
 
 
         // output results to stdout
+        System.out.println();
         System.out.println("#################### Compression results ####################");
-        System.out.println("Input = " + uniqueInputs.size() + " unique objects");
-        System.out.println("#############################################################" + System.lineSeparator());
+        System.out.println();
         for (int i = 0; i != names.size(); ++i)
         {
             System.out.println(names.get(i)+ " : " + numberOfClasses.get(i) + " classes");
             ArrayList<Integer> keys = new ArrayList<>(distributions.get(i).keySet());
             Collections.sort(keys, Collections.reverseOrder());
+            int j = 0;
             for (Integer key : keys)
             {
                 int repetitions = distributions.get(i).get(key);
@@ -149,6 +153,12 @@ public class CompressionTest {
                 else
                 {
                     System.out.print(key + "; ");
+                }
+                j+=1;
+                if (j >= 10)
+                {
+                    j = 0;
+                    System.out.println();
                 }
             }
             System.out.println(System.lineSeparator());

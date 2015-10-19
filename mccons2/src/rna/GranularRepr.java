@@ -1,16 +1,19 @@
 package rna;
 
+import java.util.Hashtable;
+
 public class GranularRepr extends RNAConverter {
 
     public int granularity;
 
-    public GranularRepr(String name, int granularity) {
+    public GranularRepr(int granularity) {
+        assert granularity > 0;
         this.granularity = granularity;
-        this.name = name;
+        this.name = "granular " + granularity;
     }
 
     @Override
-    protected String convert(String obj) {
+    public String convert(String obj) {
         String converted = new GranularBasePairTree(obj, granularity).toString();
         return converted;
     }

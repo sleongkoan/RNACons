@@ -4,10 +4,10 @@ public class RNAShapeRepr extends RNAConverter {
 
     private int level;
 
-    public RNAShapeRepr(String name, int level) {
+    public RNAShapeRepr( int level) {
         assert (level == 1 || level == 3 || level == 5);
         this.level = level;
-        this.name = name;
+        this.name = "Abstract shapes level " + level;
     }
 
     @Override

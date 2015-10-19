@@ -8,8 +8,13 @@ import java.util.Hashtable;
  * all calls to conversion should be memoized and remebered by reverse mapping
  */
 public abstract class RNAConverter {
-    protected Hashtable<String, HashSet<String>> reverseMapping = new Hashtable<>();
+    protected Hashtable<String, HashSet<String>> reverseMapping;
     protected String name;
+
+    RNAConverter()
+    {
+        this.reverseMapping = new Hashtable<>();
+    }
 
     public Hashtable<String, HashSet<String>> getReverseMapping()
     {
