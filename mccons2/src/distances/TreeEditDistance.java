@@ -5,6 +5,8 @@ import distance.RTED_InfoTree_Opt;
 import util.Util;
 import util.LblTree;
 
+import static util.Util.isTree;
+
 public class TreeEditDistance implements DistanceFunction<String, String, Double>{
 
     double costIns, costDel, costRen;
@@ -19,6 +21,7 @@ public class TreeEditDistance implements DistanceFunction<String, String, Double
         // add artificial root
         String tree1 = "(" + dotBracket1 + ")";
         String tree2 = "(" + dotBracket2 + ")";
+        assert (isTree(tree1) && isTree(tree2));
         return RTED.computeDistance(Util.dotBracketToRTED(tree1), Util.dotBracketToRTED(tree2));
     }
 }

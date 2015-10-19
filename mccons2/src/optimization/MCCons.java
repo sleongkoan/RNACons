@@ -5,7 +5,6 @@ import distances.StringEditDistance;
 import distances.TreeEditDistance;
 import rna.GranularBasePairTree;
 import util.Readers;
-import util.Util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,13 +16,11 @@ import java.util.Hashtable;
 public class MCCons {
 
 
-
     static class shapeAndSkeletonDist implements DistanceFunction<String, String, Double> {
         public int shapeLevel;
         public double mult1, mult2, mult3;
 
-        shapeAndSkeletonDist(double mult1_, double mult2_)
-        {
+        shapeAndSkeletonDist(double mult1_, double mult2_) {
             //assert(shapeLevel_ == 1 || shapeLevel_ == 3 || shapeLevel_ ==5);
             //shapeLevel = shapeLevel_;
             mult1 = mult1_;
@@ -31,8 +28,7 @@ public class MCCons {
             //mult3 = mult3_;
         }
 
-        public Double get(String dotBracket1, String dotBracket2)
-        {
+        public Double get(String dotBracket1, String dotBracket2) {
             /*
             OrderedRootedLabeledTree completeTree1 = new OrderedRootedLabeledTree(dotBracket1, '(', ')', '.');
             OrderedRootedLabeledTree completeTree2 = new OrderedRootedLabeledTree(dotBracket2, '(', ')', '.');
@@ -48,15 +44,14 @@ public class MCCons {
             StringEditDistance stringDist = new StringEditDistance();
 
             // first distance
-           // Double wholeDistance = dist.get(completeTree1, completeTree2);
+            // Double wholeDistance = dist.get(completeTree1, completeTree2);
             Double skeletonDistance = dist.get(dotBracket1, dotBracket2);
             //Double shapeDistance = dist.get(shapeTree1, shapeTree2);
             Double stringDistance = stringDist.get(dotBracket1, dotBracket2);
 
-            return ( mult1 * skeletonDistance) + (mult2 * stringDistance);
+            return (mult1 * skeletonDistance) + (mult2 * stringDistance);
         }
     }
-
 
 
     /**
@@ -71,7 +66,6 @@ public class MCCons {
                               Solver secondSolver) throws IOException {
 
         // PHASE 1: TREE CONSENSUS
-
 
 
         // data acquisition
@@ -91,8 +85,7 @@ public class MCCons {
             }
             // add to the converted objects
             ArrayList<String> uniques = new ArrayList<>();
-            for (String string : uniqueStrings)
-            {
+            for (String string : uniqueStrings) {
                 uniques.add(string);
             }
             converted.add(uniques);
@@ -118,13 +111,11 @@ public class MCCons {
         for (Solution solution : treeConsensus) {
             ArrayList<String> consensus = treeProblem.getObjects(solution.getGenes());
             Collections.sort(consensus);
-            if (!uniqueSolutions.contains(consensus))
-            {
+            if (!uniqueSolutions.contains(consensus)) {
                 uniqueSolutions.add(consensus);
 
-                System.out.println("> solution " + i + " : " +solution.getScore());
-                for (String dotBracket : consensus)
-                {
+                System.out.println("> solution " + i + " : " + solution.getScore());
+                for (String dotBracket : consensus) {
                     System.out.println(dotBracket);
                 }
                 System.out.println();
@@ -133,13 +124,15 @@ public class MCCons {
         }
     }
 }
+
+
         // sort the tree consensus by score (lower is better)
 
 /*
         System.out.println("phase 1.5");
 
         // PHASE 1.5: FILTERING
-        ArrayList<ArrayList<ArrayList<String>>> prob2_data = new ArrayList<>();
+        ArrayList<ArrayList<ArrayList<String>>> filteredData = new ArrayList<>();
 
         // get the brackets
         for (Solution solution : treeConsensus) {
@@ -150,13 +143,13 @@ public class MCCons {
 
             // filter and add to the problem 2 data
             ArrayList<ArrayList<String>> filtered_brackets = filter_dot_brackets(dotBrackets, brackets);
-            prob2_data.add(filtered_brackets);
+            filteredData.add(filtered_brackets);
         }
         ArrayList<ConsensusProblem<String>> dot_bracket_problems = new ArrayList<>();
 
         // instantiate the problems
-        for (int i = 0; i != prob2_data.size(); ++i) {
-            dot_bracket_problems.add(new ConsensusProblem<>(prob2_data.get(i), new StringEditDistance()));
+        for (int i = 0; i != filteredData.size(); ++i) {
+            dot_bracket_problems.add(new ConsensusProblem<>(filteredData.get(i), new StringEditDistance()));
         }
 
 
@@ -174,7 +167,7 @@ public class MCCons {
         }
         ArrayList<ArrayList<Solution>> dotBracketConsensus = new ArrayList<>();
         ProgressBar progress = new ProgressBar("", 40);
-        for (int i = 0; i != prob2_data.size(); ++i) {
+        for (int i = 0; i != filteredData.size(); ++i) {
             dotBracketConsensus.add(secondSolver.solve(dot_bracket_problems.get(i).getDistanceMatrix(),
                     dot_bracket_problems.get(i).getRanges()));
             progress.update((float) i / treeConsensus.size());
