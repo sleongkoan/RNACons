@@ -1,4 +1,4 @@
-package optimization;
+package problemSolving;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,16 +11,10 @@ import util.RngStream;
 import util.Util;
 
 
-class ReverseSolutionComp implements Comparator<Solution> {
-
-    @Override
-    public int compare(Solution first, Solution second) {
-        return -1 * first.compareTo(second);
-    }
-}
 
 
-public class SolverHeuristic extends Solver {
+
+public class HeuristicStrategy extends AbstractStrategy {
 
     // Generic solver parameters parameters
     private boolean verbose;
@@ -42,11 +36,11 @@ public class SolverHeuristic extends Solver {
     private final double improvementProbability;
     private final int improvementDepth;
 
-    public SolverHeuristic(boolean verbose, double tolerance, long[] seeds,
-                           int populationSize, int numGenerations, double eliteRatio,
-                           double crossoverProbability, double crossoverMixingRatio,
-                           double mutationProbability, double mutationStrength,
-                           double improvementProbability, int improvementDepth) {
+    public HeuristicStrategy(boolean verbose, double tolerance, long[] seeds,
+                             int populationSize, int numGenerations, double eliteRatio,
+                             double crossoverProbability, double crossoverMixingRatio,
+                             double mutationProbability, double mutationStrength,
+                             double improvementProbability, int improvementDepth) {
         this.verbose = verbose;
         this.tolerance = tolerance;
         this.seeds = seeds;
@@ -162,18 +156,27 @@ public class SolverHeuristic extends Solver {
      * solve the consensus problem
      * using an hybrid strategy (genetic algorithm + steepest descent)
      *
-     * @param distanceMatrix matrix of distances between all objects
-     * @param ranges         (begin, end) indices to tell sets of objects apart
+     * @param problem instance of a consensus problem to solve
      * @return list of solutions to the consensus problem
      */
-    public ArrayList<Solution> solve(double[][] distanceMatrix,
-                                     ArrayList<Pair<Integer, Integer>> ranges) {
+    public ArrayList<Solution> solve(Problem problem) {
         assert (populationSize > 0);
         assert (numGenerations > 0);
         assert (eliteRatio >= 0 && eliteRatio <= 1.0);
         assert (0. <= crossoverProbability && crossoverProbability <= 1.);
         assert (0. <= crossoverMixingRatio && crossoverMixingRatio <= 1.);
         assert (0. <= mutationProbability && mutationProbability <= 1.);
+
+        class ReverseSolutionComp implements Comparator<Solution> {
+
+            @Override
+            public int compare(Solution first, Solution second) {
+                return -1 * first.compareTo(second);
+            }
+        }
+
+        double[][] distanceMatrix = problem.getDistanceMatrix();
+        ArrayList<Pair<Integer, Integer>> ranges = problem.getRanges();
 
         // seed the pseudo-random generator
         RngStream stream = new RngStream();

@@ -1,4 +1,4 @@
-package optimization;
+package problemSolving;
 
 import util.Pair;
 import util.WidthComparator;
@@ -8,62 +8,7 @@ import java.util.Collections;
 import java.util.PriorityQueue;
 
 
-
-class SubSolution extends Solution{
-
-
-    private ArrayList<Pair<Integer, Integer>> ranges;
-
-
-    public SubSolution(ArrayList<Integer> genes_,
-                       double score_,
-                       ArrayList<Pair<Integer, Integer>> ranges_)
-    {
-        super(genes_, score_);
-        ranges = ranges_;
-    }
-
-
-    public ArrayList<Pair<Integer, Integer>> getRanges() {
-        return ranges;
-    }
-
-
-    public String toString()
-    {
-        // add the genes
-        StringBuilder builder = new StringBuilder();
-        builder.append("genes ");
-        for (Integer i : getGenes())
-        {
-            builder.append(i + " ");
-        }
-        builder.append(System.lineSeparator());
-
-        // add the score
-        builder.append("score " + getScore() + System.lineSeparator());
-
-        // add the remaining ranges
-        builder.append("ranges" + System.lineSeparator());
-        for( Pair<Integer, Integer> r : getRanges())
-        {
-            builder.append("[ " + r.getFirst() + " .. " + r.getSecond() + " ]");
-            builder.append(System.lineSeparator());
-        }
-        return builder.toString();
-    }
-
-
-    public Solution toSolution()
-    {
-        return new Solution(getGenes(), getScore());
-    }
-}
-
-
-
-
-public class SolverExact extends Solver {
+public class ExactStrategy extends AbstractStrategy {
 
 
     private double threshold;
@@ -74,12 +19,64 @@ public class SolverExact extends Solver {
         return verbose;
     }
 
-    public SolverExact(double suboptimal_threshold, boolean verbose_)
+    public ExactStrategy(double suboptimal_threshold, boolean verbose_)
     {
         threshold = suboptimal_threshold;
         verbose = verbose_;
     }
 
+
+
+    class SubSolution extends Solution{
+
+
+        private ArrayList<Pair<Integer, Integer>> ranges;
+
+
+        public SubSolution(ArrayList<Integer> genes_,
+                           double score_,
+                           ArrayList<Pair<Integer, Integer>> ranges_)
+        {
+            super(genes_, score_);
+            ranges = ranges_;
+        }
+
+
+        public ArrayList<Pair<Integer, Integer>> getRanges() {
+            return ranges;
+        }
+
+
+        public String toString()
+        {
+            // add the genes
+            StringBuilder builder = new StringBuilder();
+            builder.append("genes ");
+            for (Integer i : getGenes())
+            {
+                builder.append(i + " ");
+            }
+            builder.append(System.lineSeparator());
+
+            // add the score
+            builder.append("score " + getScore() + System.lineSeparator());
+
+            // add the remaining ranges
+            builder.append("ranges" + System.lineSeparator());
+            for( Pair<Integer, Integer> r : getRanges())
+            {
+                builder.append("[ " + r.getFirst() + " .. " + r.getSecond() + " ]");
+                builder.append(System.lineSeparator());
+            }
+            return builder.toString();
+        }
+
+
+        public Solution toSolution()
+        {
+            return new Solution(getGenes(), getScore());
+        }
+    }
 
     /**
      * find closest elements in other range and the get
@@ -174,8 +171,11 @@ public class SolverExact extends Solver {
     }
 
 
-    public ArrayList<Solution> solve(double[][] distanceMatrix, ArrayList<Pair<Integer, Integer>> ranges)
+    public ArrayList<Solution> solve(Problem problem)
     {
+        double[][] distanceMatrix = problem.getDistanceMatrix();
+        ArrayList<Pair<Integer, Integer>> ranges = problem.getRanges();
+
         // use a priority queue to represent the current search space
         PriorityQueue<SubSolution> searchSpace = new PriorityQueue<>();
         ArrayList<SubSolution > satisfyingSolutions = new ArrayList<>();

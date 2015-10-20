@@ -7,10 +7,10 @@ import java.util.LinkedList;
 /**
  * Lossy tree compression ((((..)))).(.) -> (())() if granularity == 2
  */
-public class GranularBasePairTree extends OrderedRootedTree{
+public class Granular extends Tree {
     private int granularity;
 
-    public GranularBasePairTree(String stringRepresentation, int divider)
+    public Granular(String stringRepresentation, int divider)
     {
         super(stringRepresentation, '(', ')', '?');
         assert(divider > 0);

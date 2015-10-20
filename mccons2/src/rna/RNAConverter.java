@@ -1,5 +1,6 @@
 package rna;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 
@@ -8,15 +9,15 @@ import java.util.Hashtable;
  * all calls to conversion should be memoized and remebered by reverse mapping
  */
 public abstract class RNAConverter {
-    protected Hashtable<String, HashSet<String>> reverseMapping;
+    protected ArrayList<Hashtable<String, HashSet<String>>> reverseMapping;
     protected String name;
 
     RNAConverter()
     {
-        this.reverseMapping = new Hashtable<>();
+        this.reverseMapping = new ArrayList<>();
     }
 
-    public Hashtable<String, HashSet<String>> getReverseMapping()
+    public ArrayList<Hashtable<String, HashSet<String>>> getReverseMapping()
     {
         return reverseMapping;
     }

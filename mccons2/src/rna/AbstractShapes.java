@@ -4,7 +4,21 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 
-public final class RNAshapes {
+public class AbstractShapes extends RNA2D {
+
+
+    private final String shape;
+
+
+    AbstractShapes(String dotBracket, String sequence, int level)
+    {
+        super(dotBracket, sequence);
+        assert (level == 1 || level == 3 || level == 5);
+        this.shape = dotBracketToAbstractShape(dotBracket, level);
+    }
+
+
+
 
     /**
      * remove the stems
@@ -66,10 +80,10 @@ public final class RNAshapes {
     }
 
 
-    public static String preProcessDotBracket(String dot_bracket)
+    public static String preProcessDotBracket(String dotBracket)
     {
         ArrayList<Character> step1 = new ArrayList<>();
-        char[] chars = dot_bracket.toCharArray();
+        char[] chars = dotBracket.toCharArray();
         char lastChar = 'a';
         for (char currentChar : chars)
         {
@@ -97,14 +111,14 @@ public final class RNAshapes {
         return charArrayListToString(step2);
     }
 
-    public static String dotBracketToAbstractShape(String dot_bracket, int level)
+    public static String dotBracketToAbstractShape(String dotBracket, int level)
     {
         assert(level == 1 || level == 3 || level==5);
 
         // preProcessDotBracket the dotbracket and convert it to tree representation
-        String processed = preProcessDotBracket(dot_bracket);
+        String processed = preProcessDotBracket(dotBracket);
 
-        OrderedRootedTree tree = new OrderedRootedTree(processed, '(', ')', '.');
+        Tree tree = new Tree(processed, '(', ')', '.');
         ArrayList<Node> subTrees = tree.getRoot().getChildren();
 
 
@@ -132,7 +146,7 @@ public final class RNAshapes {
 
         //-------------------------------------------level 5
         // same as for level 1 except it is applied on the level 3 String
-        OrderedRootedTree tree2 = new OrderedRootedTree(level3, '[', ']', '_');
+        Tree tree2 = new Tree(level3, '[', ']', '_');
 
         ArrayList<Node> trees2 = tree2.getRoot().getChildren();
         for (Node n : trees2)

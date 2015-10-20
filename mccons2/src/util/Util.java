@@ -80,4 +80,15 @@ public final class Util {
         return slice;
     }
 
+
+    public static <T> ArrayList<T> flatten(ArrayList<ArrayList<T>> nested)
+    {
+        ArrayList<T> flat = new ArrayList<>();
+        for (ArrayList<T> list : nested)
+        {
+            flat.addAll(list);
+        }
+        return flat;
+    }
+
 }

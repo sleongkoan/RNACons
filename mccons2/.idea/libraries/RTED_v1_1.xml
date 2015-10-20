@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="RTED_v1.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/libraries/RTED_v1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/src/libraries/RTED_v1.1.jar!/" />
+    </SOURCES>
+  </library>
+</component>

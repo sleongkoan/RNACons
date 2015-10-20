@@ -4,8 +4,9 @@ import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
-import optimization.MCCons;
-import optimization.SolverExact;
+import problemSolving.AbstractStrategy;
+import problemSolving.StrategyTemplate;
+import problemSolving.ExactStrategy;
 
 
 public final class MCConsExact {
@@ -48,11 +49,11 @@ public final class MCConsExact {
             System.exit(1);
         }
 
-        optimization.Solver solver = new SolverExact(config.getDouble("tolerance"), config.getBoolean("verbose"));
+        AbstractStrategy solver = new ExactStrategy(config.getDouble("tolerance"), config.getBoolean("verbose"));
 
 
         // execute MC-Cons
-        MCCons.MCCONS(config.getString("input"), solver, solver);
+        StrategyTemplate.applyStrategy(config.getString("input"), solver, solver);
 
 
 

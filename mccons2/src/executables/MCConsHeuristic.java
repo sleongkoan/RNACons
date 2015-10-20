@@ -4,13 +4,15 @@ import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
-import optimization.MCCons;
-import optimization.SolverHeuristic;
+import problemSolving.StrategyTemplate;
+import problemSolving.HeuristicStrategy;
 
 
 public final class MCConsHeuristic {
 
     public static void main(String[] args) throws Exception {
+
+        //region ARGUMENT PARSING
         JSAP parser = new JSAP();
 
         // I/O settings
@@ -106,12 +108,15 @@ public final class MCConsHeuristic {
             System.err.println(parser.getHelp());
             System.exit(1);
         }
+        //endregion
 
+
+        //region INSTANTIATION
         long[] SEEDS = {config.getLong("seed0"), config.getLong("seed1"), config.getLong("seed2"),
                 config.getLong("seed3"), config.getLong("seed4"), config.getLong("seed5")};
 
 
-        SolverHeuristic solver1 = new SolverHeuristic(
+        HeuristicStrategy solver1 = new HeuristicStrategy(
                 config.getBoolean("verbose"),
                 config.getDouble("tolerance"),
                 SEEDS,
@@ -127,7 +132,7 @@ public final class MCConsHeuristic {
                 config.getDouble("improvementProbability"),
                 config.getInt("improvementDepth"));
 
-        SolverHeuristic solver2 = new SolverHeuristic(
+        HeuristicStrategy solver2 = new HeuristicStrategy(
                 config.getBoolean("verbose"),
                 0,
                 SEEDS,
@@ -142,10 +147,12 @@ public final class MCConsHeuristic {
                 config.getDouble("mutationStrength"),
                 config.getDouble("improvementProbability"),
                 config.getInt("improvementDepth"));
+        //endregion
 
-        // execute MC-Cons
-        MCCons.MCCONS(config.getString("input"), solver1, solver2);
 
+        //region SOLVING
+        StrategyTemplate.applyStrategy(config.getString("input"), solver1, solver2);
+        //endregion
 
     }
 }

@@ -1,10 +1,12 @@
-package optimization;
+package problemSolving;
 
 import com.sun.istack.internal.NotNull;
+import distances.DistanceFunction;
 import util.Pair;
 import util.RngStream;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 
 /**
@@ -12,14 +14,11 @@ import java.util.ArrayList;
  */
 class Solution implements Comparable<Solution> {
 
-    /**
-     * Array of indices of objects selected as genes.
-     */
+
     private final ArrayList<Integer> genes;
-    /**
-     * Value (score) of the solution. Can be changed after initialization.
-     */
     private Double score;
+
+
 
     public void setGene(final int index, final int newValue) {
         genes.set(index, newValue);
@@ -93,10 +92,13 @@ class Solution implements Comparable<Solution> {
 }
 
 
-public abstract class Solver {
+public abstract class AbstractStrategy {
 
 
-    // static methods
+
+
+
+
 
     /**
      * calculates and assigns the sum of pairwise cost as the new score of the given solution
@@ -137,49 +139,49 @@ public abstract class Solver {
      * Using the get matrix, find the change of gene that brings the most improvement (greedy)
      *
      * @param genes                current genes chosen
-     * @param replacement_position index of the gene list to investigate
-     * @param distance_matrix      pre-calculated matrix of cost
+     * @param replacementPosition index of the gene list to investigate
+     * @param distanceMatrix      pre-calculated matrix of cost
      * @param ranges               list of intervals from which to select new genes from
      * @return index of the new gene (-1 if no better) and difference in score
      */
     public static Pair<Integer, Double> findBestSubstitution(ArrayList<Integer> genes,
-                                                             int replacement_position,
-                                                             double[][] distance_matrix,
+                                                             int replacementPosition,
+                                                             double[][] distanceMatrix,
                                                              ArrayList<Pair<Integer, Integer>> ranges) {
         // find the best replacement for the allele at position
-        double original_cost, current_cost, best_cost;
-        int original_gene, best_gene;
-        int gene_length = genes.size();
+        double originalCost, currentCost, bestCost;
+        int originalGene, bestGene;
+        int geneLength = genes.size();
 
         // calculate the original cost (without change)
-        original_cost = 0.;
-        original_gene = genes.get(replacement_position);
-        for (int i = 0; i != gene_length; ++i) {
-            original_cost += distance_matrix[genes.get(i)][original_gene];
+        originalCost = 0.;
+        originalGene = genes.get(replacementPosition);
+        for (int i = 0; i != geneLength; ++i) {
+            originalCost += distanceMatrix[genes.get(i)][originalGene];
         }
 
         // for every possible substitution of the gene at replacement position
         // check if improvement is possible and remember the best
-        best_gene = genes.get(replacement_position);
-        best_cost = Double.POSITIVE_INFINITY;
+        bestGene = genes.get(replacementPosition);
+        bestCost = Double.POSITIVE_INFINITY;
 
-        int begin = ranges.get(replacement_position).getFirst();
-        int end = ranges.get(replacement_position).getSecond();
+        int begin = ranges.get(replacementPosition).getFirst();
+        int end = ranges.get(replacementPosition).getSecond();
         for (int current_gene = begin; current_gene != end; ++current_gene) {
             // calculate the cost with the current replacement
-            genes.set(replacement_position, current_gene);
-            current_cost = 0.;
-            for (int i = 0; i != gene_length; ++i) {
-                current_cost += distance_matrix[genes.get(i)][current_gene];
+            genes.set(replacementPosition, current_gene);
+            currentCost = 0.;
+            for (int i = 0; i != geneLength; ++i) {
+                currentCost += distanceMatrix[genes.get(i)][current_gene];
             }
 
             // verify if best found yet, if so, remember the new gene
-            if (current_cost <= best_cost) {
-                best_gene = current_gene;
-                best_cost = current_cost;
+            if (currentCost <= bestCost) {
+                bestGene = current_gene;
+                bestCost = currentCost;
             }
         }
-        return new Pair<>(best_gene, best_cost - original_cost);
+        return new Pair<>(bestGene, bestCost - originalCost);
     }
 
 
@@ -254,16 +256,15 @@ public abstract class Solver {
     /**
      * solver interface for the consensus problem
      *
-     * @param distanceMatrix pre-calculated matrix of cost
-     * @param ranges         ranges of the problem
-     * @return list of the best(s) solution(s)
+     * @param problem instance of a consensus problem
+     * @return list of the best(s) solution(s) found
      */
-    public abstract ArrayList<Solution> solve(double[][] distanceMatrix, ArrayList<Pair<Integer, Integer>> ranges);
+    public abstract ArrayList<Solution> solve(Problem problem);
 
     /**
      * gets the verbosity setting of the solver
      *
-     * @return verbosity (yes or no)
+     * @return verbose (yes or no)
      */
     public abstract boolean isVerbose();
 }

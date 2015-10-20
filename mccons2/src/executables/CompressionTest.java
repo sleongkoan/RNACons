@@ -5,10 +5,7 @@ import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
-import rna.GranularRepr;
 import rna.RNAConverter;
-import rna.RNAShapeRepr;
-import rna.StringRepr;
 import util.Readers;
 
 import java.io.IOException;

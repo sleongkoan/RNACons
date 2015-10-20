@@ -73,7 +73,7 @@ class Node {
  * and Vienna dot-bracket (planar ordered labeled tree)
  */
 
-public class OrderedRootedTree {
+public class Tree {
 
     private Node artificialRoot;
     private char nestingSymbol;
@@ -86,36 +86,36 @@ public class OrderedRootedTree {
      * Abstract shapes symbols = [ ] _
      *
      * @param stringRepresentation_ representation of the tree
-     * @param nestingSymbol_        symbol that causes nesting
-     * @param closingSymbol_        symbol that corresponds to going up in the tree
-     * @param addNodeSymbol_        symbol to add a node to the current node
+     * @param nestingSymbol        symbol that causes nesting
+     * @param closingSymbol        symbol that corresponds to going up in the tree
+     * @param addNodeSymbol        symbol to add a node to the current node
      */
-    public OrderedRootedTree(String stringRepresentation_,
-                             char nestingSymbol_,
-                             char closingSymbol_,
-                             char addNodeSymbol_) {
+    public Tree(String stringRepresentation_,
+                char nestingSymbol,
+                char closingSymbol,
+                char addNodeSymbol) {
 
         // assign the string representation and remember the symbols
-        nestingSymbol = nestingSymbol_;
-        closingSymbol = closingSymbol_;
-        addNodeSymbol = addNodeSymbol_;
+        this.nestingSymbol = nestingSymbol;
+        this.closingSymbol = closingSymbol;
+        this.addNodeSymbol = addNodeSymbol;
 
         // create rooted tree (with artificial root)
-        artificialRoot = new Node(null, nestingSymbol);
+        artificialRoot = new Node(null, this.nestingSymbol);
         Node position = artificialRoot;
         int index = 0;
         for (char c : stringRepresentation_.toCharArray()) {
-            if (c == nestingSymbol)       // create new node and position goes down
+            if (c == this.nestingSymbol)       // create new node and position goes down
             {
-                position = new Node(position, nestingSymbol);
+                position = new Node(position, this.nestingSymbol);
                 position.setIndex(index);
                 index += 1;
-            } else if (c == closingSymbol)  // position goes up
+            } else if (c == this.closingSymbol)  // position goes up
             {
                 position = position.getParent();
-            } else if (c == addNodeSymbol) // add unpaired node, position stays same
+            } else if (c == this.addNodeSymbol) // add unpaired node, position stays same
             {
-                new Node(position, addNodeSymbol);
+                new Node(position, this.addNodeSymbol);
                 position.setIndex(index);
                 index += 1;
             }
