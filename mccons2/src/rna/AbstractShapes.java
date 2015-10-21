@@ -4,21 +4,25 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 
-public class AbstractShapes extends RNA2D {
+public class AbstractShapes{
 
 
     private final String shape;
 
 
-    AbstractShapes(String dotBracket, String sequence, int level)
+    AbstractShapes(String dotBracket, int level)
     {
-        super(dotBracket, sequence);
         assert (level == 1 || level == 3 || level == 5);
         this.shape = dotBracketToAbstractShape(dotBracket, level);
     }
 
 
 
+    @Override
+    public String toString()
+    {
+        return this.shape;
+    }
 
     /**
      * remove the stems

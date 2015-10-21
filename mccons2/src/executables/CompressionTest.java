@@ -5,7 +5,10 @@ import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
-import rna.RNAConverter;
+import rna.AbstractShapesTransformer;
+import rna.GranularTransformer;
+import rna.Transformer;
+import rna.TransformerMapping;
 import util.Readers;
 
 import java.io.IOException;
@@ -29,8 +32,7 @@ public class CompressionTest {
 
 
         //parser.registerParameter(new FlaggedOption("output", JSAP.STRING_PARSER, null, true,
-         //       'o', "output", "output file path"));
-
+        //       'o', "output", "output file path"));
 
 
         // parse the arguments
@@ -67,40 +69,46 @@ public class CompressionTest {
         }
 
 
+        // transformers list
+        ArrayList<Transformer> transformers = new ArrayList<>();
+        transformers.add(new AbstractShapesTransformer(1));
+        transformers.add(new AbstractShapesTransformer(3));
+        transformers.add(new AbstractShapesTransformer(5));
+        transformers.add(new GranularTransformer(1));
+        transformers.add(new GranularTransformer(2));
+        transformers.add(new GranularTransformer(3));
+        transformers.add(new GranularTransformer(5));
+        transformers.add(new GranularTransformer(9));
+        transformers.add(new GranularTransformer(13));
+        transformers.add(new GranularTransformer(21));
+        transformers.add(new GranularTransformer(44));
+        // along with the mappers (remember correspondence A->B)
+        ArrayList<TransformerMapping<String, String>> mappers = new ArrayList<>();
+        for (int i = 0; i != transformers.size(); ++i) {
+            mappers.add(new TransformerMapping<String, String>(1));
+        }
 
-        ArrayList<RNAConverter> converters = new ArrayList<>();
-        converters.add(new StringRepr());
-        converters.add(new RNAShapeRepr(1));
-        converters.add(new RNAShapeRepr(3));
-        converters.add(new RNAShapeRepr(5));
-        converters.add(new GranularRepr(1));
-        converters.add(new GranularRepr(2));
-        converters.add(new GranularRepr(3));
-        converters.add(new GranularRepr(5));
-        converters.add(new GranularRepr(9));
-        converters.add(new GranularRepr(13));
-        converters.add(new GranularRepr(21));
-        converters.add(new GranularRepr(44));
-
-
-        // call them all
+        // perform all the representation transformations
         for (String dotBracket : uniqueInputs) {
-            for (RNAConverter converter : converters) {
-                converter.call(dotBracket);
+            for (int transformIndex = 0; transformIndex != transformers.size(); ++transformIndex) {
+                Transformer<String, String> transformer = transformers.get(transformIndex);
+                TransformerMapping<String, String> mapper = mappers.get(transformIndex);
+                mapper.addMapping(0, dotBracket, transformer.transform(dotBracket));
             }
+
         }
 
         // extract the reverse mappings
-        ArrayList<Hashtable<String, HashSet<String>>> reverseMappings = new ArrayList<>();
-        for (RNAConverter converter : converters)
-        {
-            reverseMappings.add(converter.getReverseMapping());
+        ArrayList<Hashtable<String, ArrayList<String>>> reverseMappings = new ArrayList<>();
+        for (int transformerIndex = 0; transformerIndex != transformers.size(); ++transformerIndex) {
+            //reverseMappings.add(mappers.get(transformerIndex).getDomainUniques());
+
         }
+
 
         // get the names
         ArrayList<String> names = new ArrayList<>();
-        for (RNAConverter converter : converters)
-        {
+        for (Transformer converter : transformers) {
             names.add(converter.getName());
         }
 
@@ -112,6 +120,7 @@ public class CompressionTest {
         // distribution : number of elements for each class, sorted
         ArrayList<Hashtable<Integer, Integer>> distributions = new ArrayList<>();
 
+        /*
         for (Hashtable<String, HashSet<String>> mapping : reverseMappings)
         {
             numberOfClasses.add(mapping.keySet().size());
@@ -159,7 +168,9 @@ public class CompressionTest {
                 }
             }
             System.out.println(System.lineSeparator());
-        }
+    }
+            */
+
 
 
 

@@ -3,6 +3,9 @@ package problemSolving;
 import distances.DistanceFunction;
 import distances.StringEditDistance;
 import distances.TreeEditDistance;
+import rna.GranularTransformer;
+import rna.TransformerMapping;
+import util.Pair;
 import util.ProgressBar;
 import util.Readers;
 
@@ -60,14 +63,21 @@ public class StrategyTemplate {
         // representation and distance functions
         final compoundDistance distance1 = new compoundDistance(1., 0.);
         final compoundDistance distance2 = new compoundDistance(1, 1);
-        final GranularRepr converter = new GranularRepr(3);
+        final GranularTransformer converter = new GranularTransformer(3);
 
+        // transform raw data to input and remember the mappings
         final ArrayList<ArrayList<String>> input1 = new ArrayList<>();
-        final ArrayList<HashSet<String>> input1Sets = new ArrayList<>();
-        for (ArrayList<String> list : rawData) {
+        TransformerMapping<String, String> input1Mapping = new TransformerMapping<>(rawData.size());
+
+        for (int index = 0; index != rawData.size(); ++index) {
+            ArrayList<String> list = rawData.get(index);
             HashSet<String> uniques = new HashSet<>();
+
             for (String dotBracket : list) {
-                uniques.add(converter.call(dotBracket));
+                String transformed = converter.transform(dotBracket);
+                uniques.add(transformed);
+                // remember the mapping
+                input1Mapping.addMapping(index, dotBracket, transformed);
             }
             // add to the converted objects
             ArrayList<String> uniquesList = new ArrayList<>();
@@ -75,7 +85,6 @@ public class StrategyTemplate {
                 uniquesList.add(string);
             }
             input1.add(uniquesList);
-            input1Sets.add(new HashSet<>(uniquesList));
         }
 
         // create the problem instance (which also performs distance matrix calculations)
@@ -114,12 +123,11 @@ public class StrategyTemplate {
         // get the brackets
         for (ArrayList<String> solution : uniqueSolutions1) {
             ArrayList<ArrayList<String>> correspondingObjects = new ArrayList<>();
-            for (int i = 0; i != solution.size(); ++i)
+            for (int classIndex = 0; classIndex != solution.size(); ++classIndex)
             {
+                correspondingObjects.add(input1Mapping.getReverseMapUniques(classIndex, solution.get(classIndex)));
             }
-            for (String conv : solution) {
-                correspondingObjects.add(new ArrayList<>(converter.getReverseMapping().get(conv)));
-            }
+
             input2.add(correspondingObjects);
         }
 
