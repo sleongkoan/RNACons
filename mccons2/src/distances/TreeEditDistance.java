@@ -7,7 +7,7 @@ import util.LblTree;
 
 import static util.Util.isTree;
 
-public class TreeEditDistance implements DistanceFunction<String, String, Double>{
+public class TreeEditDistance implements DistanceFunction<String, String>{
 
     double costIns, costDel, costRen;
 

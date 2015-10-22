@@ -1,5 +1,8 @@
 package rna;
 
+import util.Node;
+import util.OrderedRootedTree;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
@@ -29,7 +32,7 @@ public class AbstractShapes{
      * @param node
      * @return
      */
-    private static boolean removeStem(Node node, char nestingSymbol)
+    private static boolean removeStem(Node<Character> node, char nestingSymbol)
     {   // to be used in a BFS traversal only
         if ( (node.getLabel() == nestingSymbol) && (node.getChildren().size() == 1) )
         {
@@ -54,11 +57,11 @@ public class AbstractShapes{
     }
 
 
-    public static void removeAllStems(Node tree, char nestingSymbol)
+    public static void removeAllStems(Node<Character> tree, char nestingSymbol)
     {
         ArrayDeque<Node> Q = new ArrayDeque<>();
         Q.addLast(tree);
-        Node current_node;
+        Node<Character> current_node;
 
         boolean modified;
         while(!Q.isEmpty())
@@ -122,8 +125,8 @@ public class AbstractShapes{
         // preProcessDotBracket the dotbracket and convert it to tree representation
         String processed = preProcessDotBracket(dotBracket);
 
-        Tree tree = new Tree(processed, '(', ')', '.');
-        ArrayList<Node> subTrees = tree.getRoot().getChildren();
+        OrderedRootedTree tree = new OrderedRootedTree(processed, '(', ')', '.');
+        ArrayList<Node<Character>> subTrees = tree.getRoot().getChildren();
 
 
 
@@ -150,9 +153,9 @@ public class AbstractShapes{
 
         //-------------------------------------------level 5
         // same as for level 1 except it is applied on the level 3 String
-        Tree tree2 = new Tree(level3, '[', ']', '_');
+        OrderedRootedTree tree2 = new OrderedRootedTree(level3, '[', ']', '_');
 
-        ArrayList<Node> trees2 = tree2.getRoot().getChildren();
+        ArrayList<Node<Character>> trees2 = tree2.getRoot().getChildren();
         for (Node n : trees2)
         {
             removeAllStems(n, '[');

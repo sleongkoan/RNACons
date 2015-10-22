@@ -1,6 +1,6 @@
 package distances;
 
-public final class StringEditDistance implements DistanceFunction<String, String, Double> {
+public final class StringEditDistance implements DistanceFunction<String, String> {
 
 
     public Double get(String a, String b) {

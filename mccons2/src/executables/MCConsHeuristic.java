@@ -116,7 +116,7 @@ public final class MCConsHeuristic {
                 config.getLong("seed3"), config.getLong("seed4"), config.getLong("seed5")};
 
 
-        HeuristicStrategy solver1 = new HeuristicStrategy(
+        HeuristicStrategy strategy1 = new HeuristicStrategy(
                 config.getBoolean("verbose"),
                 config.getDouble("tolerance"),
                 SEEDS,
@@ -132,7 +132,7 @@ public final class MCConsHeuristic {
                 config.getDouble("improvementProbability"),
                 config.getInt("improvementDepth"));
 
-        HeuristicStrategy solver2 = new HeuristicStrategy(
+        HeuristicStrategy strategy2 = new HeuristicStrategy(
                 config.getBoolean("verbose"),
                 0,
                 SEEDS,
@@ -151,7 +151,7 @@ public final class MCConsHeuristic {
 
 
         //region SOLVING
-        StrategyTemplate.applyStrategy(config.getString("input"), solver1, solver2);
+        StrategyTemplate.applyStrategy(config.getString("input"), strategy1, strategy2);
         //endregion
 
     }

@@ -35,13 +35,9 @@ public class TransformerMapping<A extends Comparable<A>, B extends Comparable<B>
         {
             if (map.getSecond().compareTo(query) == 0)
             {
-                if (! corresponding.contains(map.getFirst()))
-                {
-                    corresponding.add(map.getFirst());
-                }
+                corresponding.add(map.getFirst());
             }
         }
-
         return corresponding;
     }
 

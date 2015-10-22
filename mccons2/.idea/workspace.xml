@@ -5,7 +5,7 @@
   </component>
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="compressionTest" />
+      <artifact name="heuristic:jar" />
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
@@ -35,82 +35,33 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="StrategyTemplate.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Node.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/util/Node.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Clusterer.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/cluster/Clusterer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="36" column="38" selection-start-line="36" selection-start-column="38" selection-end-line="36" selection-end-column="38" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="StrategyTemplate.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/problemSolving/StrategyTemplate.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="64" column="70" selection-start-line="64" selection-start-column="70" selection-end-line="64" selection-end-column="70" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="n#!!doc;n#compoundDistance#0;n#StrategyTemplate#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TransformerMapping.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/rna/TransformerMapping.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="119" column="0" selection-start-line="119" selection-start-column="0" selection-end-line="119" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#513#514#0" expanded="true" />
-                <element signature="e#582#583#0" expanded="true" />
-                <element signature="e#2275#2276#0" expanded="true" />
-                <element signature="e#2321#2322#0" expanded="true" />
-                <element signature="e#2695#2696#0" expanded="true" />
-                <element signature="e#2743#2744#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GranularTransformer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/rna/GranularTransformer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="7" column="39" selection-start-line="7" selection-start-column="39" selection-end-line="7" selection-end-column="39" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Transformer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/rna/Transformer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="20" column="10" selection-start-line="20" selection-start-column="10" selection-end-line="20" selection-end-column="10" />
-              <folding>
-                <element signature="e#204#205#0" expanded="true" />
-                <element signature="e#236#237#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RNA2D.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/rna/RNA2D.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-              <folding>
-                <element signature="e#4390#4391#0" expanded="true" />
-                <element signature="e#4427#4428#0" expanded="true" />
-                <element signature="e#4532#4553#0" expanded="false" />
-                <element signature="e#4932#4955#0" expanded="false" />
-                <element signature="e#6376#6391#0" expanded="false" />
-                <element signature="n#!!doc;n#equals#0;n#RNA2D#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Granular.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/rna/Granular.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.6989437">
+              <caret line="213" column="5" selection-start-line="213" selection-start-column="5" selection-end-line="213" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -118,44 +69,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CompressionTest.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/executables/CompressionTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.48591548">
-              <caret line="157" column="17" selection-start-line="157" selection-start-column="17" selection-end-line="157" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AbstractShapesTransformer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/rna/AbstractShapesTransformer.java">
+      <file leaf-file-name="AbstractShapes.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/rna/AbstractShapes.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="8" column="48" selection-start-line="8" selection-start-column="48" selection-end-line="8" selection-end-column="48" />
-              <folding>
-                <element signature="e#377#378#0" expanded="true" />
-                <element signature="e#441#442#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RTED.java" pinned="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/src/libraries/RTED_v1.1.jar!/convenience/RTED.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Util.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/util/Util.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="63" column="17" selection-start-line="63" selection-start-column="17" selection-end-line="63" selection-end-column="17" />
+              <caret line="124" column="84" selection-start-line="124" selection-start-column="84" selection-end-line="124" selection-end-column="84" />
               <folding />
             </state>
           </provider>
@@ -166,8 +84,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JUnit3 Test Class" />
         <option value="Interface" />
+        <option value="JUnit3 Test Class" />
         <option value="Class" />
       </list>
     </option>
@@ -182,7 +100,6 @@
       <list>
         <option value="$PROJECT_DIR$/src/optimization/SolverHeuristic.java" />
         <option value="$PROJECT_DIR$/src/distances/TreeEditDistanceTest.java" />
-        <option value="$PROJECT_DIR$/src/distances/TreeEditDistance.java" />
         <option value="$PROJECT_DIR$/src/rna/Converter.java" />
         <option value="$PROJECT_DIR$/src/executables/Reducer.java" />
         <option value="$PROJECT_DIR$/src/rna/RNAShapeRepr.java" />
@@ -190,31 +107,41 @@
         <option value="$PROJECT_DIR$/src/rna/GranularRepr.java" />
         <option value="$PROJECT_DIR$/src/optimization/MCCons.java" />
         <option value="$PROJECT_DIR$/src/executables/MCConsExact.java" />
-        <option value="$PROJECT_DIR$/src/executables/MCConsHeuristic.java" />
         <option value="$PROJECT_DIR$/src/optimization/ConsensusProblem.java" />
         <option value="$PROJECT_DIR$/src/optimization/AbstractStrategy.java" />
         <option value="$PROJECT_DIR$/src/optimization/StrategyTemplate.java" />
         <option value="$PROJECT_DIR$/src/optimization/HeuristicStrategy.java" />
         <option value="$PROJECT_DIR$/src/optimization/ExactStrategy.java" />
         <option value="$PROJECT_DIR$/src/util/Util.java" />
-        <option value="$PROJECT_DIR$/src/problemSolving/AbstractStrategy.java" />
         <option value="$PROJECT_DIR$/src/problemSolving/ExactStrategy.java" />
         <option value="$PROJECT_DIR$/src/problemSolving/HeuristicStrategy.java" />
-        <option value="$PROJECT_DIR$/src/problemSolving/Problem.java" />
         <option value="$PROJECT_DIR$/src/rna/OrderedRootedTreeTest.java" />
-        <option value="$PROJECT_DIR$/src/rna/OrderedRootedTree.java" />
         <option value="$PROJECT_DIR$/src/rna/RNAshapes.java" />
         <option value="$PROJECT_DIR$/src/rna/AbstractShape.java" />
         <option value="$PROJECT_DIR$/src/rna/Tree.java" />
-        <option value="$PROJECT_DIR$/src/rna/RNA2D.java" />
         <option value="$PROJECT_DIR$/src/rna/RNAConverter.java" />
-        <option value="$PROJECT_DIR$/src/rna/AbstractShapes.java" />
-        <option value="$PROJECT_DIR$/src/rna/Transformer.java" />
         <option value="$PROJECT_DIR$/src/rna/GranularTransformer.java" />
         <option value="$PROJECT_DIR$/src/rna/AbstractShapesTransformer.java" />
-        <option value="$PROJECT_DIR$/src/problemSolving/StrategyTemplate.java" />
-        <option value="$PROJECT_DIR$/src/rna/TransformerMapping.java" />
         <option value="$PROJECT_DIR$/src/executables/CompressionTest.java" />
+        <option value="$PROJECT_DIR$/src/rna/Transformer.java" />
+        <option value="$PROJECT_DIR$/src/executables/MCConsHeuristic.java" />
+        <option value="$PROJECT_DIR$/src/rna/TransformerMapping.java" />
+        <option value="$PROJECT_DIR$/src/rna/TransformerMappingTest.java" />
+        <option value="$PROJECT_DIR$/src/rna/RNA2D.java" />
+        <option value="$PROJECT_DIR$/src/rna/OrderedRootedTree.java" />
+        <option value="$PROJECT_DIR$/src/problemSolving/AbstractStrategy.java" />
+        <option value="$PROJECT_DIR$/src/util/Node.java" />
+        <option value="$PROJECT_DIR$/src/util/OrderedRootedTree.java" />
+        <option value="$PROJECT_DIR$/src/rna/Granular.java" />
+        <option value="$PROJECT_DIR$/src/visualization/Cluster.java" />
+        <option value="$PROJECT_DIR$/src/distances/DistanceFunction.java" />
+        <option value="$PROJECT_DIR$/src/distances/StringEditDistance.java" />
+        <option value="$PROJECT_DIR$/src/distances/TreeEditDistance.java" />
+        <option value="$PROJECT_DIR$/src/cluster/HacWrapper.java" />
+        <option value="$PROJECT_DIR$/src/problemSolving/Problem.java" />
+        <option value="$PROJECT_DIR$/src/rna/AbstractShapes.java" />
+        <option value="$PROJECT_DIR$/src/cluster/Clusterer.java" />
+        <option value="$PROJECT_DIR$/src/problemSolving/StrategyTemplate.java" />
       </list>
     </option>
   </component>
@@ -272,7 +199,7 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -302,6 +229,10 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualization" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -339,28 +270,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="rna" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mccons2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mccons2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rna" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="RNA2D.java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -416,14 +325,136 @@
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+          </PATH>
+          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="executables" />
+              <option name="myItemId" value="mccons2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mccons2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mccons2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mccons2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hac.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mccons2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mccons2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hac.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hac" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mccons2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mccons2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hac.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hac" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="visualization" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mccons2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mccons2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hac.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hac" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="agglomeration" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -437,7 +468,7 @@
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/libraries/RTED_v1.1.jar!/" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/libraries/hac.jar!/" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
     <property name="FullScreen" value="false" />
@@ -450,6 +481,7 @@
       <recent name="junit.framework.TestCase" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
+      <recent name="rna" />
       <recent name="distances" />
     </key>
   </component>
@@ -463,7 +495,7 @@
       </extension>
       <option name="MAIN_CLASS_NAME" value="executables.MCConsHeuristic" />
       <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PROGRAM_PARAMETERS" value="-i data/examples/mccons_example.marna -v -t 0.3" />
+      <option name="PROGRAM_PARAMETERS" value="-i data/experimental/trna/input/trna_50.marna -v" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/../" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -802,7 +834,7 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35944206" sideWeight="0.4973704" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35944206" sideWeight="0.4973704" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20757738" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -833,7 +865,15 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="3" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/problemSolving/StrategyTemplate.java</url>
+          <line>138</line>
+          <properties />
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="5" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -842,66 +882,10 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/problemSolving/StrategyTemplate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="62" column="59" selection-start-line="62" selection-start-column="59" selection-end-line="62" selection-end-column="59" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="n#!!doc;n#compoundDistance#0;n#StrategyTemplate#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/rna/RNA2D.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
-          <folding>
-            <element signature="e#4390#4391#0" expanded="true" />
-            <element signature="e#4427#4428#0" expanded="true" />
-            <element signature="e#4532#4553#0" expanded="false" />
-            <element signature="e#4932#4955#0" expanded="false" />
-            <element signature="e#6376#6391#0" expanded="false" />
-            <element signature="n#!!doc;n#equals#0;n#RNA2D#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/rna/AbstractShapes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#373#374#0" expanded="true" />
-            <element signature="e#406#407#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/executables/CompressionTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="80" column="29" selection-start-line="80" selection-start-column="29" selection-end-line="80" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/rna/Granular.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/util/Util.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="63" column="17" selection-start-line="63" selection-start-column="17" selection-end-line="63" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -911,7 +895,6 @@
           <caret line="62" column="59" selection-start-line="62" selection-start-column="59" selection-end-line="62" selection-end-column="59" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="n#!!doc;n#compoundDistance#0;n#StrategyTemplate#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -920,14 +903,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
-          <folding>
-            <element signature="e#4390#4391#0" expanded="true" />
-            <element signature="e#4427#4428#0" expanded="true" />
-            <element signature="e#4532#4553#0" expanded="false" />
-            <element signature="e#4932#4955#0" expanded="false" />
-            <element signature="e#6376#6391#0" expanded="false" />
-            <element signature="n#!!doc;n#equals#0;n#RNA2D#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -935,17 +910,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#373#374#0" expanded="true" />
-            <element signature="e#406#407#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/executables/CompressionTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="80" column="29" selection-start-line="80" selection-start-column="29" selection-end-line="80" selection-end-column="29" />
           <folding />
         </state>
       </provider>
@@ -954,9 +918,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -964,7 +926,46 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="63" column="17" selection-start-line="63" selection-start-column="17" selection-end-line="63" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/problemSolving/StrategyTemplate.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="62" column="59" selection-start-line="62" selection-start-column="59" selection-end-line="62" selection-end-column="59" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/rna/RNA2D.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/rna/AbstractShapes.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/rna/Granular.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/util/Util.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="63" column="17" selection-start-line="63" selection-start-column="17" selection-end-line="63" selection-end-column="17" />
         </state>
       </provider>
     </entry>
@@ -974,7 +975,6 @@
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="n#!!doc;n#compoundDistance#0;n#StrategyTemplate#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -999,7 +999,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="n#!!doc;n#compoundDistance#0;n#StrategyTemplate#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1010,7 +1009,6 @@
           <caret line="125" column="1" selection-start-line="125" selection-start-column="1" selection-end-line="125" selection-end-column="1" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="n#!!doc;n#compoundDistance#0;n#StrategyTemplate#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1019,27 +1017,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="134" column="38" selection-start-line="134" selection-start-column="38" selection-end-line="134" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/executables/CompressionTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/distances/TreeEditDistanceTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/distances/TreeEditDistance.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1057,13 +1034,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/executables/MCConsExact.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="39" selection-start-line="5" selection-start-column="39" selection-end-line="5" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/problemSolving/ExactStrategy.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-9.7">
@@ -1071,39 +1041,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/problemSolving/HeuristicStrategy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="166" column="69" selection-start-line="166" selection-start-column="69" selection-end-line="166" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/problemSolving/AbstractStrategy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-103.2">
-          <caret line="264" column="47" selection-start-line="264" selection-start-column="47" selection-end-line="264" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/problemSolving/Problem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="117" column="55" selection-start-line="117" selection-start-column="55" selection-end-line="117" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/executables/MCConsHeuristic.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="150" column="0" selection-start-line="150" selection-start-column="0" selection-end-line="150" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/util/Util.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="63" column="17" selection-start-line="63" selection-start-column="17" selection-end-line="63" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1111,54 +1052,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/rna/Granular.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/rna/Transformer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="10" selection-start-line="20" selection-start-column="10" selection-end-line="20" selection-end-column="10" />
-          <folding>
-            <element signature="e#204#205#0" expanded="true" />
-            <element signature="e#236#237#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/rna/AbstractShapes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7013423">
-          <caret line="23" column="26" selection-start-line="23" selection-start-column="26" selection-end-line="23" selection-end-column="26" />
-          <folding>
-            <element signature="e#373#374#0" expanded="true" />
-            <element signature="e#406#407#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/rna/RNA2D.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding>
-            <element signature="e#4390#4391#0" expanded="true" />
-            <element signature="e#4427#4428#0" expanded="true" />
-            <element signature="e#4532#4553#0" expanded="false" />
-            <element signature="e#4932#4955#0" expanded="false" />
-            <element signature="e#6376#6391#0" expanded="false" />
-            <element signature="n#!!doc;n#equals#0;n#RNA2D#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1166,10 +1059,27 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="8" column="48" selection-start-line="8" selection-start-column="48" selection-end-line="8" selection-end-column="48" />
-          <folding>
-            <element signature="e#377#378#0" expanded="true" />
-            <element signature="e#441#442#0" expanded="true" />
-          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/util/Readers.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="42" column="46" selection-start-line="42" selection-start-column="46" selection-end-line="42" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/problemSolving/HeuristicStrategy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="204" column="0" selection-start-line="204" selection-start-column="0" selection-end-line="204" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/src/libraries/junit-4.12.jar!/junit/framework/TestResult.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.35188866">
+          <caret line="26" column="11" selection-start-line="26" selection-start-column="11" selection-end-line="26" selection-end-column="11" />
         </state>
       </provider>
     </entry>
@@ -1177,42 +1087,193 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="7" column="39" selection-start-line="7" selection-start-column="39" selection-end-line="7" selection-end-column="39" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/rna/RNA2D.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/rna/Transformer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="39" selection-start-line="21" selection-start-column="39" selection-end-line="21" selection-end-column="39" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/rna/TransformerMapping.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="119" column="0" selection-start-line="119" selection-start-column="0" selection-end-line="119" selection-end-column="0" />
+          <caret line="46" column="33" selection-start-line="46" selection-start-column="33" selection-end-line="46" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/rna/TransformerMappingTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/problemSolving/AbstractStrategy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="71" column="43" selection-start-line="71" selection-start-column="43" selection-end-line="71" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/util/OrderedRootedTree.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="80" column="30" selection-start-line="80" selection-start-column="30" selection-end-line="80" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/rna/Granular.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="32" column="9" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/distances/StringEditDistance.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.04208195">
+          <caret line="2" column="80" selection-start-line="2" selection-start-column="80" selection-end-line="2" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/distances/TreeEditDistance.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0841639">
+          <caret line="9" column="72" selection-start-line="9" selection-start-column="72" selection-end-line="9" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/executables/MCConsExact.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.19933555">
+          <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/distances/TreeEditDistanceTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.25249168">
+          <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/distances/DistanceFunction.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/problemSolving/Problem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="55" column="73" selection-start-line="55" selection-start-column="73" selection-end-line="55" selection-end-column="73" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/rna/AbstractShapes.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="124" column="84" selection-start-line="124" selection-start-column="84" selection-end-line="124" selection-end-column="84" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/visualization/Cluster.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.06312292">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/util/Node.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/executables/MCConsHeuristic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="153" column="19" selection-start-line="153" selection-start-column="19" selection-end-line="153" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/src/libraries/hac.jar!/ch/usi/inf/sape/hac/visualization/ObservationNode.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.071429">
+          <caret line="9" column="19" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/src/libraries/hac.jar!/ch/usi/inf/sape/hac/HierarchicalAgglomerativeClusterer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.428571">
+          <caret line="12" column="52" selection-start-line="12" selection-start-column="52" selection-end-line="12" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/src/libraries/hac.jar!/ch/usi/inf/sape/hac/visualization/DendrogramBuilder.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.071429">
+          <caret line="13" column="19" selection-start-line="13" selection-start-column="19" selection-end-line="13" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/src/libraries/hac.jar!/ch/usi/inf/sape/hac/visualization/DendrogramNode.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.17371428">
+          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/src/libraries/hac.jar!/ch/usi/inf/sape/hac/visualization/Dendrogram.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.52114284">
+          <caret line="35" column="9" selection-start-line="35" selection-start-column="9" selection-end-line="35" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cluster/Clusterer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="36" column="38" selection-start-line="36" selection-start-column="38" selection-end-line="36" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#513#514#0" expanded="true" />
-            <element signature="e#582#583#0" expanded="true" />
-            <element signature="e#2275#2276#0" expanded="true" />
-            <element signature="e#2321#2322#0" expanded="true" />
-            <element signature="e#2695#2696#0" expanded="true" />
-            <element signature="e#2743#2744#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/problemSolving/StrategyTemplate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="64" column="70" selection-start-line="64" selection-start-column="70" selection-end-line="64" selection-end-column="70" />
+        <state vertical-scroll-proportion="0.6989437">
+          <caret line="213" column="5" selection-start-line="213" selection-start-column="5" selection-end-line="213" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="n#!!doc;n#compoundDistance#0;n#StrategyTemplate#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/executables/CompressionTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.48591548">
-          <caret line="157" column="17" selection-start-line="157" selection-start-column="17" selection-end-line="157" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1295,7 +1356,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>RTED_v1.1</last-edited>
+          <last-edited>hac</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

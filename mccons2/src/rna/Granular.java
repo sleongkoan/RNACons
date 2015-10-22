@@ -1,5 +1,9 @@
 package rna;
 
+import sun.rmi.transport.proxy.CGIHandler;
+import util.Node;
+import util.OrderedRootedTree;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -7,7 +11,7 @@ import java.util.LinkedList;
 /**
  * Lossy tree compression ((((..)))).(.) -> (())() if granularity == 2
  */
-public class Granular extends Tree {
+public class Granular extends OrderedRootedTree {
     private int granularity;
 
     public Granular(String stringRepresentation, int divider)
@@ -23,21 +27,21 @@ public class Granular extends Tree {
 
 
     private void applyGranularTransformation() {
-        LinkedList<Node> searchSpace = new LinkedList<>();
-        ArrayList<Node> stemStarters = new ArrayList<>();
-        for (Node node : getRoot().getChildren())
+        LinkedList<Node<Character>> searchSpace = new LinkedList<>();
+        ArrayList<Node<Character>> stemStarters = new ArrayList<>();
+        for (Node<Character> node : getRoot().getChildren())
         {
             searchSpace.add(node);
         }
 
         // find the nodes who begin a stem
         while (searchSpace.size() > 0) {
-            Node currentNode = searchSpace.poll();
+            Node<Character> currentNode = searchSpace.poll();
             if (startsStem(currentNode, getRoot())) {
 
                 stemStarters.add(currentNode);
             }
-            for (Node children : currentNode.getChildren()) {
+            for (Node<Character> children : currentNode.getChildren()) {
                 searchSpace.add(children);
             }
         }
@@ -48,9 +52,9 @@ public class Granular extends Tree {
         {
             // size of the new stem
             int newLength = (int) Math.ceil((double) stemLength(node) / (double) granularity);
-            ArrayList<Node> lastChildren = lastNodeOfStem(node).getChildren();
+            ArrayList<Node<Character>> lastChildren = lastNodeOfStem(node).getChildren();
 
-            Node position = node;
+            Node<Character> position = node;
             for (int i = 1; i < newLength; ++i)
             {
                 position = position.getChildren().get(0);
@@ -86,7 +90,7 @@ public class Granular extends Tree {
     }
 
 
-    private int stemLength(Node position)
+    private int stemLength(Node<Character> position)
     {
         int stemLength = 1;
         while(position.getChildren().size() == 1)
@@ -97,9 +101,9 @@ public class Granular extends Tree {
         return stemLength;
     }
 
-    private Node lastNodeOfStem(Node node)
+    private Node lastNodeOfStem(Node<Character> node)
     {
-        Node position = node;
+        Node<Character> position = node;
         while (position.getChildren().size() == 1)
         {
             position = position.getChildren().get(0);

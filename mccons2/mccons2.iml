@@ -10,5 +10,6 @@
     <orderEntry type="library" name="JSAP-2.1" level="project" />
     <orderEntry type="library" name="junit-4.12" level="project" />
     <orderEntry type="library" name="RTED_v1.1" level="project" />
+    <orderEntry type="library" name="hac" level="project" />
   </component>
 </module>

@@ -1,11 +1,13 @@
 package problemSolving;
 
+import ch.usi.inf.sape.hac.visualization.Dendrogram;
+import cluster.Clusterer;
 import distances.DistanceFunction;
 import distances.StringEditDistance;
 import distances.TreeEditDistance;
 import rna.GranularTransformer;
 import rna.TransformerMapping;
-import util.Pair;
+
 import util.ProgressBar;
 import util.Readers;
 
@@ -15,11 +17,11 @@ import java.util.Collections;
 import java.util.HashSet;
 
 
-public class StrategyTemplate {
+ public class StrategyTemplate {
 
 
     //region DISTANCE DECLARATION
-    static class compoundDistance implements DistanceFunction<String, String, Double> {
+    static class compoundDistance implements DistanceFunction<String, String> {
         public final double weight1, weight2;
 
         compoundDistance(double weight1, double weight2) {
@@ -45,12 +47,12 @@ public class StrategyTemplate {
      * given a strategy and a problem instance, apply the strategy
      *
      * @param path         path of the input file
-     * @param firstSolver  strategy for the coarse problem
-     * @param secondSolver strategy for the refined problem
+     * @param strategy1  strategy for the coarse problem
+     * @param strategy2 strategy for the refined problem
      */
     public static void applyStrategy(String path,
-                                     AbstractStrategy firstSolver,
-                                     AbstractStrategy secondSolver) throws IOException {
+                                     AbstractStrategy strategy1,
+                                     AbstractStrategy strategy2) throws IOException {
 
         //region COARSE EXPLORATION
         // using compressed representation of RNA, find similar objects
@@ -63,19 +65,21 @@ public class StrategyTemplate {
         // representation and distance functions
         final compoundDistance distance1 = new compoundDistance(1., 0.);
         final compoundDistance distance2 = new compoundDistance(1, 1);
-        final GranularTransformer converter = new GranularTransformer(3);
 
         // transform raw data to input and remember the mappings
         final ArrayList<ArrayList<String>> input1 = new ArrayList<>();
+        final GranularTransformer converter = new GranularTransformer(3);
         TransformerMapping<String, String> input1Mapping = new TransformerMapping<>(rawData.size());
 
         for (int index = 0; index != rawData.size(); ++index) {
+
             ArrayList<String> list = rawData.get(index);
             HashSet<String> uniques = new HashSet<>();
 
             for (String dotBracket : list) {
                 String transformed = converter.transform(dotBracket);
                 uniques.add(transformed);
+
                 // remember the mapping
                 input1Mapping.addMapping(index, dotBracket, transformed);
             }
@@ -91,11 +95,11 @@ public class StrategyTemplate {
         final Problem<String> problem1 = new Problem(input1, distance1);
 
         // actually solve
-        boolean verbose = firstSolver.isVerbose();
+        boolean verbose = strategy1.isVerbose();
         if (verbose) {
             System.err.println("Phase 1");
         }
-        ArrayList<Solution> consensus1 = firstSolver.solve(problem1);
+        ArrayList<Solution> consensus1 = strategy1.solve(problem1);
 
         // keep only unique solutions
         final double numComparisons = rawData.size() * (rawData.size() - 1);  // n (n -1)
@@ -103,15 +107,15 @@ public class StrategyTemplate {
 
         for (Solution solution : consensus1) {
             ArrayList<String> consensus = problem1.getObjectsAtIndices(solution.getGenes());
-            Collections.sort(consensus);
             if (!uniqueSolutions1.contains(consensus)) {
                 uniqueSolutions1.add(consensus);
-
+                /*
                 System.out.println(System.lineSeparator() + "> " + solution.getScore() / numComparisons);
                 for (String dotBracket : consensus) {
                     System.out.println(dotBracket);
                 }
                 System.out.println();
+                */
             }
         }
         //endregion
@@ -160,7 +164,7 @@ public class StrategyTemplate {
         ArrayList<ArrayList<Solution>> consensus2 = new ArrayList<>();
         ProgressBar progress = new ProgressBar("", 40);
         for (int i = 0; i != input2.size(); ++i) {
-            consensus2.add(secondSolver.solve(problems2.get(i)));
+            consensus2.add(strategy2.solve(problems2.get(i)));
             progress.update((float) i / consensus1.size());
         }
         progress.clean();
@@ -181,7 +185,6 @@ public class StrategyTemplate {
             uniqueSolutions2.add(problem1.getObjectsAtIndices(consensus1.get(i).getGenes()));
             for (Solution solution : solutions) {
                 ArrayList<String> consensus = problem.getObjectsAtIndices(solution.getGenes());
-                Collections.sort(consensus);
                 if (!uniqueSolutions2.contains(consensus)) {
                     uniqueSolutions2.add(consensus);
 
@@ -194,63 +197,20 @@ public class StrategyTemplate {
         }
         for (ArrayList<String> solution : uniqueSolutions2)
         {
+            Dendrogram dendrogram = Clusterer.convertToDendrogram(solution, distance2);
+            ArrayList<Integer> traversal = dendrogram.preOrderTraversal();
             System.out.println(System.lineSeparator() + "> ");
-            for (String db : solution)
+            for (Integer index : traversal)
             {
-                System.out.println(db);
+                System.out.println(solution.get(index));
             }
+
+            //dendrogram.dump();
+
+            System.out.println();
 
         }
         //endregion
     }
 }
 
-        /*
-        for ()
-                    System.out.println("> solution " + i + " : " + solution.getScore() / numComparisons);
-                    for (String dotBracket : consensus) {
-                        System.out.println(dotBracket);
-                    }
-                }
-
-            }
-            i += 1;
-        }
-
-        for (ArrayList<Solution> solutions : consensus2) {
-            // figure out what the best scores are within each tree consensus
-            score1 = consensus1.get(problem2Index).getScore() / num_comparisons;
-            bestScore2 = Double.POSITIVE_INFINITY;
-
-            for (Solution solution : solutions) {
-                if (solution.getScore() < bestScore2) {
-                    bestScore2 = solution.getScore();
-                }
-            }
-
-            for (Solution solution : solutions) {
-                if (solution.getScore() == bestScore2) {
-                    // output it
-                    double normalizedScore = bestScore2 / num_comparisons;
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("> ");
-                    builder.append(solutionIndex);       // index
-                    builder.append(" ");
-                    builder.append(score1);      // first score
-                    builder.append(" ");
-                    builder.append(normalizedScore); // normalized second score
-                    builder.append(System.lineSeparator());
-                    for (Integer gene : solution.getGenes()) {
-                        String object = problems2.get(problem2Index).getElemsAtIndices().get(gene);
-                        builder.append(object);
-                        builder.append(System.lineSeparator());
-                    }
-                    System.out.println(builder.toString());
-                    solutionIndex += 1;
-                }
-            }
-            problem2Index += 1;
-        }
-    }
-}
-*/

@@ -19,7 +19,6 @@ class Solution implements Comparable<Solution> {
     private Double score;
 
 
-
     public void setGene(final int index, final int newValue) {
         genes.set(index, newValue);
     }
@@ -95,11 +94,6 @@ class Solution implements Comparable<Solution> {
 public abstract class AbstractStrategy {
 
 
-
-
-
-
-
     /**
      * calculates and assigns the sum of pairwise cost as the new score of the given solution
      *
@@ -138,10 +132,10 @@ public abstract class AbstractStrategy {
     /**
      * Using the get matrix, find the change of gene that brings the most improvement (greedy)
      *
-     * @param genes                current genes chosen
+     * @param genes               current genes chosen
      * @param replacementPosition index of the gene list to investigate
      * @param distanceMatrix      pre-calculated matrix of cost
-     * @param ranges               list of intervals from which to select new genes from
+     * @param ranges              list of intervals from which to select new genes from
      * @return index of the new gene (-1 if no better) and difference in score
      */
     public static Pair<Integer, Double> findBestSubstitution(ArrayList<Integer> genes,

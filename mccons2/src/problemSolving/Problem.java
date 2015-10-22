@@ -8,15 +8,19 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-public class Problem<T> {
+class Problem<T> {
 
     ArrayList<T> objects;
     ArrayList<Pair<Integer, Integer>> ranges;
     double[][] distanceMatrix;
 
 
-    public Problem(ArrayList<ArrayList<T>> objects, DistanceFunction<T, T, Double> distanceFunction) {
+    public Problem(ArrayList<ArrayList<T>> objects, DistanceFunction<T, T> distanceFunction) {
         this.objects = Util.flatten(objects);
+        for (ArrayList<T> list : objects)
+        {
+            assert list.size() != 0;
+        }
         this.ranges = getRanges(objects);
         this.distanceMatrix = getDistanceMatrix(objects, distanceFunction);
     }
@@ -49,7 +53,7 @@ public class Problem<T> {
      * @return
      */
     private static <T> double[][] getDistanceMatrix(ArrayList<ArrayList<T>> data,
-                                                    DistanceFunction<T, T, Double> distanceFunction) {
+                                                    DistanceFunction<T, T> distanceFunction) {
         ArrayList<T> objects = new ArrayList<>();
         for (ArrayList<T> list : data)
         {

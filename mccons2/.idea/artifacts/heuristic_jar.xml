@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="heuristic:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/heuristic</output-path>
+    <root id="archive" name="mccons2.jar">
+      <element id="module-output" name="mccons2" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/libraries/RTED_v1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/libraries/junit-4.12.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/libraries/JSAP-2.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -50,3 +50,5 @@ tmp/
 hs_err_pid*
 
 
+# out directory of mccons
+mccons2/out/*

@@ -2,7 +2,8 @@ package rna;
 
 
 /**
- * all calls to conversion should be memoized and remebered by reverse mapping
+ * Abstract transformer class. All RNA representation transformations are done through classes
+ * inheriting this.
  */
 public abstract class Transformer<A, B> {
     protected String name;
