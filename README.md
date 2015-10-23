@@ -42,17 +42,6 @@ for each arrangement of abstract shapes level 5.
 - Java JRE 7 or greater
 
 
-
-## Build Instructions
-
-Using the provided makefile, just use the following (seems to work fine
-on Linux and OSX).
-
-```bash
-make all
-```
-
-
 ## Input Files
 
 Input files must be of the following fasta-like format.
