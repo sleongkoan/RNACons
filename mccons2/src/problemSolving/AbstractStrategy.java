@@ -1,12 +1,10 @@
 package problemSolving;
 
 import com.sun.istack.internal.NotNull;
-import distances.DistanceFunction;
 import util.Pair;
 import util.RngStream;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 
 /**

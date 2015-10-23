@@ -1,19 +1,15 @@
 package problemSolving;
 
-import ch.usi.inf.sape.hac.visualization.Dendrogram;
-import cluster.Clusterer;
 import distances.DistanceFunction;
 import distances.StringEditDistance;
 import distances.TreeEditDistance;
-import rna.GranularTransformer;
-import rna.TransformerMapping;
-
+import representation.GranularTransformer;
+import representation.TransformerMapping;
 import util.ProgressBar;
-import util.Readers;
+import util.RNAReaders;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 
 
@@ -60,7 +56,7 @@ import java.util.HashSet;
         // should be as many-to-one as possible and yet be representative)
 
         // data acquisition
-        final ArrayList<ArrayList<String>> rawData = Readers.readMarnaFile(path);
+        final ArrayList<ArrayList<String>> rawData = RNAReaders.readMarnaFile(path);
 
         // representation and distance functions
         final compoundDistance distance1 = new compoundDistance(1., 0.);
@@ -197,15 +193,12 @@ import java.util.HashSet;
         }
         for (ArrayList<String> solution : uniqueSolutions2)
         {
-            Dendrogram dendrogram = Clusterer.convertToDendrogram(solution, distance2);
-            ArrayList<Integer> traversal = dendrogram.preOrderTraversal();
             System.out.println(System.lineSeparator() + "> ");
-            for (Integer index : traversal)
+            for (String dotBracket : solution)
             {
-                System.out.println(solution.get(index));
+                System.out.println(dotBracket);
             }
 
-            //dendrogram.dump();
 
             System.out.println();
 

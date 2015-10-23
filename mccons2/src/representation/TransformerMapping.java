@@ -1,4 +1,4 @@
-package rna;
+package representation;
 
 import util.Pair;
 

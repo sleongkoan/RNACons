@@ -1,4 +1,4 @@
-package rna;
+package representation;
 
 public class GranularTransformer extends Transformer<String, String> {
 
@@ -12,6 +12,6 @@ public class GranularTransformer extends Transformer<String, String> {
 
     @Override
     public String transform(String obj) {
-        return new Granular(obj, granularity).toString();
+        return convenience.RNA2D.dotBracketToGranularTree(obj, granularity);
     }
 }

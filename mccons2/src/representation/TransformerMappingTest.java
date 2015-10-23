@@ -1,8 +1,8 @@
-package rna;
+package representation;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import util.Readers;
+import util.RNAReaders;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class TransformerMappingTest extends TestCase {
      */
     protected void testReverseMapping() {
         try {
-            ArrayList<ArrayList<String>> data = Readers.readMarnaFile("data/examples/mccons_example.marna");
+            ArrayList<ArrayList<String>> data = RNAReaders.readMarnaFile("data/examples/mccons_example.marna");
             Transformer<String, String> transformer = new GranularTransformer(3);
             TransformerMapping<String, String> mapper = new TransformerMapping<>(data.size());
             int classIndex = 0;

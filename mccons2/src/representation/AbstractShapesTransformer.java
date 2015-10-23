@@ -1,4 +1,4 @@
-package rna;
+package representation;
 
 public class AbstractShapesTransformer extends Transformer<String, String> {
 
@@ -14,6 +14,6 @@ public class AbstractShapesTransformer extends Transformer<String, String> {
 
     @Override
     public String transform(String obj) {
-        return new AbstractShapes(obj, level).toString();
+        return convenience.RNA2D.dotBracketToAbstractShape(obj, level);
     }
 }

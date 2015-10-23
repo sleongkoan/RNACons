@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="hac">
+  <library name="RNA2D">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/src/libraries/hac.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/libraries/RNA2D.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
