@@ -1,9 +1,9 @@
-# MC-Cons
+# RNACons
 
 
 ## Description
 
-MC-Cons is an algorithm that finds  RNA secondary structure consensus.
+RNACons is an algorithm that finds  RNA secondary structure consensus.
 That is, with a list of sequences and potential structures, it tries to find
 a group of structures, one per sequence, who have the greatest similarity between
 all of them.
@@ -22,7 +22,7 @@ match as well as possible.
 
 ![](doc/article/figs/mccons_flowchart2.jpg)
 
-## MC-Cons versions
+## RNACons versions
 
 Two versions of the consensus optimizer available,
 one using an exact solver with branch and bound strategy and a heuristic
@@ -32,15 +32,14 @@ variety in the final solutions.
 
 
 ## Shape Explorer
-Shape explorer is a tool to explore MC-Cons outputs. This is useful mostly when MC-Cons
+Shape explorer is a tool to explore RNACons outputs. This is useful mostly when RNACons
 considers suboptimal solutions. It filters consensus by keeping only the best consensus
 for each arrangement of abstract shapes level 5.
 
 
 ## Requirements
 
-- C++ compiler
-- make
+- Java JRE 7 or greater
 
 
 
@@ -100,43 +99,6 @@ distance between all selected structures.
 
 Check out data/examples/shape_explorer_example.marna for a real example.
 
-
-## Usage Examples
-
-```bash
-# first, compile the C++ code
-# (supposes g++ and make installed)
-make all
-
-
-# MC-CONS USAGE
-
-# exact version (by branch and bound)
-# use only on very small instances
-bin/mcconsExact -i data/examples/mccons_example.marna
-
-# exact version with suboptimal consensus
-# here, all consensus within an average 0.5 unit tree distance
-# more than the best consensus will be kept
-bin/mcconsExact -i data/examples/mccons_example.marna -t 0.5
-
-# heuristic version (an hybrid genetic algorithm, with steepest descent)
-# defaults parameters behave fine on most small and medium instances
-# population size and number of generations should be increased for large instances
-bin/mcconsHeuristic -i data/examples/mccons_example.marna
-
-# same suboptimal threshold consideration as for the exact solver
-bin/mcconsHeuristic -i data/examples/mccons_example.marna -t 0.5
-
-
-# SHAPE EXPLORER USAGE
-
-# when considering suboptimal consensus, MC-Cons often returns too
-# many consensus to be useful. This performs a selection of those
-# with best scores for each arrangement of RNA abstract shapes (level 5)
-bin/shapeExplorer -i data/examples/shape_explorer_example.marna -s
-
-```
 
 
 ## To Do
