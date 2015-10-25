@@ -77,13 +77,13 @@ the nth molecule).
 The tree score and string edit score are the average
 distance between all selected structures.
 
-    > solution_index tree_score string_edit_score
+    > solution_index coarseScore refinedScore
     suboptimal_0_i
     suboptimal_1_j
     suboptimal_2_k
     ...
     suboptimal_n_l
-    > solution_index tree_score string_edit_score
+    > solution_index coarseScore refinedScore
     ...
 
 Check out data/examples/shape_explorer_example.marna for a real example.

@@ -192,19 +192,15 @@ public class StrategyTemplate {
 
         // keep only unique solutions
         final double numComparisons = rawData.size() * (rawData.size() - 1);  // n (n -1)
+        ArrayList<Double> coarseScores = new ArrayList<>();
         ArrayList<ArrayList<String>> uniqueSolutions1 = new ArrayList<>();
 
         for (Solution solution : consensus1) {
             ArrayList<String> consensus = problem1.getObjectsAtIndices(solution.getGenes());
             if (!uniqueSolutions1.contains(consensus)) {
+                // add to unique solutions and remember the coarse score
                 uniqueSolutions1.add(consensus);
-                /*
-                System.out.println(System.lineSeparator() + "> " + solution.getScore() / numComparisons);
-                for (String dotBracket : consensus) {
-                    System.out.println(dotBracket);
-                }
-                System.out.println();
-                */
+                coarseScores.add(solution.getScore() / numComparisons);
             }
         }
         //endregion
@@ -264,34 +260,28 @@ public class StrategyTemplate {
 
 
         //region OUTPUT SOLUTIONS
-        double bestScore2 = Double.POSITIVE_INFINITY;
-        ArrayList<ArrayList<String>> uniqueSolutions2 = new ArrayList<>();
 
+        ArrayList<ArrayList<String>> uniqueSolutions2 = new ArrayList<>();
+        int outputIndex = 0;
         for (int i = 0; i != consensus2.size(); ++i) {
+            double score1 = coarseScores.get(i);
+
             ArrayList<Solution> solutions = consensus2.get(i);
             Problem<String> problem = problems2.get(i);
             uniqueSolutions2.add(problem1.getObjectsAtIndices(consensus1.get(i).getGenes()));
+
             for (Solution solution : solutions) {
                 ArrayList<String> consensus = problem.getObjectsAtIndices(solution.getGenes());
                 if (!uniqueSolutions2.contains(consensus)) {
                     uniqueSolutions2.add(consensus);
-
-                }
-
-                if (solution.getScore() < bestScore2) {
-                    bestScore2 = solution.getScore();
+                    System.out.println();
+                    System.out.printf("> %d; %.2f; %.2f" + System.lineSeparator(),outputIndex, score1, solution.getScore()/numComparisons);
+                    for (String dotBracket : consensus) {
+                        System.out.println(dotBracket);
+                    }
+                    outputIndex += 1;
                 }
             }
-        }
-        for (ArrayList<String> solution : uniqueSolutions2) {
-            System.out.println(System.lineSeparator() + "> ");
-            for (String dotBracket : solution) {
-                System.out.println(dotBracket);
-            }
-
-
-            System.out.println();
-
         }
         //endregion
     }
