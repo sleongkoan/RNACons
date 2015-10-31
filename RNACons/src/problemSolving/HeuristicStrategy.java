@@ -142,6 +142,12 @@ public class HeuristicStrategy extends AbstractStrategy {
             Solution first = population.get(indices.getFirst());
             Solution second = population.get(indices.getSecond());
 
+            // Here, you are trying to select what you want to add into the
+            // `selected collection, why not do this instead?
+            // Warning: very pythonic sh!t
+            // 
+            // Solution selection = first.compareTo(second) < 0 ? first : second;
+            // selected.add(new Solution(selection));
             if (first.compareTo(second) < 0) {
                 selected.add(new Solution(first));
             } else {

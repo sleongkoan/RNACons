@@ -1,3 +1,8 @@
+/**
+ * You will want to add a header with your name / lab name / creation date
+ * in the same fashion as Pierre Lecuyer's file in the util section.
+ * This comment applies to all the files you wrote.
+ */
 package problemSolving;
 
 import distances.DistanceFunction;
@@ -55,6 +60,10 @@ public class StrategyTemplate {
                 if (element.compareTo(toFind) == 0) {
                     contains = true;
                     break;
+                    // Instead of changing the value for `contains`, wouldn't it be
+                    // better to just do an early return?
+                    // `return true;` here 
+                    // and `return false;` outside of the for loop.
                 }
             }
             return contains;
@@ -68,7 +77,7 @@ public class StrategyTemplate {
                 }
             }
             return uniques;
-
+// My OCD self says: why the extra newline here?
         }
 
 
